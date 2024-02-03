@@ -12,8 +12,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (PlayerManager.LocalPlayerInstance == null)
         {
             Debug.LogFormat("We are Instantiating LocalPlayer from {0}", SceneManagerHelper.ActiveSceneName);
-            
-            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+
+            var pos = Random.insideUnitCircle * Random.Range(1, 5);
+
+            PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(pos.x,0,pos.y)
+                , Quaternion.identity, 0);
         }
         else
         {

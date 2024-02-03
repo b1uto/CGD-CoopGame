@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -15,12 +16,12 @@ public class RoomMenu : Menu
 
     private void Start()
     {
-        networkManager.RoomPlayersUpdated += UpdateRoomMenu;
+        NetworkManager.OnPlayersUpdated += UpdateRoomMenu;
     }
 
     private void OnDestroy()
     {
-        networkManager.RoomPlayersUpdated -= UpdateRoomMenu;
+        NetworkManager.OnPlayersUpdated += UpdateRoomMenu;
     }
 
     public override void OnMenuChanged(string newMenuAlias)
@@ -68,8 +69,5 @@ public class RoomMenu : Menu
                 }
             }
         }
-
-
     }
-
 }

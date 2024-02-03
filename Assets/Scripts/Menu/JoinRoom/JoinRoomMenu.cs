@@ -2,11 +2,10 @@ using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI.Table;
 
 public class JoinRoomMenu : Menu
 {
-    [SerializeField]private NetworkManager networkManager;
+    [SerializeField] private NetworkManager networkManager;
     [SerializeField] private GameObject rowPrefab;
     [SerializeField] private Transform rowContainer;
 
@@ -14,12 +13,12 @@ public class JoinRoomMenu : Menu
 
     private void Start()
     {
-        networkManager.RoomListUpdated += UpdateRoomList;
+       NetworkManager.OnRoomsUpdated += UpdateRoomList;
     }
 
     private void OnDestroy()
     {
-        networkManager.RoomListUpdated -= UpdateRoomList;
+      NetworkManager.OnRoomsUpdated -= UpdateRoomList;
     }
     private void UpdateRoomList(List<RoomInfo> roomList)  
     {

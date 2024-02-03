@@ -16,22 +16,30 @@ using TMPro;
 
 #pragma warning disable 649
 
+///TODO change to use singleton pattern with static events for menu systems etc.
+
 /// <summary>
-/// Launch manager. Connect, join a random room or create one if none or all full.
+/// Network Manager. Connect, join a random room or create one if none or all full.
 /// </summary>
 public class NetworkManager : MonoBehaviourPunCallbacks
 {
-    
+    #region Static Events
     public delegate void UpdateRoomListDelegate(List<RoomInfo> roomList);
-    public event UpdateRoomListDelegate RoomListUpdated;
+    public static event UpdateRoomListDelegate OnRoomsUpdated;
 
-    public delegate void UpdateRoomPlayerList();
-    public event UpdateRoomPlayerList RoomPlayersUpdated;
+    public delegate void NoParamEvent();
+    public static event NoParamEvent OnPlayersUpdated;
+
+
+    public static event NoParamEvent OnLoading; //Possibly Remove and use ajax loader instead of text.
+
+    #endregion
 
     #region Private Serializable Fields
     [Tooltip("The Ui Text to inform the user about the connection progress")]
     [SerializeField]
     private TextMeshProUGUI feedbackText;
+
 
     [Tooltip("The maximum number of players per room")]
     [SerializeField]
@@ -227,7 +235,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("Master Client Switched: " + newMasterClient.ToString());
 #endif
 
-        RoomPlayersUpdated();
+        OnPlayersUpdated();
     }
     public override void OnLeftRoom()
     {
@@ -251,9 +259,9 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 #endif
     }
 
-    public override void OnRoomListUpdate(List<RoomInfo> roomList) => RoomListUpdated(roomList);
-    public override void OnPlayerEnteredRoom(Player newPlayer) => RoomPlayersUpdated();
-    public override void OnPlayerLeftRoom(Player otherPlayer) => RoomPlayersUpdated();
+    public override void OnRoomListUpdate(List<RoomInfo> roomList) => OnRoomsUpdated?.Invoke(roomList);
+    public override void OnPlayerEnteredRoom(Player newPlayer) => OnPlayersUpdated?.Invoke();
+    public override void OnPlayerLeftRoom(Player otherPlayer) => OnPlayersUpdated?.Invoke();
     #endregion
 
 }
