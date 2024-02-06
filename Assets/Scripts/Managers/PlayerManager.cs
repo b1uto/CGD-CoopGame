@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using Fusion;
 using Photon.Pun;
@@ -5,51 +6,51 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviourPunCallbacks
+namespace CGD
 {
-    public static GameObject LocalPlayerInstance;
-
-    private void Awake() 
+    public class PlayerManager : MonoBehaviourPunCallbacks
     {
-        var tmp = GetComponentInChildren<TextMeshPro>();
-        if (tmp)
+        public static GameObject LocalPlayerInstance;
+
+        private void Awake()
         {
-            tmp.text = photonView.Owner.NickName;
+            var tmp = GetComponentInChildren<TextMeshPro>();
+            if (tmp && photonView)
+            {
+                tmp.text = photonView.Owner.NickName;
+            }
+            DontDestroyOnLoad(gameObject);
         }
-        DontDestroyOnLoad(gameObject);
-    }
 
-    private void Start()
-    {
-        if (photonView.IsMine)
+        private void Start()
         {
-            LocalPlayerInstance = this.gameObject;
+            if (photonView == null)
+            {
+                LocalPlayerInstance = this.gameObject;
+                return;
+            }
 
-            var viewId = PhotonNetwork.Instantiate(Path.Combine("Models", "female01"),
-                transform.position, Quaternion.identity).GetPhotonView().ViewID;
+            if (photonView.IsMine)
+            {
+                LocalPlayerInstance = this.gameObject;
 
-            photonView.RPC("InitialiseModel", RpcTarget.AllBuffered, viewId);
+                var viewId = PhotonNetwork.Instantiate(Path.Combine("Models", GameManager.GetRandomModelName()),
+                    transform.position, Quaternion.identity).GetPhotonView().ViewID;
+
+                photonView.RPC("InitialiseModel", RpcTarget.AllBuffered, viewId);
+            }
         }
-    }
 
-    [PunRPC]
-    private void InitialiseModel(int viewId)
-    {
-        var model = PhotonView.Find(viewId).gameObject;
-        if (model)
+        [PunRPC]
+        private void InitialiseModel(int viewId)
         {
-            model.transform.SetParent(transform);
-            model.transform.localPosition = Vector3.zero;
-            GetComponent<PlayerAnimController>().animator = model.GetComponent<Animator>();
+            var model = PhotonView.Find(viewId).gameObject;
+            if (model)
+            {
+                model.transform.SetParent(transform);
+                model.transform.localPosition = Vector3.zero;
+                GetComponent<PlayerAnimController>().animator = model.GetComponent<Animator>();
+            }
         }
     }
-
-    //public void OnPhotonInstantiate(PhotonMessageInfo info)
-    //{
-    //    if (photonView.Owner.ActorNumber == info.Sender.ActorNumber)
-    //    {
-    //        info.Sender.TagObject = gameObject;
-    //        DebugCanvas.Instance.AddConsoleLog("Set Player Ref: " + info.Sender.ActorNumber);
-    //    }
-    //}
 }

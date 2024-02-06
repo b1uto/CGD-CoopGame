@@ -1,12 +1,11 @@
 using Photon.Pun;
-using Photon.Realtime;
+using CGD.Networking;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class RoomMenu : Menu
 {
-    [SerializeField] private NetworkManager networkManager;
     [SerializeField] private TextMeshProUGUI roomNameLabel;
     [SerializeField] private GameObject playerRowPrefab;
     [SerializeField] private Transform rowContainer;

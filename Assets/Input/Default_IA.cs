@@ -51,6 +51,33 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
                     ""id"": ""cba82fc5-89d8-49a3-bfc9-7bcb5b02126d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
+                    ""interactions"": ""Press(pressPoint=0.2)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Equip"",
+                    ""type"": ""Button"",
+                    ""id"": ""bc25ba8b-d54b-4a87-8604-46721a8c3413"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=0.25)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Drop"",
+                    ""type"": ""Button"",
+                    ""id"": ""d0db424e-39f6-47ae-a7a2-06b967696167"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=0.25)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""ce8ac013-acf4-43b5-b0f7-c02484e93d4e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 }
@@ -59,7 +86,7 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""a95b4a7b-6a00-46d1-b0e8-ba3edfd002e1"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -132,6 +159,39 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fa8ba41a-f331-472d-bca0-561e9e9a93fa"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""acba0c65-1359-4493-a2b7-8aefedb67b73"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Equip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e9ab3af8-f30b-41ef-93aa-6cb71dba6654"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Drop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +203,9 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
         m_Default_Move = m_Default.FindAction("Move", throwIfNotFound: true);
         m_Default_Look = m_Default.FindAction("Look", throwIfNotFound: true);
         m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
+        m_Default_Equip = m_Default.FindAction("Equip", throwIfNotFound: true);
+        m_Default_Drop = m_Default.FindAction("Drop", throwIfNotFound: true);
+        m_Default_Fire = m_Default.FindAction("Fire", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -207,6 +270,9 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Move;
     private readonly InputAction m_Default_Look;
     private readonly InputAction m_Default_Interact;
+    private readonly InputAction m_Default_Equip;
+    private readonly InputAction m_Default_Drop;
+    private readonly InputAction m_Default_Fire;
     public struct DefaultActions
     {
         private @Default_IA m_Wrapper;
@@ -214,6 +280,9 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Default_Move;
         public InputAction @Look => m_Wrapper.m_Default_Look;
         public InputAction @Interact => m_Wrapper.m_Default_Interact;
+        public InputAction @Equip => m_Wrapper.m_Default_Equip;
+        public InputAction @Drop => m_Wrapper.m_Default_Drop;
+        public InputAction @Fire => m_Wrapper.m_Default_Fire;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -232,6 +301,15 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
+            @Equip.started += instance.OnEquip;
+            @Equip.performed += instance.OnEquip;
+            @Equip.canceled += instance.OnEquip;
+            @Drop.started += instance.OnDrop;
+            @Drop.performed += instance.OnDrop;
+            @Drop.canceled += instance.OnDrop;
+            @Fire.started += instance.OnFire;
+            @Fire.performed += instance.OnFire;
+            @Fire.canceled += instance.OnFire;
         }
 
         private void UnregisterCallbacks(IDefaultActions instance)
@@ -245,6 +323,15 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
+            @Equip.started -= instance.OnEquip;
+            @Equip.performed -= instance.OnEquip;
+            @Equip.canceled -= instance.OnEquip;
+            @Drop.started -= instance.OnDrop;
+            @Drop.performed -= instance.OnDrop;
+            @Drop.canceled -= instance.OnDrop;
+            @Fire.started -= instance.OnFire;
+            @Fire.performed -= instance.OnFire;
+            @Fire.canceled -= instance.OnFire;
         }
 
         public void RemoveCallbacks(IDefaultActions instance)
@@ -267,5 +354,8 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnEquip(InputAction.CallbackContext context);
+        void OnDrop(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
     }
 }

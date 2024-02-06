@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using CGD.Networking;
 using UnityEngine;
 
 public class CreateRoomMenu : Menu
@@ -9,11 +8,10 @@ public class CreateRoomMenu : Menu
 
     public void Btn_CreateRoom() 
     {
-        var networkManager = FindObjectOfType<NetworkManager>();
 
-        if(networkManager && !string.IsNullOrEmpty(inputField.text)) 
+        if(!string.IsNullOrEmpty(inputField.text)) 
         {
-            networkManager.CreateRoom(inputField.text);
+            NetworkManager.CreateRoom(inputField.text);
         }
     }
 

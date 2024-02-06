@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Boots", menuName = "Settings/Input", order = 5)]
+[CreateAssetMenu(fileName = "InputSettings", menuName = "Settings/Input", order = 5)]
 [System.Serializable]
 public class InputSettings : ScriptableObject
 {

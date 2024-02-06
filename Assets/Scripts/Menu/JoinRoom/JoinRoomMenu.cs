@@ -1,11 +1,10 @@
 using Photon.Realtime;
-using System.Collections;
+using CGD.Networking;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class JoinRoomMenu : Menu
 {
-    [SerializeField] private NetworkManager networkManager;
     [SerializeField] private GameObject rowPrefab;
     [SerializeField] private Transform rowContainer;
 
@@ -45,7 +44,7 @@ public class JoinRoomMenu : Menu
         }
     }
 
-    public void JoinRoom(RoomInfo roomInfo) => networkManager.JoinRoom(roomInfo);
+    public void JoinRoom(RoomInfo roomInfo) => NetworkManager.JoinRoom(roomInfo);
 
 
 }

@@ -1,12 +1,10 @@
 using Photon.Pun;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using CGD;
 using UnityEngine;
 
 public class RotateTowardsClient : MonoBehaviourPunCallbacks
 {
-    [Serializable]
+    [System.Serializable]
     public struct Constraints 
     {
         public bool X;
@@ -15,11 +13,18 @@ public class RotateTowardsClient : MonoBehaviourPunCallbacks
     }
 
     [SerializeField] private Constraints constraints;
+    [SerializeField] private Vector3 worldOffset;
 
 
     private void Update()
     {
-        if (!photonView.IsMine)
+        if (worldOffset != Vector3.zero) 
+        {
+            transform.position = transform.parent.position + worldOffset;
+        }
+
+
+        if (/*photonView != null && !photonView.IsMine &&*/ PlayerManager.LocalPlayerInstance != null)
         {
             var dir = transform.position - PlayerManager.LocalPlayerInstance.transform.position;
             var rotationEuler = Quaternion.LookRotation(dir).eulerAngles;
