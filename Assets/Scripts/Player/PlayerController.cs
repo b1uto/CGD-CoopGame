@@ -17,11 +17,16 @@ namespace CGD
         [SerializeField] private float maxPitch;
         [SerializeField] private float minPitch;
         [SerializeField] private Camera mainCamera;
+        [SerializeField] private float smoothTime = 0.3f;
+        [SerializeField] private float smoothVelocity;
 
         private CharacterController characterController; 
         private PlayerInputHandler playerInputHandler;
         
         private float pitchValue;
+        private float pitchValueLastSync;
+        private float pitchValueDelta;
+
         private Vector3 velocity;
         private Vector3 moveVelocity;
 
@@ -39,8 +44,6 @@ namespace CGD
         private void Awake()
         {
             layerMask = LayerMask.GetMask("Interactable");
-            characterController = GetComponent<CharacterController>();
-            playerInputHandler = GetComponent<PlayerInputHandler>();
         }
 
         private void Start()
@@ -49,8 +52,10 @@ namespace CGD
             {
                 GetComponentInChildren<Camera>().enabled = false;
                 GetComponentInChildren<AudioListener>().enabled = false;
-                GetComponent<PlayerInputHandler>().enabled = false;
             }
+
+            characterController = GetComponent<CharacterController>();
+            playerInputHandler = GetComponent<PlayerInputHandler>();
 
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -59,11 +64,13 @@ namespace CGD
 
         private void Update()
         {
-            if (photonView && !photonView.IsMine)
-                return;
-            
-            HandleCharacterRotation();
-            HandleCharacterMovement();
+            if (!photonView.IsMine)
+                HandleClientSync();
+            else
+            {
+                HandleCharacterRotation();
+                HandleCharacterMovement();
+            }
         }
 
         private void FixedUpdate()
@@ -72,6 +79,16 @@ namespace CGD
         }
 
         #region Character Movement
+        private void HandleClientSync() 
+        {
+            var oldPitchValue = mainCamera.transform.localEulerAngles.x;
+            oldPitchValue = (oldPitchValue > 180) ? oldPitchValue - 360 : oldPitchValue;
+
+            var targetPitchValue = Mathf.SmoothDamp(oldPitchValue, pitchValue, ref smoothVelocity, smoothTime);
+            mainCamera.transform.localEulerAngles = new Vector3(targetPitchValue, 0, 0);
+
+            DebugCanvas.Instance.OverrideConsoleLog("pitch value: " + targetPitchValue);
+        }
         private void HandleCharacterRotation() 
         {
             var lookInput = playerInputHandler.LookInput;
@@ -87,11 +104,6 @@ namespace CGD
         }
         private void HandleCharacterMovement()
         {
-            //moveInput.x = Input.GetAxis("Horizontal");
-            //moveInput.z = Input.GetAxis("Vertical");
-
-
-            //moveInput = Vector3.ClampMagnitude(moveInput, 1);
             Vector3 worldInput = transform.TransformVector(playerInputHandler.MoveInput);
 
             //if (/*IsGrounded*/)
@@ -163,8 +175,8 @@ namespace CGD
             if (interactable != null && interactable is IEquippable equippableObj)
             {
                 Drop();
-                var slot = GetComponent<PlayerAnimController>().GetEquipSlot(equippableObj.ItemEquipSlot);
-                equippableObj.Equip(slot);
+                //var slot = GetComponent<PlayerAnimController>().GetEquipSlot(equippableObj.ItemEquipSlot);
+                equippableObj.Equip(photonView.ViewID);
                 rightHandTool = equippableObj;
             }
         }
@@ -195,15 +207,24 @@ namespace CGD
         {
             if (stream.IsWriting)
             {
+                pitchValueDelta = pitchValue - pitchValueLastSync;
+                pitchValueLastSync = pitchValue;
+
                 stream.SendNext(pitchValue);
+                stream.SendNext(pitchValueDelta);
             }
-            else 
+            else
             {
-                pitchValue = (float)stream.ReceiveNext();
-                mainCamera.transform.localEulerAngles = new Vector3(pitchValue, 0, 0);
+                float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
+
+                float networkPitch = (float)stream.ReceiveNext();
+                float networkPitchDelta = (float)stream.ReceiveNext();
+
+                //networkPitch += networkPitchDelta * lag;
+
+                pitchValue = Mathf.Clamp(networkPitch, minPitch, maxPitch);
             }
         }
-
         #endregion
     }
 }   

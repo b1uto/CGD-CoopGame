@@ -45,6 +45,11 @@ public class DebugCanvas : Singleton<DebugCanvas>
         msgs.Enqueue(msg+"\n");
         consoleTMP.text = PrintQueue();
     }
+    public void OverrideConsoleLog(string msg)
+    {
+        consoleTMP.text = msg;
+    }
+
 
 
     public void UpdateInputText(string text)

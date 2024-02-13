@@ -1,77 +1,83 @@
-using System.Collections;
-using System.Collections.Generic;
+using Photon.Pun;
+using System.IO.Pipes;
 using UnityEngine;
 
-public class Torch : MonoBehaviour, IEquippable
+
+namespace CGD
 {
-    [Header("Scene References")]
-    [SerializeField] private GameObject interactionPrompt;
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private Light pointLight;
-    [SerializeField] private EmissionMaterialGlassTorchFadeOut emissiveMat;
-
-    [Header("Settings")]
-    public float intensity;
-
-    [SerializeField] private bool interactable;
-    [SerializeField] private EquipSlot itemEquipSlot;
-
-    private bool flashLightOn = false;
-    private Transform Owner;
-
-    public bool Interactable { get { return interactable; } set { } }
-    public EquipSlot ItemEquipSlot { get { return itemEquipSlot; } set { } }
-    public bool Equipped { get { return Owner; } set { } }
-    public bool Equippable { get { return Owner == null; } set { } }
-
-
-    #region IInteractable Functions
-    public void OnExitFocus()
+    public class Torch : Item
     {
-        interactionPrompt.SetActive(false);
-    }
+        [Header("Settings")]
+        [SerializeField] private float intensity;
+        [SerializeField] private Renderer emissiveMat;
 
-    public void OnFocus()
-    {
-        if(!Equipped)
-            interactionPrompt.SetActive(true);
-    }
-    public void Interact() => ToggleTorch();
-    #endregion
 
-    #region IEquippable Functions
-    public void Equip(Transform slot)
-    {
-        OnExitFocus();
-        rb.isKinematic = true;
+        private bool flashLightOn = false;
+        private Color alphaStart;
 
-        transform.SetParent(slot);
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+        private static Light pointLight;
+        public static Light PointLight { get { return pointLight; } }
 
-        Owner = slot; 
-
-    }
-    public void Unequip()
-    {
-        Owner = null;
-        rb.isKinematic = false;
-        transform.SetParent(null);
-    }
-    #endregion
-    private void ToggleTorch()
-    {
-        flashLightOn = !flashLightOn;
-
-        if (flashLightOn)
+        
+        #region MonoBehaviour
+        private void Awake()
         {
-            pointLight.intensity = intensity;
-            emissiveMat.OnEmission();
+            pointLight = GetComponentInChildren<Light>();
+            alphaStart = emissiveMat.material.color;
         }
-        else
+        #endregion
+
+        #region Interface Function Overrides
+        public override void Interact() => photonView.RPC(nameof(ToggleTorch), RpcTarget.All, flashLightOn);
+        public override void Equip(int viewId) => photonView.RPC(nameof(TorchEquipped), RpcTarget.All, viewId);
+        public override void Unequip() => photonView.RPC(nameof(TorchDropped), RpcTarget.All);
+        #endregion
+
+        #region RPCs
+        [PunRPC]
+        private void TorchEquipped(int viewId)
         {
-            pointLight.intensity = 0.0f;
-            emissiveMat.OffEmission();
+            var view = PhotonView.Find(viewId);
+
+            if (view != null && view.TryGetComponent<PlayerAnimController>(out var animController))
+            {
+                var slot = animController.GetEquipSlot(itemEquipSlot);
+                OnExitFocus();
+                rb.isKinematic = true;
+
+                transform.SetParent(slot);
+                transform.localPosition = Vector3.zero;
+                transform.localRotation = Quaternion.identity;
+
+                Owner = slot;
+            }
         }
+
+        [PunRPC]
+        private void TorchDropped()
+        {
+            transform.SetParent(null);
+            Owner = null;
+            rb.isKinematic = false;
+        }
+
+        [PunRPC]
+        private void ToggleTorch(bool lastFlashLightStatus)
+        {
+            flashLightOn = !lastFlashLightStatus;
+
+            if (flashLightOn)
+            {
+                pointLight.intensity = intensity;
+                emissiveMat.material.SetColor("_EmissionColor", alphaStart * pointLight.intensity);
+            }
+            else
+            {
+                pointLight.intensity = 0.0f;
+                emissiveMat.material.SetColor("_EmissionColor", alphaStart * Color.black);
+            }
+        }
+        #endregion
+
     }
 }

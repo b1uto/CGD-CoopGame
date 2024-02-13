@@ -3,83 +3,70 @@ using UnityEngine;
 
 namespace CGD
 {
-    public class PlayerAnimController : MonoBehaviour
+    public class PlayerAnimController : MonoBehaviourPun, IPunObservable
     {
         public Animator animator;
 
         //TODO change this to be chosen by the host
         [SerializeField] private GameObject modelPrefab;
-
-        private PlayerInputHandler inputHandler;
-
         [SerializeField] private float directionDamp;
 
         [Header("Equipment Slots")]
-        public Transform rightHandSlot;
+        [SerializeField] private Transform rightHandSlot;
+        [SerializeField] private Transform leftHandSlot;
 
-
+        private PlayerInputHandler inputHandler;
 
         private const string moveX = "MoveX";
         private const string moveY = "MoveY";
 
-        private void Awake()
+        private float xVal, yVal;
+
+        private void Start()
         {
             inputHandler = GetComponent<PlayerInputHandler>();
         }
-        // Start is called before the first frame update
-        void Start()
-        {
-            //animator = Instantiate(modelPrefab, transform).GetComponent<Animator>();
-            //var photonView = GetComponentInParent<PhotonView>();
 
-            //if (photonView && photonView.IsMine)
-            //{
-            //    photonView.ObservedComponents.Add(animator);
-            //}
-        }
-
-        // Update is called once per frame
         void Update()
         {
-            if (animator == null || inputHandler == null)
-                return;
-
-            animator.SetFloat(moveX, inputHandler.MoveInput.x, directionDamp, Time.deltaTime);
-            animator.SetFloat(moveY, inputHandler.MoveInput.z, directionDamp, Time.deltaTime);
-        }
-
-        public Transform GetEquipSlot(EquipSlot slot) 
-        {
-            switch (slot) 
+            if (inputHandler != null && photonView.IsMine)
             {
-                case EquipSlot.RightHand: 
-                    return rightHandSlot;
+                xVal = inputHandler.MoveInput.x;
+                yVal = inputHandler.MoveInput.z;
             }
 
-            return null;
+            if (animator)
+            {
+                animator.SetFloat(moveX, xVal, directionDamp, Time.deltaTime);
+                animator.SetFloat(moveY, yVal, directionDamp, Time.deltaTime);
+            }
+        }
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                stream.SendNext(xVal);
+                stream.SendNext(yVal);
+            }
+            else
+            {
+                xVal = (float)stream.ReceiveNext();
+                yVal = (float)stream.ReceiveNext();
+            }
+        }
+
+        public Transform GetEquipSlot(EquipSlot equipSlot)
+        {
+            switch (equipSlot)
+            {
+                case EquipSlot.RightHand:
+                    return rightHandSlot;
+                default:
+                    return leftHandSlot;
+            }
         }
 
 
-        //    public void OnPhotonInstantiate(PhotonMessageInfo info)
-        //    {
-        //#if DEBUGGING
-        //            DebugCanvas.Instance.AddConsoleLog("Calling InitialiseModel RPC");
-        //#endif
-
-        //        InitialiseModel(info.Sender.)
-        //    }
-
-        //    [PunRPC]
-        //    private void InitialiseModel(string goName)
-        //    {
-        //        PhotonView.Find
-        //        var model = GameObject.Find(goName);
-        //        if (model)
-        //        {
-        //            model.transform.SetParent(transform);
-        //            model.transform.localPosition = Vector3.zero;
-        //            GetComponent<PlayerAnimController>().animator = model.GetComponent<Animator>();
-        //        }
-        //    }
     }
 }

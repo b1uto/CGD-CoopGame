@@ -1163,7 +1163,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alias: room
-  networkManager: {fileID: 571279050}
   roomNameLabel: {fileID: 407899973}
   playerRowPrefab: {fileID: 7090809147167305046, guid: 90e61e7911071fd4e9a6f8d9ade77193,
     type: 3}
@@ -1821,7 +1820,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   feedbackText: {fileID: 442219600}
-  maxPlayersPerRoom: 4
 --- !u!1 &616707762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2375,7 +2373,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   alias: joinroom
-  networkManager: {fileID: 571279050}
   rowPrefab: {fileID: 7090809147167305046, guid: 8756c1bfdbe900c49ad69a01a098904d,
     type: 3}
   rowContainer: {fileID: 157574945}

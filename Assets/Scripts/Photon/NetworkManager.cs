@@ -75,6 +75,15 @@ namespace CGD.Networking
                 PhotonNetwork.GameVersion = this.gameVersion;
             }
         }
+        private void Update()
+        {
+#if DEBUGGING
+            if (Input.GetKeyDown(KeyCode.I)) 
+            {
+                CreateDebugRoom();
+            }
+#endif
+        }
         #endregion
 
         #region Public Methods
@@ -109,6 +118,17 @@ namespace CGD.Networking
             feedbackText.text = System.Environment.NewLine + message;
         }
 
+        private static void CreateDebugRoom() 
+        {
+            PhotonNetwork.CreateRoom("DEBUG_ROOM", new RoomOptions
+            {
+                MaxPlayers = 1,
+                EmptyRoomTtl = 0,
+                CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false),
+                CustomRoomPropertiesForLobby = RoomProperties.GetLobbyProperties()
+            });
+            PhotonNetwork.LoadLevel(1);
+        }
         public static void CreateRoom(string roomName)
         {
             if (!string.IsNullOrEmpty(roomName))

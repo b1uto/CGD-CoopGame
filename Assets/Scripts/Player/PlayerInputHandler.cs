@@ -59,6 +59,13 @@ namespace CGD
         #endregion
 
         #region Setup
+        private void Awake()
+        {
+            var filePath = System.IO.Path.Combine("Data", "Settings");
+            settings = Resources.Load<InputSettings>(System.IO.Path.Combine(filePath, "InputSettings"));
+        }
+
+
         private void Start()
         {
             playerInput = new Default_IA();

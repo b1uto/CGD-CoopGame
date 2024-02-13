@@ -12,20 +12,15 @@ public class MenuManager : Singleton<MenuManager>
     private StringEvent OnMenuChanged = new StringEvent();
     private string currentMenu = "";
 
-    protected void Awake()
+    private void Start()
     {
-        base.Awake();
-
-        foreach (var menu in menus) 
+        foreach (var menu in menus)
         {
             OnMenuChanged.AddListener(menu.OnMenuChanged);
         }
-    }
-
-    private void Start()
-    {
         OpenMenu(0);
         mainCanvas.enabled = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
 

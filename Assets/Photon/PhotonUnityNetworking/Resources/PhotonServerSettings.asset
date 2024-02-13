@@ -41,6 +41,10 @@ MonoBehaviour:
   - RespawnSpaceship
   - InstantiateModel
   - InitialiseModel
+  - InstantiateCharacter
+  - ToggleTorch
+  - TorchDropped
+  - TorchEquipped
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
