@@ -40,6 +40,12 @@ namespace CGD
         //Equipment
         private IEquippable rightHandTool;
 
+
+        public Vector2 GroundVelocity 
+        {
+            get { return new Vector2(velocity.x, velocity.z); }
+        }
+
         #region Setup
         private void Awake()
         {
