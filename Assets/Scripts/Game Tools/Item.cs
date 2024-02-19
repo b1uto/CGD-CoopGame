@@ -67,11 +67,12 @@ namespace CGD
         [SerializeField] protected bool interactable;
         [SerializeField] protected EquipSlot itemEquipSlot;
 
-        protected Transform Owner;
+        protected int owner;
+
         public bool Interactable { get { return interactable; } set { } }
         public EquipSlot ItemEquipSlot { get { return itemEquipSlot; } set { } }
-        public bool Equipped { get { return Owner; } set { } }
-        public bool Equippable { get { return Owner == null; } set { } }
+        public bool Equipped { get { return transform.parent != null; } set { } }
+        public bool Equippable { get { return transform.parent == null; } set { } }
         #endregion
 
         #region IInteractable Functions
@@ -84,7 +85,7 @@ namespace CGD
             if (!Equipped)
                 interactionPrompt.SetActive(true);
         }
-        public virtual void Interact() { }
+        public virtual void Interact(int viewId) { }
         #endregion
 
         #region IEquippable Functions
@@ -136,6 +137,8 @@ namespace CGD
             {
                 if (!Equipped)
                 {
+                    if (networkPosition == null || networkRotation == null) return;
+
                     rb.position = Vector3.Lerp(rb.position, networkPosition, Time.fixedDeltaTime * moveSpeed);
                     rb.rotation = Quaternion.Lerp(rb.rotation, networkRotation, Time.fixedDeltaTime * rotationSpeed);
 

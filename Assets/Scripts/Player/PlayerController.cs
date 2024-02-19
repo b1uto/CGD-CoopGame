@@ -174,7 +174,7 @@ namespace CGD
         public void Interact() 
         {
             if (interactable != null) 
-                interactable.Interact();
+                interactable.Interact(photonView.ViewID);
         }
         public void Equip()
         {
@@ -200,7 +200,7 @@ namespace CGD
         public void Fire()
         {
             if (rightHandTool != null)
-                rightHandTool.Interact();
+                rightHandTool.Interact(photonView.ViewID);
         }
 
 

@@ -18,6 +18,6 @@ public interface IInteractable
     /// <summary>
     /// Begin Interaction
     /// </summary>
-    public abstract void Interact();
+    public abstract void Interact(int viewId);
 
 }

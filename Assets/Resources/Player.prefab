@@ -862,7 +862,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 0}
   modelPrefab: {fileID: 0}
-  directionDamp: 0.2
+  directionDamp: 0.1
   rightHandSlot: {fileID: 323150451819917679}
   leftHandSlot: {fileID: 2816372806446037345}
 --- !u!114 &1119106115301416959

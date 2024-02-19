@@ -28,7 +28,11 @@ namespace CGD
         #endregion
 
         #region Interface Function Overrides
-        public override void Interact() => photonView.RPC(nameof(ToggleTorch), RpcTarget.All, flashLightOn);
+        public override void Interact(int viewId) 
+        {
+            if((Equipped && owner == viewId) || !Equipped)
+                photonView.RPC(nameof(ToggleTorch), RpcTarget.All, flashLightOn); 
+        }
         public override void Equip(int viewId) => photonView.RPC(nameof(TorchEquipped), RpcTarget.All, viewId);
         public override void Unequip() => photonView.RPC(nameof(TorchDropped), RpcTarget.All);
         #endregion
@@ -49,7 +53,7 @@ namespace CGD
                 transform.localPosition = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
 
-                Owner = slot;
+                owner = viewId;
             }
         }
 
@@ -57,7 +61,7 @@ namespace CGD
         private void TorchDropped()
         {
             transform.SetParent(null);
-            Owner = null;
+            owner = -1;
             rb.isKinematic = false;
         }
 

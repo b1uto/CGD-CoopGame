@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using Fusion;
 using Photon.Pun;
 using TMPro;
 using Unity.VisualScripting;

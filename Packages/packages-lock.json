@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.brunomikoski.animationsequencer": {
+      "version": "0.5.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "com.unity.animation.rigging": {
       "version": "1.2.1",
       "depth": 0,
@@ -96,7 +103,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.mono-cecil": {
-      "version": "1.10.2",
+      "version": "1.11.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -121,7 +128,7 @@
       }
     },
     "com.unity.render-pipelines.high-definition": {
-      "version": "14.0.9",
+      "version": "14.0.10",
       "depth": 0,
       "source": "builtin",
       "dependencies": {

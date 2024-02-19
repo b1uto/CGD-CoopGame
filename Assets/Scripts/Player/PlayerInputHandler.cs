@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
 
 namespace CGD
 {
@@ -108,7 +109,8 @@ namespace CGD
 
         private void OnInteractInput(InputAction.CallbackContext context)
         {
-            GetComponent<PlayerController>().Interact();
+            if(context.interaction is TapInteraction) 
+                GetComponent<PlayerController>().Interact();
         }
         private void OnEquipInput(InputAction.CallbackContext context)
         {
