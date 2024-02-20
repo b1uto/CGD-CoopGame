@@ -5,7 +5,7 @@ using UnityEngine;
 public class Menu : MonoBehaviour
 {
     public string Alias { get { return alias; } }   
-    [SerializeField] private string alias;
+    [SerializeField] protected string alias;
 
     /// <summary>
     /// Call on all child classes to initialise buttons.

@@ -24,6 +24,10 @@ namespace CGD
         "male03"
         };
 
+
+        private List<int> collectedClues = new List<int>();
+
+
         private void Awake()
         {
             var tmp = GetComponentInChildren<TextMeshPro>();
@@ -44,14 +48,12 @@ namespace CGD
         {
             if (photonView.IsMine)
             {
-
                 LocalPlayerInstance = this.gameObject;
 
+                if (MenuManager.Instance != null)
+                    MenuManager.Instance.OnMenuClosed.AddListener(MenuClosed);
 
-                //var viewId = PhotonNetwork.Instantiate(Path.Combine("Models", GameManager.GetRandomModelName()),
-                //    transform.position, Quaternion.identity).GetPhotonView().ViewID;
 
-                //photonView.RPC("InstantiateCharacter", RpcTarget.AllBuffered, viewId);
 
                 var modelPath = Path.Combine("Models", GetRandomModelName());
                 photonView.RPC(nameof(InstantiateCharacter), RpcTarget.AllBuffered, photonView.ViewID, modelPath);
@@ -83,5 +85,25 @@ namespace CGD
         {
             return modelNames[Random.Range(0, modelNames.Length)];
         }
+        
+
+        public void GetClue(int clueId) 
+        {
+            collectedClues.Add(clueId);
+            if(photonView.IsMine) 
+            {
+                MenuManager.Instance.OpenMenu("clue");
+                GetComponent<PlayerInputHandler>().DisablePlayerInput();
+            }
+        }
+
+        public void MenuClosed(string menu) 
+        {
+            if (photonView.IsMine && menu == "clue")
+            {
+                GetComponent<PlayerInputHandler>().EnablePlayerInput();
+            }
+        }
+
     }
 }

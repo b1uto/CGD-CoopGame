@@ -62,8 +62,6 @@ namespace CGD
 
             characterController = GetComponent<CharacterController>();
             playerInputHandler = GetComponent<PlayerInputHandler>();
-
-            Cursor.lockState = CursorLockMode.Locked;
         }
         #endregion
 

@@ -14,6 +14,7 @@ using Photon.Realtime;
 using Photon.Pun;
 using TMPro;
 using UnityEngine.SceneManagement;
+using ExitGames.Client.Photon;
 
 #pragma warning disable 649
 
@@ -32,10 +33,6 @@ namespace CGD.Networking
 
         public delegate void NoParamEvent();
         public static event NoParamEvent OnPlayersUpdated;
-
-
-        public static event NoParamEvent OnLoading; //Possibly Remove and use ajax loader instead of text.
-
         #endregion
 
         #region Private Serializable Fields
@@ -43,6 +40,7 @@ namespace CGD.Networking
         [SerializeField]
         private TextMeshProUGUI feedbackText;
 
+        [SerializeField] private bool Debugging;
         #endregion
 
         #region Private Fields
@@ -65,7 +63,6 @@ namespace CGD.Networking
         void Awake()
         {
             PhotonNetwork.AutomaticallySyncScene = true;
-
             {
                 LogFeedback("Connecting...");
 
@@ -74,15 +71,6 @@ namespace CGD.Networking
                 PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = this.gameVersion;
             }
-        }
-        private void Update()
-        {
-#if DEBUGGING
-            if (Input.GetKeyDown(KeyCode.I)) 
-            {
-                CreateDebugRoom();
-            }
-#endif
         }
         #endregion
 
@@ -96,8 +84,11 @@ namespace CGD.Networking
 #if DEBUGGING
             Debug.Log("Loading Game Scene");
 #endif
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+            PhotonNetwork.RaiseEvent(GameProperties.LoadingLevelEvent, 1, raiseEventOptions, SendOptions.SendReliable);
+
             RoomProperties.SetGameStarted(true);
-            PhotonNetwork.LoadLevel(1);
+            //PhotonNetwork.LoadLevel(1);
         }
 
         /// <summary>
@@ -198,6 +189,7 @@ namespace CGD.Networking
 #endif
                 LogFeedback("Connected to Master");
                 PhotonNetwork.JoinLobby();
+
             }
         }
 
@@ -205,6 +197,7 @@ namespace CGD.Networking
         {
 #if DEBUGGING
             Debug.Log("Joined Lobby");
+            if (Debugging) { CreateDebugRoom(); }
 #endif
 
             //TODO connect to auth logins

@@ -19,7 +19,6 @@ namespace CGD
 
 
         private Vector2 moveInput;
-
         /// <summary>
         /// Used for smoothing out movement input.
         /// </summary>
@@ -88,13 +87,6 @@ namespace CGD
         }
         #endregion
 
-        private void Update()
-        {
-            DebugCanvas.Instance.UpdateInputText(
-                $"Move: {moveInput}" +
-                $"\nLook: {lookInput}");
-        }
-
         #region Input
         private void OnMoveInput(InputAction.CallbackContext context)
         {
@@ -109,7 +101,7 @@ namespace CGD
 
         private void OnInteractInput(InputAction.CallbackContext context)
         {
-            if(context.interaction is TapInteraction) 
+            if(context.interaction is PressInteraction) 
                 GetComponent<PlayerController>().Interact();
         }
         private void OnEquipInput(InputAction.CallbackContext context)
@@ -124,6 +116,23 @@ namespace CGD
         {
             GetComponent<PlayerController>().Fire();
         }
+        #endregion
+
+        #region Toggle Input
+        public void DisablePlayerInput()
+        {
+            playerInput.Disable();
+            moveInput = moveVelocity = lookInput = movement3 = Vector3.zero;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        public void EnablePlayerInput()
+        {
+            playerInput.Enable();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         #endregion
     }
 }

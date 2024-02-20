@@ -4,12 +4,15 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using CGD;
 using System.IO;
+using ExitGames.Client.Photon;
 
 namespace CGD
 {
-    public class GameManager : SingletonPunCallbacks<GameManager>
+    public class GameManager : SingletonPunCallbacks<GameManager>, IOnEventCallback
     {
         [SerializeField] private GameObject playerPrefab;
+
+        private int loadedPlayers = 0;
 
         private void Start()
         {
@@ -23,6 +26,11 @@ namespace CGD
             {
                 GenerateRoom();
             }
+
+            //Eventually put into coroutine
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+            PhotonNetwork.RaiseEvent(GameProperties.PlayerLoadedEvent, null, raiseEventOptions, SendOptions.SendReliable);
         }
 
         private void Update()
@@ -100,6 +108,32 @@ namespace CGD
 
         #endregion
 
+        #region Interaction
+        public void ClueCollected(int playerViewId, int clueId)
+        {
+
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            if (!PhotonNetwork.IsMasterClient)
+                return;
+
+            byte eventCode = photonEvent.Code;
+
+            if (eventCode == GameProperties.PlayerLoadedEvent)
+            {
+                loadedPlayers++;
+
+                if(loadedPlayers >= PhotonNetwork.CurrentRoom.PlayerCount)
+                {
+                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+                    PhotonNetwork.RaiseEvent(GameProperties.AllPlayersLoadedEvent, null, raiseEventOptions, SendOptions.SendReliable);
+                }
+            }
+        }
+
+        #endregion
 
     }
 }

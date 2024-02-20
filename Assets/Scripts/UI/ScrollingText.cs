@@ -7,6 +7,7 @@ public class ScrollingText : MonoBehaviour
 {
     [SerializeField]private float speed;
     [SerializeField]private string message;
+    [SerializeField] private GameObject goToEnable;
 
     private TextMeshProUGUI tmp;
 
@@ -18,10 +19,15 @@ public class ScrollingText : MonoBehaviour
     {
         StartCoroutine(TypeText());
     }
+
+    public void SetMessage(string msg) => message = msg;
     IEnumerator TypeText()
     {
         if (tmp == null)
             tmp = GetComponent<TextMeshProUGUI>();
+
+        if (goToEnable != null)
+            goToEnable.SetActive(false);
         
         tmp.text = "";
 
@@ -29,6 +35,12 @@ public class ScrollingText : MonoBehaviour
         {
             tmp.text += letter; 
             yield return new WaitForSeconds(speed);
+        }
+
+        if(goToEnable != null) 
+        {
+            yield return new WaitForSeconds(1);
+            goToEnable.SetActive(true);
         }
     }
 }
