@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class Singleton<T> : MonoBehaviour where T : Component
@@ -11,7 +12,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
     /// Toggle whether to destroy this object when loading between scenes.
     /// </summary>
     [SerializeField] private bool _persistant;
-    private static T _instance;
+    protected static T _instance;
 
     protected void Awake()
     {

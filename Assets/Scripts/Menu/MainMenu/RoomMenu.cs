@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class RoomMenu : Menu
+public class RoomMenu : MenuPanel
 {
     [SerializeField] private TextMeshProUGUI roomNameLabel;
     [SerializeField] private GameObject playerRowPrefab;
@@ -20,13 +20,11 @@ public class RoomMenu : Menu
 
     private void OnDestroy()
     {
-        NetworkManager.OnPlayersUpdated += UpdateRoomMenu;
+        NetworkManager.OnPlayersUpdated -= UpdateRoomMenu;
     }
 
-    public override void OnMenuChanged(string newMenuAlias)
+    private void OnEnable()
     {
-        base.OnMenuChanged(newMenuAlias);
-
         UpdateRoomMenu();
     }
 

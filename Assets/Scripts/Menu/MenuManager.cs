@@ -1,32 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using CGD.Events;
-using Unity.Burst.CompilerServices;
+
+[System.Serializable]
+public class Menu 
+{
+    public string alias;
+    public MenuPanel panel;    
+}
 
 public class MenuManager : Singleton<MenuManager>
 {
     [Header("Manager Settings")]
-    [SerializeField] private Menu[] menus;
-    [SerializeField] private Canvas mainCanvas;
-    [SerializeField] private bool openFirstMenu = true;
+    [SerializeField] protected Menu[] menus;
+    [SerializeField] protected Canvas mainCanvas;
+    [SerializeField] protected bool openFirstMenu = true;
 
-    private StringEvent OnMenuChanged = new StringEvent();
-    public StringEvent OnMenuClosed = new StringEvent();
-
-    private string currentMenu = "";
+    protected StringEvent OnMenuPanelChanged = new StringEvent();
+    protected string currentMenu = "";
 
 
-
-    private void Start()
+    public void Start()
     {
         foreach (var menu in menus)
         {
-            OnMenuChanged.AddListener(menu.OnMenuChanged);
+            OnMenuPanelChanged.AddListener((x) =>
+            {
+                menu.panel.TogglePanel(x == menu.alias);
+            });
+
+            menu.panel.gameObject.SetActive(false);
         }
         
         if(openFirstMenu)
             OpenMenu(0);
+
         
         mainCanvas.enabled = true;
         Cursor.lockState = CursorLockMode.None;
@@ -37,25 +44,17 @@ public class MenuManager : Singleton<MenuManager>
     {
         if(index < menus.Length) 
         {
-            OpenMenu(menus[index].Alias);
+            OpenMenu(menus[index].alias);
         }
     }
     public void OpenMenu(string alias) 
     {
-        if(alias != currentMenu) 
+        if(alias != currentMenu)
         {
-            OnMenuChanged.Invoke(alias);
             currentMenu = alias;
+            OnMenuPanelChanged.Invoke(alias);
         }
     }
-
-    public void CloseMenu() 
-    {
-        OnMenuClosed?.Invoke(currentMenu);
-        currentMenu = "";
-        OnMenuChanged?.Invoke("");
-    }
-
 
 
 }

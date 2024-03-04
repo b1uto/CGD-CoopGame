@@ -3,30 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CluePanel : Menu
+public class CluePanel : MenuPanel
 {
     public AnimationSequencerController animSeqController;
 
-    private string newAlias;
-
-    public override void OnMenuChanged(string newMenuAlias)
+    public override void TogglePanel(bool showPanel)
     {
-        newAlias = newMenuAlias;
-
         //TODO update to include animations/transitions
-        if (gameObject.activeInHierarchy && alias != newMenuAlias)
+        if (showPanel)
         {
-            animSeqController.PlayBackwards();
-
-        }
-        else if (alias == newMenuAlias)
-        {
-            animSeqController.SetPlayType(AnimationSequencerController.PlayType.Forward);
             gameObject.SetActive(true);
-            animSeqController.Play();
+            animSeqController.PlayForward();
         }
-
+        else if (gameObject.activeInHierarchy)
+        {
+            animSeqController.PlayBackwards(true, () => gameObject.SetActive(false));
+        }
     }
 
-    public void OnSequenceFinished() => gameObject.SetActive(alias == newAlias);
+    //private void OnSequenceFinished() => gameObject.SetActive(false);
 }

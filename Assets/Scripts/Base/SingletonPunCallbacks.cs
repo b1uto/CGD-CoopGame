@@ -12,7 +12,7 @@ public class SingletonPunCallbacks<T> : MonoBehaviourPunCallbacks where T : Comp
     [SerializeField] private bool _persistant;
     private static T _instance;
 
-    protected void Awake()
+    protected virtual void Awake()
     {
         if (Instance != null)
         {

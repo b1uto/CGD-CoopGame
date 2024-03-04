@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 8621166dcf204f44abc84f0536668602
+  - enabled: 1
+    path: Assets/Scenes/MansionGreyBox.unity
+    guid: 18b96eb52833b2947ad793d43b1b6130
   m_configObjects: {}

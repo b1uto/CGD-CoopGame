@@ -64,7 +64,10 @@ namespace CGD
             var filePath = System.IO.Path.Combine("Data", "Settings");
             settings = Resources.Load<InputSettings>(System.IO.Path.Combine(filePath, "InputSettings"));
         }
-
+        private void OnEnable()
+        {
+            if (playerInput != null) playerInput.Enable();
+        }
 
         private void Start()
         {
@@ -75,12 +78,9 @@ namespace CGD
             playerInput.Default.Equip.performed += OnEquipInput;
             playerInput.Default.Drop.performed += OnDropInput;
             playerInput.Default.Fire.performed += OnFireInput;
-            playerInput.Enable();
+            playerInput.Disable();
         }
-        private void OnEnable()
-        {
-            if (playerInput != null) playerInput.Enable();
-        }
+       
         private void OnDisable()
         {
             if (playerInput != null) playerInput.Disable();

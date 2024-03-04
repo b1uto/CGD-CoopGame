@@ -11,7 +11,6 @@ namespace CGD
     {
         public static GameObject LocalPlayerInstance;
 
-
         /// <summary>
         /// TODO store elsewhere in Item Collection. Randomise if player has not chosen avatar.
         /// </summary>
@@ -39,21 +38,26 @@ namespace CGD
             if (photonView.IsMine)
             {
                 gameObject.AddComponent<PlayerInputHandler>();
+                GameManager.OnGameStateChanged += OnGameStateChanged;
             }
 
             DontDestroyOnLoad(gameObject);
         }
+
+        private void OnDestroy()
+        {
+            if (photonView.IsMine)
+            {
+                GameManager.OnGameStateChanged -= OnGameStateChanged;
+            }
+        }
+
 
         private void Start()
         {
             if (photonView.IsMine)
             {
                 LocalPlayerInstance = this.gameObject;
-
-                if (MenuManager.Instance != null)
-                    MenuManager.Instance.OnMenuClosed.AddListener(MenuClosed);
-
-
 
                 var modelPath = Path.Combine("Models", GetRandomModelName());
                 photonView.RPC(nameof(InstantiateCharacter), RpcTarget.AllBuffered, photonView.ViewID, modelPath);
@@ -97,13 +101,19 @@ namespace CGD
             }
         }
 
-        public void MenuClosed(string menu) 
+        private void OnGameStateChanged(GameState state) 
         {
-            if (photonView.IsMine && menu == "clue")
+            switch(state) 
             {
-                GetComponent<PlayerInputHandler>().EnablePlayerInput();
+                case GameState.Start:
+                    GetComponent<PlayerInputHandler>().EnablePlayerInput(); 
+                    break;
+                case GameState.Meeting:
+                    GetComponent<PlayerInputHandler>().DisablePlayerInput();
+                    GameManager.Instance.EvidenceBoard.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
+                    break;
             }
-        }
+        }   
 
     }
 }

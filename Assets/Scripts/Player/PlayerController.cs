@@ -24,8 +24,7 @@ namespace CGD
         private PlayerInputHandler playerInputHandler;
         
         private float pitchValue;
-        private float pitchValueLastSync;
-        private float pitchValueDelta;
+
 
         private Vector3 velocity;
         private Vector3 moveVelocity;
@@ -90,8 +89,6 @@ namespace CGD
 
             var targetPitchValue = Mathf.SmoothDamp(oldPitchValue, pitchValue, ref smoothVelocity, smoothTime);
             mainCamera.transform.localEulerAngles = new Vector3(targetPitchValue, 0, 0);
-
-            DebugCanvas.Instance.OverrideConsoleLog("pitch value: " + targetPitchValue);
         }
         private void HandleCharacterRotation() 
         {
@@ -211,6 +208,24 @@ namespace CGD
         {
             if (stream.IsWriting)
             {
+                stream.SendNext(pitchValue);
+            }
+            else
+            {
+                float networkPitch = (float)stream.ReceiveNext();
+                pitchValue = Mathf.Clamp(networkPitch, minPitch, maxPitch);
+            }
+        }
+        #endregion
+    }
+}
+
+
+/*
+  public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
                 pitchValueDelta = pitchValue - pitchValueLastSync;
                 pitchValueLastSync = pitchValue;
 
@@ -224,11 +239,6 @@ namespace CGD
                 float networkPitch = (float)stream.ReceiveNext();
                 float networkPitchDelta = (float)stream.ReceiveNext();
 
-                //networkPitch += networkPitchDelta * lag;
-
                 pitchValue = Mathf.Clamp(networkPitch, minPitch, maxPitch);
             }
-        }
-        #endregion
-    }
-}   
+        }*/

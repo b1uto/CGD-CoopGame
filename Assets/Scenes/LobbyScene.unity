@@ -972,7 +972,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &181572231
 RectTransform:
@@ -1148,9 +1148,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9faccd2a8e511449bae8652d9d582f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.0001
+  OnFinishedScrolling:
+    m_PersistentCalls:
+      m_Calls: []
+  speed: 0.01
   message: Loading Case...
-  goToEnable: {fileID: 0}
+  animateElipsis: 0
 --- !u!114 &204191443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1415,7 +1418,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee300bb39b99ed742a17a1a3ced70cf1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alias: room
   roomNameLabel: {fileID: 407899973}
   playerRowPrefab: {fileID: 7090809147167305046, guid: 90e61e7911071fd4e9a6f8d9ade77193,
     type: 3}
@@ -1940,7 +1942,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5388a0f889f7638428246efd6cf8c122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alias: main
 --- !u!114 &520290355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2626,7 +2627,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 007fe60025b8292468648dc40f61c2fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alias: joinroom
   rowPrefab: {fileID: 7090809147167305046, guid: 8756c1bfdbe900c49ad69a01a098904d,
     type: 3}
   rowContainer: {fileID: 157574945}
@@ -3360,11 +3360,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _persistant: 0
   menus:
-  - {fileID: 2049961939}
-  - {fileID: 520290354}
-  - {fileID: 1529353074}
-  - {fileID: 905211358}
-  - {fileID: 338263542}
+  - alias: loading
+    panel: {fileID: 2049961939}
+  - alias: main
+    panel: {fileID: 520290354}
+  - alias: createroom
+    panel: {fileID: 1529353074}
+  - alias: joinroom
+    panel: {fileID: 905211358}
+  - alias: room
+    panel: {fileID: 338263542}
   mainCanvas: {fileID: 1248359293}
   openFirstMenu: 1
 --- !u!114 &1248359291
@@ -4372,7 +4377,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 942b3f02370c1a245a1a64a0b7fac798, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alias: createroom
   inputField: {fileID: 1494981742}
 --- !u!1 &1599279263
 GameObject:
@@ -4875,7 +4879,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1778757266}
-  - component: {fileID: 1778757265}
   - component: {fileID: 1778757264}
   m_Layer: 0
   m_Name: SceneLoader
@@ -4896,102 +4899,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 585e82fa5eab7284da2f8ca3cde1a511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  show:
+    MethodName: FadeIn
+    DisplayName: 
+  hide:
+    MethodName: FadeOut
+    DisplayName: 
   levelPrompts:
   - loading menu
   - Loading Case...
-  loadingLabel: {fileID: 204191442}
---- !u!114 &1778757265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778757263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c10d422b52559da41aa9676770a8fc65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animationSteps:
-  - rid: 8411904313909051417
-  - rid: 8411904313909051414
-  - rid: 8411904313909051416
-  updateType: 0
-  timeScaleIndependent: 0
-  autoplayMode: 2
-  startPaused: 0
-  playbackSpeed: 1
-  playType: 1
-  loops: 0
-  loopType: 0
-  autoKill: 1
-  onStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  onFinishedEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1778757264}
-        m_TargetAssemblyTypeName: SceneLoader, Assembly-CSharp
-        m_MethodName: FinishLoad
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onProgressEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  progress: -1
-  references:
-    version: 2
-    RefIds:
-    - rid: 8411904313909051414
-      type: {class: DOTweenAnimationStep, ns: BrunoMikoski.AnimationSequencer, asm: BrunoMikoski.AnimationSequencer}
-      data:
-        delay: 0
-        flowType: 0
-        target: {fileID: 1079545216}
-        duration: 0.5
-        loopCount: 0
-        loopType: 0
-        actions:
-        - rid: 8411904313909051415
-    - rid: 8411904313909051415
-      type: {class: FadeGraphicDOTweenAction, ns: BrunoMikoski.AnimationSequencer,
-        asm: BrunoMikoski.AnimationSequencer}
-      data:
-        direction: 0
-        ease:
-          ease: 7
-          curve:
-            serializedVersion: 2
-            m_Curve: []
-            m_PreInfinity: 2
-            m_PostInfinity: 2
-            m_RotationOrder: 4
-        isRelative: 0
-        alpha: 1
-    - rid: 8411904313909051416
-      type: {class: SetGameObjectActiveStep, ns: BrunoMikoski.AnimationSequencer,
-        asm: BrunoMikoski.AnimationSequencer}
-      data:
-        delay: 0
-        flowType: 0
-        targetGameObject: {fileID: 204191440}
-        active: 1
-    - rid: 8411904313909051417
-      type: {class: SetGameObjectActiveStep, ns: BrunoMikoski.AnimationSequencer,
-        asm: BrunoMikoski.AnimationSequencer}
-      data:
-        delay: 0
-        flowType: 0
-        targetGameObject: {fileID: 181572227}
-        active: 1
+  canvas: {fileID: 181572227}
+  backgroundImg: {fileID: 1079545218}
+  loadingTMP: {fileID: 204191442}
 --- !u!4 &1778757266
 Transform:
   m_ObjectHideFlags: 0
@@ -5596,7 +5515,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5388a0f889f7638428246efd6cf8c122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alias: loading
 --- !u!224 &2049961940
 RectTransform:
   m_ObjectHideFlags: 0

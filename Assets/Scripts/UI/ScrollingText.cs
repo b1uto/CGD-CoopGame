@@ -1,46 +1,71 @@
 using System.Collections;
+using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 
 public class ScrollingText : MonoBehaviour
 {
+    public UnityEvent OnFinishedScrolling;
+    
     [SerializeField]private float speed;
     [SerializeField]private string message;
-    [SerializeField] private GameObject goToEnable;
+    [SerializeField]private bool animateElipsis;
 
-    private TextMeshProUGUI tmp;
+    private TextMeshProUGUI textTMP;
+    private Coroutine coroutine;
+
 
     private void Awake()
     {
-        tmp = GetComponent<TextMeshProUGUI>();
+        textTMP = GetComponent<TextMeshProUGUI>();
     }
     private void OnEnable()
     {
         StartCoroutine(TypeText());
     }
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
 
     public void SetMessage(string msg) => message = msg;
     IEnumerator TypeText()
     {
-        if (tmp == null)
-            tmp = GetComponent<TextMeshProUGUI>();
+        if (textTMP == null)
+            textTMP = GetComponent<TextMeshProUGUI>();
 
-        if (goToEnable != null)
-            goToEnable.SetActive(false);
-        
-        tmp.text = "";
+        var sb = new StringBuilder();
 
         foreach (char letter in message.ToCharArray())
         {
-            tmp.text += letter; 
-            yield return new WaitForSeconds(speed);
+            sb.Append(letter);
+            textTMP.text = sb.ToString();
+            yield return new WaitForSecondsRealtime(speed);
         }
 
-        if(goToEnable != null) 
+        OnFinishedScrolling?.Invoke();
+
+        int dots = 0;
+        
+        while (animateElipsis) 
         {
-            yield return new WaitForSeconds(1);
-            goToEnable.SetActive(true);
+            if (dots < 3)
+            {
+                dots++;
+                sb.Append('.');
+            }
+            else 
+            {
+                dots = 0;
+                sb.Length -= 3;
+            }
+
+            textTMP.text = sb.ToString();
+            yield return new WaitForSecondsRealtime(speed);
         }
+
+
     }
 }

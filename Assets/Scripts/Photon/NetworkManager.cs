@@ -85,7 +85,7 @@ namespace CGD.Networking
             Debug.Log("Loading Game Scene");
 #endif
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-            PhotonNetwork.RaiseEvent(GameProperties.LoadingLevelEvent, 1, raiseEventOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(GameSettings.PunLoadScene, 1, raiseEventOptions, SendOptions.SendReliable);
 
             RoomProperties.SetGameStarted(true);
             //PhotonNetwork.LoadLevel(1);
@@ -146,8 +146,6 @@ namespace CGD.Networking
         {
             if (roomInfo.CustomProperties.TryGetValue(RoomProperties.GameStarted, out object GameStarted) && (bool)GameStarted)
             {
-                //Game Has Already Started
-                // PhotonNetwork.IsMessageQueueRunning = false;
                 PlayerPrefs.SetString(RoomProperties.RoomKey, roomInfo.Name);
                 SceneManager.LoadScene(1);
             }

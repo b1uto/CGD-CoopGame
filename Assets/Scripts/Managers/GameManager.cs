@@ -1,21 +1,64 @@
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.SceneManagement;
-using UnityEngine;
-using CGD;
-using System.IO;
 using ExitGames.Client.Photon;
+using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
+using System.Collections;
+using TMPro;
 
 namespace CGD
 {
+    public enum GameState
+    {
+        Loading = 0,
+        Countdown = 1,
+        Start = 2,
+        Meeting = 3
+    }
+
     public class GameManager : SingletonPunCallbacks<GameManager>, IOnEventCallback
     {
+        /* delegates */
+        public delegate void GameStateCallback(GameState state);
+        public static GameStateCallback OnGameStateChanged;
+
+
         [SerializeField] private GameObject playerPrefab;
 
+        private GameSettings gameSettings;
         private int loadedPlayers = 0;
 
-        private void Start()
+        private GameState _gameState;
+        private EvidenceBoard evidenceBoard;
+
+        /* Properties */
+        public GameState GameState
         {
+            get 
+            { 
+                return _gameState;
+            }
+            private set 
+            {
+                _gameState = value;
+                OnGameStateChanged?.Invoke(value);
+            }
+        }
+
+
+        public GameSettings GameSettings { get { return gameSettings; } }
+        public EvidenceBoard EvidenceBoard { get { return evidenceBoard; } }
+
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            //TODO pass through custom game settings
+            var filePath = System.IO.Path.Combine("Data", "Settings");
+            gameSettings = Resources.Load<GameSettings>(System.IO.Path.Combine(filePath, "GameSettings"));
+
+
             if (PhotonNetwork.CurrentRoom != null)
                 InstantiateNewPlayer();
             else
@@ -27,10 +70,12 @@ namespace CGD
                 GenerateRoom();
             }
 
-            //Eventually put into coroutine
+            //TODO temporary
+            evidenceBoard = FindObjectOfType<EvidenceBoard>();  
 
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-            PhotonNetwork.RaiseEvent(GameProperties.PlayerLoadedEvent, null, raiseEventOptions, SendOptions.SendReliable);
+            //TODO Eventually put into coroutine
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }; // You would have to set the Receivers to All in order to receive this event on the local client as well
+            PhotonNetwork.RaiseEvent(GameSettings.PunPlayerLoaded, null, raiseEventOptions, SendOptions.SendReliable);
         }
 
         private void Update()
@@ -44,7 +89,8 @@ namespace CGD
 #if DEBUGGING
             Debug.Log("left room. returning to main menu");
 #endif
-            SceneManager.LoadScene(0);
+
+            SceneLoader.RequestLoadScene?.Invoke(0, false);
         }
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
@@ -59,7 +105,59 @@ namespace CGD
 #endif
             InstantiateNewPlayer();
         }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            byte eventCode = photonEvent.Code;
+
+            if (PhotonNetwork.IsMasterClient && eventCode == GameSettings.PunPlayerLoaded)
+            {
+                loadedPlayers++;
+
+                if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount)
+                {
+                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+
+                    PhotonNetwork.RaiseEvent(GameSettings.PunAllPlayersLoaded, PhotonNetwork.Time, raiseEventOptions, SendOptions.SendReliable);
+                }
+            }
+
+            if (eventCode == GameSettings.PunAllPlayersLoaded)
+            {
+                StartGame((double)photonEvent.CustomData);
+            }
+        }
+
         #endregion
+
+        #region Private Methods
+        private void StartGame(double networkTime) 
+        {
+            if (GameState == GameState.Loading)
+            {
+                gameSettings.SetGameTimes(networkTime);
+                GameState = GameState.Countdown;
+                StartCoroutine(DelayStartGame());   
+            }
+        }
+
+        IEnumerator DelayStartGame() 
+        {
+            var delay = GameSettings.GameStartTime - PhotonNetwork.Time;
+            yield return new WaitForSecondsRealtime((float)delay);
+            GameState = GameState.Start;
+            StartCoroutine(DelayMeeting());
+        }
+
+        IEnumerator DelayMeeting()
+        {
+            var delay = GameSettings.RoundEndTime - PhotonNetwork.Time;
+            yield return new WaitForSecondsRealtime((float)delay);
+            GameState = GameState.Meeting;
+        }
+
+        #endregion
+
 
         #region Public Methods
         public void LeaveRoom() => PhotonNetwork.LeaveRoom();
@@ -102,7 +200,7 @@ namespace CGD
         {
             var pos = Random.insideUnitCircle * Random.Range(1, 5);
 
-            PhotonNetwork.Instantiate(Path.Combine("Items", "Torch"), new Vector3(pos.x, 1, pos.y), Quaternion.identity);
+            PhotonNetwork.Instantiate(System.IO.Path.Combine("Items", "Torch"), new Vector3(pos.x, 1, pos.y), Quaternion.identity);
         }
 
 
@@ -113,26 +211,6 @@ namespace CGD
         {
 
         }
-
-        public void OnEvent(EventData photonEvent)
-        {
-            if (!PhotonNetwork.IsMasterClient)
-                return;
-
-            byte eventCode = photonEvent.Code;
-
-            if (eventCode == GameProperties.PlayerLoadedEvent)
-            {
-                loadedPlayers++;
-
-                if(loadedPlayers >= PhotonNetwork.CurrentRoom.PlayerCount)
-                {
-                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-                    PhotonNetwork.RaiseEvent(GameProperties.AllPlayersLoadedEvent, null, raiseEventOptions, SendOptions.SendReliable);
-                }
-            }
-        }
-
         #endregion
 
     }

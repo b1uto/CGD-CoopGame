@@ -1,15 +1,12 @@
 using Photon.Pun;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 namespace CGD
 {
     /// <summary>
     /// Base class for all equippable tools. Includes Photon Code.
     /// </summary>
-    public abstract class Item : MonoBehaviour, /*IPunObservable*/ IEquippable
+    public abstract class Item : MonoBehaviour, IEquippable
     {
         #region Photon Setup
         private PhotonView pvCache;
@@ -109,20 +106,6 @@ namespace CGD
         /// </summary>
         public void Update()
         {
-            //if (!photonView.IsMine)
-            //{
-            //    //If Equipped Item should be zeroed on slot.
-            //    if (Equipped && rb.isKinematic)
-            //    {
-            //        transform.position = Vector3.Lerp(transform.position, networkPosition, moveSpeed * Time.deltaTime);
-            //        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.identity, rotationSpeed * Time.deltaTime);
-            //    }
-            //}
-            //else if(Equipped && transform.localPosition != Vector3.zero) 
-            //{
-            //    transform.localPosition = Vector3.zero;
-            //    transform.localRotation = Quaternion.identity;
-            //}
 
             if (Equipped)
             {
@@ -192,3 +175,19 @@ namespace CGD
 
     }
 }
+
+
+//if (!photonView.IsMine)
+//{
+//    //If Equipped Item should be zeroed on slot.
+//    if (Equipped && rb.isKinematic)
+//    {
+//        transform.position = Vector3.Lerp(transform.position, networkPosition, moveSpeed * Time.deltaTime);
+//        transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.identity, rotationSpeed * Time.deltaTime);
+//    }
+//}
+//else if(Equipped && transform.localPosition != Vector3.zero) 
+//{
+//    transform.localPosition = Vector3.zero;
+//    transform.localRotation = Quaternion.identity;
+//}

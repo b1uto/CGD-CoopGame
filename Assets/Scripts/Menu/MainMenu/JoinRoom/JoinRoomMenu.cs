@@ -3,7 +3,7 @@ using CGD.Networking;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JoinRoomMenu : Menu
+public class JoinRoomMenu : MenuPanel
 {
     [SerializeField] private GameObject rowPrefab;
     [SerializeField] private Transform rowContainer;

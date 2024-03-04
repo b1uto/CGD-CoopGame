@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSmoothTime: 0.01
   moveMaxSpeed: 14.48
-  sensitivityY: 5
-  sensitivityX: 5
+  sensitivityY: 15
+  sensitivityX: 15
   invertY: 1

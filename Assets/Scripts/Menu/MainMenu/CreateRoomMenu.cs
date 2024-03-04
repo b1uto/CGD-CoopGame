@@ -1,7 +1,7 @@
 using CGD.Networking;
 using UnityEngine;
 
-public class CreateRoomMenu : Menu
+public class CreateRoomMenu : MenuPanel
 {
     [SerializeField] private TMPro.TMP_InputField inputField;
 
