@@ -10,7 +10,6 @@ namespace CGD.Case
         Poison
     }
 
-    [CreateAssetMenu(fileName = "WeaponElement", menuName = "Case Data/Weapon Element", order = 1)]
     public class Weapon : CaseElement
     {
         [HideInInspector]

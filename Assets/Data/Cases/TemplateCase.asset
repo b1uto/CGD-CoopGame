@@ -9,14 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3659a6b45b708864a86acd4ee2e46aab, type: 3}
-  m_Name: WeaponElement
+  m_Script: {fileID: 11500000, guid: 818b373660b957b48b9753df14442831, type: 3}
+  m_Name: TemplateCase
   m_EditorClassIdentifier: 
-  id: d5f7cede-3c83-45de-9699-2f169bdd5551
+  id: cd892c12-17b6-47e3-aea9-0a38d6b555b5
   shortDescription: 
   description: 
-  cluesToReveal: 0
-  icon: {fileID: 21300000, guid: 871953985bbdf294ba848b8d2dab8f1e, type: 3}
-  clues:
-  - bf1fdfed918ae2746b7acfaa84d5835b
-  type: 0
+  caseElements: []

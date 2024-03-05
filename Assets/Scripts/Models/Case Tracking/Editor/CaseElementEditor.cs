@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using CGD.Case;
+using System.Linq;
 
 [CustomEditor(typeof(CaseElement))]
 public class CaseElementEditor : Editor
@@ -10,11 +11,36 @@ public class CaseElementEditor : Editor
     private Dictionary<string, bool> clueFoldoutStates = new Dictionary<string, bool>();
     private Dictionary<string, Editor> clueEditors = new Dictionary<string, Editor>();
 
+    private Case caseFile;
+
+    private void FindCaseFile(CaseElement element)
+    {
+        List<Case> cases = new List<Case>();
+
+        // FindAssets uses filters, "t:Case" finds all Case assets
+        string[] guids = AssetDatabase.FindAssets("t:Case");
+
+        foreach (string guid in guids)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            Case foundCase = AssetDatabase.LoadAssetAtPath<Case>(assetPath);
+
+            if (foundCase != null)
+            {
+                cases.Add(foundCase);
+            }
+        }
+
+        caseFile = cases.FirstOrDefault(x => x.id == element.caseId);
+    }
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
         CaseElement caseElement = (CaseElement)target;
+
+        FindCaseFile(caseElement);
 
         if (string.IsNullOrEmpty(caseElement.id))
         {
@@ -38,14 +64,13 @@ public class CaseElementEditor : Editor
                 string clueId = caseElement.clues[i];
                 if (!clueEditors.ContainsKey(clueId) || clueEditors[clueId] == null)
                 {
-                    // Load the clue using the clue ID and create an editor for it
                     Clue clue = AssetDatabase.LoadAssetAtPath<Clue>(AssetDatabase.GUIDToAssetPath(clueId));
                     clueEditors[clueId] = CreateEditor(clue);
                 }
 
                 if (!clueFoldoutStates.ContainsKey(clueId))
                 {
-                    clueFoldoutStates[clueId] = false; // Default state is closed
+                    clueFoldoutStates[clueId] = false; 
                 }
 
                 EditorGUI.indentLevel++;
@@ -59,16 +84,12 @@ public class CaseElementEditor : Editor
                     if (GUILayout.Button("Remove Clue"))
                     {
                         RemoveClue(caseElement, (Clue)clueEditors[clueId].target, i);
-                        break; // Break to avoid modifying the collection while iterating
+                        break; 
                     }
                 }
                 EditorGUI.indentLevel--;
             }
         }
-        GUILayout.Space(20);
-        EditorGUILayout.LabelField("-------------------------------------------------", EditorStyles.centeredGreyMiniLabel);
-        EditorGUILayout.LabelField("Create New Clue", EditorStyles.boldLabel);
-        newClueShortDescription = EditorGUILayout.TextField("Short Description", newClueShortDescription);
 
         if (GUILayout.Button("Add Clue"))
         {
@@ -79,72 +100,30 @@ public class CaseElementEditor : Editor
 
         serializedObject.ApplyModifiedProperties();
     }
-    //public override void OnInspectorGUI()
-    //{
-    //    serializedObject.Update();
-
-    //    CaseElement caseElement = (CaseElement)target;
-
-    //    if (caseElement.clues != null)
-    //    {
-    //        for (int i = 0; i < caseElement.clues.Length; i++)
-    //        {
-    //            string clueId = caseElement.clues[i];
-    //            Clue clue = AssetDatabase.LoadAssetAtPath<Clue>(AssetDatabase.GUIDToAssetPath(clueId));
-
-    //            if (!clueEditors.ContainsKey(clueId) || clueEditors[clueId] == null)
-    //            {
-    //                // Create and cache an editor for each clue
-    //                Editor editor = CreateEditor(clue);
-    //                clueEditors[clueId] = editor;
-    //            }
-
-    //            bool foldout = EditorGUILayout.InspectorTitlebar(true, clueEditors[clueId].target);
-    //            if (foldout)
-    //            {
-    //                clueEditors[clueId].OnInspectorGUI();
-
-    //                GUILayout.Space(5);
-    //                if (GUILayout.Button("Remove Clue"))
-    //                {
-    //                    RemoveClue(caseElement, clue, i);
-    //                    break; // Break to avoid modifying the list while iterating
-    //                }
-    //            }
-    //        }
-    //    }
-
-    //    GUILayout.Space(10);
-    //    EditorGUILayout.LabelField("Create New Clue", EditorStyles.boldLabel);
-    //    newClueShortDescription = EditorGUILayout.TextField("Short Description", newClueShortDescription);
-
-    //    if (GUILayout.Button("Add Clue"))
-    //    {
-    //        AddClue(caseElement);
-    //    }
-
-    //    serializedObject.ApplyModifiedProperties();
-    //}
-
     private void AddClue(CaseElement caseElement)
     {
-        if (string.IsNullOrWhiteSpace(newClueShortDescription))
+        if(caseFile == null) 
         {
-            Debug.LogWarning("Clue description cannot be empty.");
+            Debug.LogWarning("Case File Not Found");
             return;
         }
 
         Clue newClue = CreateInstance<Clue>();
-        newClue.shortDescription = newClueShortDescription;
+        newClue.elementId = caseElement.id;
 
-        string assetName = caseElement.name + "_" + (caseElement.clues?.Length + 1 ?? 1);
-        string path = AssetDatabase.GenerateUniqueAssetPath($"Assets/Data/Cases/{assetName}.asset");
+        string assetName = "Clue_" + (caseElement.clues?.Length + 1);
+
+        System.IO.Directory.CreateDirectory($"Assets/Data/Cases/{caseFile.name}/{caseElement.name}");
+        string path = AssetDatabase.GenerateUniqueAssetPath($"Assets/Data/Cases/{caseFile.name}/{caseElement.name}/{assetName}.asset");
 
         AssetDatabase.CreateAsset(newClue, path);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        List<string> updatedClues = new List<string>(caseElement.clues) { AssetDatabase.AssetPathToGUID(path) };
+
+        List<string> updatedClues = caseElement.clues == null ? new List<string>() : new List<string>(caseElement.clues);
+        updatedClues.Add(AssetDatabase.AssetPathToGUID(path));
+
         caseElement.clues = updatedClues.ToArray();
         newClueShortDescription = "";
         EditorUtility.SetDirty(caseElement);

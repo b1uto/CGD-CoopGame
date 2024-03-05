@@ -13,7 +13,7 @@ namespace CGD.Case
         {
             foreach (WeaponType type in System.Enum.GetValues(typeof(WeaponType)))
             {
-                string path = $"Sprites/{type}";
+                string path = $"Sprites/Weapons/{type}";
                 Sprite sprite = Resources.Load<Sprite>(path);
                 if (sprite != null)
                 {

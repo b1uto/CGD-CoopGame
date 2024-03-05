@@ -11,6 +11,10 @@ namespace CGD.Case
         [ReadOnly]
         public string id;
 
+        [ReadOnly]
+        public string caseId;
+
+
         [MaxLength(68)] 
         public string shortDescription;
         

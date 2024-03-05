@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c54b6d459fcd6b49b16971ddfbe8b93, type: 3}
-  m_Name: WeaponElement_1
+  m_Script: {fileID: 11500000, guid: 3659a6b45b708864a86acd4ee2e46aab, type: 3}
+  m_Name: Weapon_1
   m_EditorClassIdentifier: 
-  id: 04ca5f83-f189-416c-a43d-377d197d867d
-  status: 0
-  type: 0
-  miniGame: 0
-  shortDescription: bullet casing underneath table
-  analysedDescription: <color=orange>sdas</color>
-  fullDescription: 
+  id: 
+  caseId: cd892c12-17b6-47e3-aea9-0a38d6b555b5
+  shortDescription: 
+  description: 
+  cluesToReveal: 0
   icon: {fileID: 0}
+  clues: []
+  type: 0
