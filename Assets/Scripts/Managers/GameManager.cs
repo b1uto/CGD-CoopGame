@@ -62,7 +62,7 @@ namespace CGD
             if (PhotonNetwork.CurrentRoom != null)
                 InstantiateNewPlayer();
             else
-                PhotonNetwork.JoinRoom(PlayerPrefs.GetString(RoomProperties.RoomKey));
+                PhotonNetwork.JoinRoom(PlayerPrefs.GetString(RoomProperties.RoomName));
 
 
             if (PhotonNetwork.IsMasterClient)
@@ -126,6 +126,11 @@ namespace CGD
             {
                 StartGame((double)photonEvent.CustomData);
             }
+
+            if(eventCode == GameSettings.GameMeetingFinished) 
+            {
+                OnMeetingFinished((double)photonEvent.CustomData);
+            }
         }
 
         #endregion
@@ -140,7 +145,12 @@ namespace CGD
                 StartCoroutine(DelayStartGame());   
             }
         }
-
+        public void OnMeetingFinished(double networkTime)
+        {
+            gameSettings.UpdateRoundTime(networkTime);
+            GameState = GameState.Start;
+            StartCoroutine(DelayMeeting());
+        }
         IEnumerator DelayStartGame() 
         {
             var delay = GameSettings.GameStartTime - PhotonNetwork.Time;
@@ -160,6 +170,7 @@ namespace CGD
 
 
         #region Public Methods
+       
         public void LeaveRoom() => PhotonNetwork.LeaveRoom();
         #endregion
 

@@ -94,11 +94,11 @@ namespace CGD
         /// <summary>
         /// Last PhotonView serialized Position
         /// </summary>
-        private Vector3 networkPosition;
+        private Vector3 networkPosition = Vector3.zero;
         /// <summary>
         /// Last PhotonView Serialized Rotation
         /// </summary>
-        private Quaternion networkRotation;
+        private Quaternion networkRotation = Quaternion.identity;
 
 
         /// <summary>

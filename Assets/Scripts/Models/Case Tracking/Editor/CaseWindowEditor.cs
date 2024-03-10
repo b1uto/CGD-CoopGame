@@ -3,40 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
-using UnityEngine.UIElements;
 
 public class CaseWindowEditor : EditorWindow
 {
-    private string newClueShortDescription = "";
-    private Dictionary<string, bool> caseElementFoldoutStates = new Dictionary<string, bool>();
-    private Dictionary<string, Editor> caseElementEditors = new Dictionary<string, Editor>();
-    private Case mainCase;
+    //private string newClueShortDescription = "";
+    private Dictionary<string, bool> elementFoldoutStates = new Dictionary<string, bool>();
+    private Dictionary<string, Editor> elementEditors = new Dictionary<string, Editor>();
+    private CaseFile mainCase;
 
-    private int selectedIndex;
+    private float splitPosition = 200;
+    private bool isResizing = false;
+    private Rect splitterRect;
+    private Vector2 scrollPositionL;
+    private Vector2 scrollPositionR;
 
-    [MenuItem("Window/CGD/Case File Editor")]
+
+    private string newCaseFileName;
+
+    private Editor caseEditor;
+
+    private Color defaultColor;
+
+
+    [MenuItem("CGD Tools/Case File Editor")]
     public static void ShowWindow()
     {
-        GetWindow<CaseWindowEditor>("Case File Editor");
+        var window =    GetWindow<CaseWindowEditor>("Case File Editor");
+        window.minSize = new Vector2(820, 600);
+        window.maxSize = new Vector2(820, 600);
     }
 
-    private void OnGUI()
+    public void OnEnable()
     {
+        defaultColor = GUI.backgroundColor;
+    }
 
-        EditorGUILayout.BeginHorizontal(); // Main content area split into left and right
 
-        // Left panel
-        EditorGUILayout.BeginVertical(GUILayout.Width(400)); // Fixed width for left panel
-        GUILayout.Label("--- Case Settings ---", EditorStyles.boldLabel);
-        List<Case> cases = new List<Case>();
-
+    private string[] LoadCaseFiles(ref List<CaseFile> cases) 
+    {
         string[] guids = AssetDatabase.FindAssets("t:Case");
 
         foreach (string guid in guids)
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            Case foundCase = AssetDatabase.LoadAssetAtPath<Case>(assetPath);
+            CaseFile foundCase = AssetDatabase.LoadAssetAtPath<CaseFile>(assetPath);
 
             if (foundCase != null)
             {
@@ -44,154 +54,297 @@ public class CaseWindowEditor : EditorWindow
             }
         }
 
-        var caseNames = cases.Select(x => x.name).ToArray();
+      return cases.Select(x => x.name).ToArray();
 
-        int newCaseIndex = EditorGUILayout.Popup("Select Case:", selectedIndex, caseNames);
-        if (newCaseIndex != selectedIndex)
+    }
+
+
+    private void DrawCaseFileSelection()
+    {
+        var style = new GUIStyle(GUI.skin.label);
+        style.alignment = TextAnchor.MiddleCenter;
+
+        GUILayout.Label("Case File Select", style);
+        GUILayout.Space(10);
+
+
+        if (AssetDatabase.FindAssets("t:CaseFile").Length > 0)
         {
-            selectedIndex = newCaseIndex;
-            mainCase = cases[selectedIndex];
-        }
-        EditorGUILayout.EndVertical(); // End of Left Panel
+            mainCase = (CaseFile)EditorGUILayout.ObjectField("Select Case", mainCase, typeof(CaseFile), false);
 
-        // Right panel
-        EditorGUILayout.BeginVertical(GUILayout.Width(800)); // Takes the remaining space
-        GUILayout.Label("Right Panel", EditorStyles.boldLabel);
-        if (GUILayout.Button("Button 2"))
-        {
-            Debug.Log("Right panel Button 2 clicked");
-        }
-        EditorGUILayout.EndVertical(); // End of Right Panel
-
-        EditorGUILayout.EndHorizontal(); // End of Main content area
-
-        //EditorGUILayout.BeginHorizontal();
-        //EditorGUILayout.LabelField("Case File");
-        //mainCase = (Case)EditorGUILayout.ObjectField(mainCase, typeof(Case), false);
-        //EditorGUILayout.EndHorizontal();
-
-        if (mainCase == null)
-        {
-            EditorGUILayout.HelpBox("Select a Case object to edit.", MessageType.Info);
-            return;
-        }
-
-        if (string.IsNullOrEmpty(mainCase.id))
-        {
-            mainCase.id = System.Guid.NewGuid().ToString();
-            EditorUtility.SetDirty(mainCase);
-        }
-
-
-        EditorGUILayout.LabelField("-------------------- Case File -------------------", EditorStyles.centeredGreyMiniLabel);
-        //base.OnInspectorGUI();
-
-
-        EditorGUILayout.Space(20);
-        EditorGUILayout.LabelField("--------------------Element Settings-------------------", EditorStyles.centeredGreyMiniLabel);
-        EditorGUILayout.LabelField("Element List", EditorStyles.boldLabel);
-
-        if (mainCase.caseElements != null)
-        {
-            for (int i = 0; i < mainCase.caseElements.Length; i++)
+            if (mainCase != null)
             {
-                string elementId = mainCase.caseElements[i];
-                if (!caseElementEditors.ContainsKey(elementId) || caseElementEditors[elementId] == null)
+                GUILayout.Space(5);
+                if (GUILayout.Button("Delete", GUILayout.MinWidth(80)))
                 {
-                    CaseElement caseElement = AssetDatabase.LoadAssetAtPath<CaseElement>(AssetDatabase.GUIDToAssetPath(elementId));
+                    DeleteCaseFile(mainCase);
+                }
+                // EditorGUILayout.EndHorizontal();
+            }
+            GUILayout.Space(15);
+        }
 
-                    if (caseElement == null)
-                    {
-                        RemoveElement(mainCase, elementId);
-                        continue;
-                    }
-                    caseElementEditors[elementId] = Editor.CreateEditor(caseElement);
+        GUILayout.Label("Create New Case");
+        EditorGUILayout.BeginHorizontal();
+        newCaseFileName = EditorGUILayout.TextField(newCaseFileName);
+        if (GUILayout.Button("Create", GUILayout.MinWidth(80))) // string.IsNullOrEmpty(newCaseFileName) ? disabledButtonStyle : normalButtonStyle))
+        {
+            CreateCaseFile();
+        }
+        EditorGUILayout.EndHorizontal();
+
+        GUILayout.Space(5);
+
+
+    }
+
+    private void DrawCaseFile() 
+    {
+        if (mainCase != null)
+        {
+            if (caseEditor == null || caseEditor.target != mainCase)
+            {
+                if (caseEditor != null) DestroyImmediate(caseEditor);
+
+                caseEditor = Editor.CreateEditor(mainCase);
+            }
+
+            caseEditor.OnInspectorGUI();
+
+            EditorGUILayout.LabelField("-------------------------------------------------", EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.LabelField("Create New Element", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Weapon"))
+            {
+                AddElement<Weapon>();
+            }
+            if (GUILayout.Button("Suspect"))
+            {
+                AddElement<Suspect>();
+            }
+            if (GUILayout.Button("Motive"))
+            {
+                AddElement<Motive>();
+            }
+
+            GUILayout.EndHorizontal();
+        }
+    }
+
+    private void DrawCaseElements() 
+    {
+        if (mainCase.elements != null)
+        {
+            var foldoutStyle = new GUIStyle(EditorStyles.foldout)
+            {
+                fontStyle = FontStyle.Bold,
+                fontSize = 12
+            };
+
+            string assetPath = AssetDatabase.GetAssetPath(mainCase);
+            var allElements = AssetDatabase.LoadAllAssetsAtPath(assetPath).OfType<CaseElement>().ToArray();
+
+
+            foreach (var element in mainCase.elements)
+            {
+                var obj = allElements.FirstOrDefault(x => x.id == element);
+
+                if (obj == null || string.IsNullOrEmpty(element)) continue;
+
+
+                if (!elementEditors.ContainsKey(element) || elementEditors[element] == null)
+                {
+                    elementEditors[element] = Editor.CreateEditor(obj);
                 }
 
-                if (!caseElementFoldoutStates.ContainsKey(elementId))
+                if (!elementFoldoutStates.ContainsKey(element))
                 {
-                    caseElementFoldoutStates[elementId] = false;
+                    elementFoldoutStates[element] = false;
                 }
 
                 EditorGUI.indentLevel++;
-                caseElementFoldoutStates[elementId] = EditorGUILayout.Foldout(caseElementFoldoutStates[elementId], $"{caseElementEditors[elementId].target.name}", true);
 
-                if (caseElementFoldoutStates[elementId])
+
+                elementFoldoutStates[element] = EditorGUILayout.Foldout(elementFoldoutStates[element], $"{obj.name}", true, foldoutStyle);
+            
+                if (elementFoldoutStates[element])
                 {
-                    caseElementEditors[elementId].OnInspectorGUI();
-
+                    elementEditors[element].OnInspectorGUI();
                     GUILayout.Space(5);
+                    
+
                     if (GUILayout.Button("Remove Element"))
                     {
-                        RemoveElement(mainCase, (CaseElement)caseElementEditors[elementId].target, i);
+                        RemoveElement(obj);
                         break;
                     }
                 }
                 EditorGUI.indentLevel--;
             }
         }
-        GUILayout.Space(20);
-        EditorGUILayout.LabelField("-------------------------------------------------", EditorStyles.centeredGreyMiniLabel);
-        EditorGUILayout.LabelField("Create New Element", EditorStyles.boldLabel);
+    }
 
+    private void DrawLeftPanel() 
+    {
+        EditorGUILayout.BeginVertical(GUILayout.Width(splitPosition - 10));
+        scrollPositionL = GUILayout.BeginScrollView(scrollPositionL);
+        DrawCaseFileSelection();
+        DrawCaseFile();
+        GUILayout.EndScrollView();
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawRightPanel()
+    {
+        if (mainCase == null) return;
+
+        EditorGUILayout.BeginVertical(GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Weapon"))
+        GUILayout.Space(10);
+        scrollPositionR = GUILayout.BeginScrollView(scrollPositionR);
+
+        var style = new GUIStyle(GUI.skin.label);
+        style.alignment = TextAnchor.MiddleCenter;
+
+        GUILayout.Label("Case Elements", style);
+        GUILayout.Space(10);
+
+        DrawCaseElements();
+
+        EditorGUILayout.EndScrollView();
+
+        GUILayout.Space(10);
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndVertical();
+    }
+
+
+
+
+    private void OnGUI()
+    {
+        EditorGUILayout.BeginHorizontal(GUILayout.ExpandHeight(true));
+
+        DrawLeftPanel();
+
+        HandleSplitter();
+        GUILayout.Space(5);
+
+        DrawRightPanel();
+        //GUILayout.Box("Right Panel", GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+        
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private void HandleSplitter()
+    {
+       // GUILayout.Space(2);
+        splitterRect = new Rect(splitPosition, 0, 2, position.height);
+
+        // Draw the splitter as a draggable area.
+        EditorGUIUtility.AddCursorRect(splitterRect, MouseCursor.ResizeHorizontal);
+        if (Event.current.type == EventType.MouseDown && splitterRect.Contains(Event.current.mousePosition))
         {
-            AddElement<Weapon>(mainCase);
-        }
-        if (GUILayout.Button("Suspect"))
-        {
-            AddElement<Suspect>(mainCase);
-        }
-        if (GUILayout.Button("Motive"))
-        {
-            AddElement<Motive>(mainCase);
+            isResizing = true;
         }
 
-        GUILayout.EndHorizontal();
+        if (isResizing)
+        {
+            splitPosition = Event.current.mousePosition.x;
+            splitPosition = Mathf.Clamp(splitPosition, 320, position.width - 300);
+            Repaint();
+        }
+
+        if (Event.current.type == EventType.MouseUp)
+        {
+            isResizing = false;
+        }
+
+        EditorGUI.DrawRect(splitterRect, new Color(0.5f, 0.5f, 0.5f, 1.0f));
+        //GUILayout.Space(2);
 
     }
-    private void AddElement<T>(Case mainCase) where T : CaseElement
+
+
+    private void CreateCaseFile()
+    {
+        if(string.IsNullOrEmpty(newCaseFileName))
+        {
+            Debug.LogWarning("Case File Now must not be null");
+        }
+
+        if (AssetDatabase.LoadAssetAtPath<CaseFile>($"Assets/Data/Cases/{newCaseFileName}") != null)
+        {
+            Debug.LogWarning("CaseFile with same name already exists");
+        }
+
+        string path = AssetDatabase.GenerateUniqueAssetPath($"Assets/Data/Cases/{newCaseFileName}.asset");
+
+        CaseFile newCase = CreateInstance<CaseFile>();
+
+
+        CaseData.GenerateUniqueID(newCase);
+ 
+        AssetDatabase.CreateAsset(newCase, path);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+
+        mainCase = newCase;
+        EditorUtility.SetDirty(mainCase);
+    }
+    private void DeleteCaseFile(CaseFile caseToDelete)
+    {
+        if (EditorUtility.DisplayDialog("Delete Case File",
+            $"Are you sure you want to delete {caseToDelete.name}?", "Delete", "Cancel"))
+        {
+            AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(caseToDelete));
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            mainCase = null;
+        }
+    }
+
+
+    private void AddElement<T>() where T : CaseElement
     {
         CaseElement newElement = CreateInstance<T>();
+        newElement.name = typeof(T).Name;
+        newElement.caseId = mainCase.ID;
 
-        newElement.caseId = mainCase.id;
+        // string path = AssetDatabase.GenerateUniqueAssetPath($"Assets/Data/Cases/{assetName}.asset");
 
-        string assetName = typeof(T).Name + "_" + (mainCase.caseElements?.OfType<T>().Count() + 1 ?? 1);
-
-
-        System.IO.Directory.CreateDirectory($"Assets/Data/Cases/{mainCase.name}");
-        string path = AssetDatabase.GenerateUniqueAssetPath($"Assets/Data/Cases/{mainCase.name}/{assetName}.asset");
-
-        AssetDatabase.CreateAsset(newElement, path);
+        AssetDatabase.AddObjectToAsset(newElement, mainCase); 
+        
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
+        AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(newElement));
 
-        List<string> updatedElements = new List<string>(mainCase.caseElements) { AssetDatabase.AssetPathToGUID(path) };
-        mainCase.caseElements = updatedElements.ToArray();
+
+        List<string> updatedElements = mainCase.elements == null ? new List<string>() : new List<string>(mainCase.elements);
+        updatedElements.Add(newElement.ID);
+
+        mainCase.elements = updatedElements.ToArray();
 
         EditorUtility.SetDirty(mainCase);
+        EditorUtility.SetDirty(newElement);
+
     }
-    private void RemoveElement(Case mainCase, string element)
+    private void RemoveElement(CaseElement element)
     {
+        List<string> updatedElements = new List<string>(mainCase.elements);
+        updatedElements.Remove(element.id);
+        mainCase.elements = updatedElements.ToArray();
 
-        List<string> updatedElements = new List<string>(mainCase.caseElements);
-        updatedElements.Remove(element);
-        mainCase.caseElements = updatedElements.ToArray();
-        EditorUtility.SetDirty(mainCase);
-        AssetDatabase.SaveAssets();
-        AssetDatabase.Refresh();
-    }
-    private void RemoveElement(Case mainCase, CaseElement element, int index)
-    {
+        if (AssetDatabase.IsSubAsset(element))
+            AssetDatabase.RemoveObjectFromAsset(element);
+
+        if (elementEditors.ContainsKey(element.id))
+            elementEditors.Remove(element.id);
+
+        if (elementFoldoutStates.ContainsKey(element.id))
+            elementFoldoutStates.Remove(element.id);
 
 
-        string path = AssetDatabase.GetAssetPath(element);
-        AssetDatabase.DeleteAsset(path);
-
-        List<string> updatedElements = new List<string>(mainCase.caseElements);
-        updatedElements.RemoveAt(index);
-        mainCase.caseElements = updatedElements.ToArray();
         EditorUtility.SetDirty(mainCase);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();

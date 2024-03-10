@@ -57,12 +57,17 @@ namespace CGD.Networking
         string gameVersion = "1.0";
 
 
+        /// <summary>
+        /// List of all rooms
+        /// </summary>
+        private static List<RoomInfo> roomList = new List<RoomInfo>();
+
         #endregion
 
         #region MonoBehaviour CallBacks
         void Awake()
         {
-            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.AutomaticallySyncScene = false;
             {
                 LogFeedback("Connecting...");
 
@@ -115,20 +120,21 @@ namespace CGD.Networking
             {
                 MaxPlayers = 1,
                 EmptyRoomTtl = 0,
-                CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false),
+                CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false, "Debug Room"),
                 CustomRoomPropertiesForLobby = RoomProperties.GetLobbyProperties()
             });
             PhotonNetwork.LoadLevel(1);
         }
-        public static void CreateRoom(string roomName)
+        public static void CreateRoom(string roomName, int maxPlayers, bool inviteOnly)
         {
             if (!string.IsNullOrEmpty(roomName))
             {
-                PhotonNetwork.CreateRoom(roomName, new RoomOptions 
+                PhotonNetwork.CreateRoom(RoomProperties.GenerateCode(), new RoomOptions 
                 { 
-                    MaxPlayers = RoomProperties.MaxPlayersPerRoom, 
+                    MaxPlayers = maxPlayers,//RoomProperties.MaxPlayersPerRoom, 
                     EmptyRoomTtl = 0, 
-                    CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false),
+                    IsVisible = !inviteOnly,
+                    CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false, roomName),
                     CustomRoomPropertiesForLobby = RoomProperties.GetLobbyProperties()
                 });
 
@@ -142,11 +148,39 @@ namespace CGD.Networking
             }
         }
 
+        public static void JoinPrivateRoom(string roomCode)
+        {
+//            if (roomList == null)
+//            {
+//#if UNITY_EDITOR && DEBUGGING
+//                Debug.LogWarning("No Rooms Found");
+//#endif
+//            }
+
+            PhotonNetwork.JoinRoom(roomCode);
+
+            //foreach (var roomInfo in roomList)
+            //{
+            //    if (roomInfo.CustomProperties.TryGetValue(RoomProperties.RoomKey, out object RoomKey) && (string)RoomKey == roomCode)
+            //    {
+            //        JoinRoom(roomInfo);
+            //        return;
+            //    }
+            //}
+
+//#if UNITY_EDITOR && DEBUGGING
+//            Debug.LogWarning("No Rooms Found");
+//#endif
+        }
+
+
+
+
         public static void JoinRoom(RoomInfo roomInfo)
         {
             if (roomInfo.CustomProperties.TryGetValue(RoomProperties.GameStarted, out object GameStarted) && (bool)GameStarted)
             {
-                PlayerPrefs.SetString(RoomProperties.RoomKey, roomInfo.Name);
+                PlayerPrefs.SetString(RoomProperties.RoomName, roomInfo.Name);
                 SceneManager.LoadScene(1);
             }
             else
@@ -252,7 +286,20 @@ namespace CGD.Networking
 #if DEBUGGING
             Debug.Log("Player Joined Room");
 #endif
-            MenuManager.Instance.OpenMenu("room");
+
+
+            if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RoomProperties.GameStarted, out object GameStarted) && (bool)GameStarted)
+            {
+                PlayerPrefs.SetString(RoomProperties.RoomName, PhotonNetwork.CurrentRoom.Name);
+                SceneManager.LoadScene(1);
+            }
+            else
+            {
+                PhotonNetwork.AutomaticallySyncScene = true;
+                MenuManager.Instance.OpenMenu("room");
+            }
+            
+            
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
@@ -285,7 +332,11 @@ namespace CGD.Networking
 #endif
         }
 
-        public override void OnRoomListUpdate(List<RoomInfo> roomList) => OnRoomsUpdated?.Invoke(roomList);
+        public override void OnRoomListUpdate(List<RoomInfo> rooms)
+        {
+            roomList = rooms;
+            OnRoomsUpdated?.Invoke(rooms);
+        }
         public override void OnPlayerEnteredRoom(Player newPlayer) => OnPlayersUpdated?.Invoke();
         public override void OnPlayerLeftRoom(Player otherPlayer) => OnPlayersUpdated?.Invoke();
         #endregion

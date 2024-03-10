@@ -1,20 +1,30 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace CGD
 {
     public static class RoomProperties
     {
         /// <summary>
+        /// Room Code Characters
+        /// </summary>
+        private static readonly char[] characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToCharArray();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static readonly System.Random random = new System.Random();
+
+
+        /// <summary>
         /// Used for creating room.
         /// </summary>
         public static int MaxPlayersPerRoom = 4;
 
         /// <summary>
-        /// Key for room stored in PlayerPrefs
+        /// Room Name used for display purposes
         /// </summary>
-        public const string RoomKey = "Room_Key";
+        public const string RoomName = "RoomName";
 
         /// <summary>
         /// boolean, has game started.
@@ -36,18 +46,23 @@ namespace CGD
             }
         }
 
-        public static string[] GetLobbyProperties() => new string[] { GameStarted };
+        public static string[] GetLobbyProperties() => new string[] 
+        { 
+            GameStarted, 
+            RoomName
+        };
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gameStarted"></param>
         /// <returns></returns>
-        public static Hashtable CreateCustomRoomProperties(bool gameStarted = false)
+        public static Hashtable CreateCustomRoomProperties(bool gameStarted = false, string roomName = "")
         {
             return new Hashtable
             {
-                { GameStarted, false }
+                { GameStarted, false },
+                { RoomName , roomName}
             };
         }
         /// <summary>
@@ -65,6 +80,18 @@ namespace CGD
             }
             return newCustomProperties;
         }
+
+
+            public static string GenerateCode(int length = 6)
+            {
+                var code = new char[length];
+                for (int i = 0; i < length; i++)
+                {
+                    code[i] = characters[random.Next(characters.Length)];
+                }
+                return new string(code);
+            }
+
 
     }
 }

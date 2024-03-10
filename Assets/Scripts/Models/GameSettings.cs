@@ -10,6 +10,7 @@ public class GameSettings : ScriptableObject
     public const byte PunPlayerLoaded = 2;
     public const byte PunAllPlayersLoaded = 3;
     public const byte PunGameStarted = 4;
+    public const byte GameMeetingFinished = 5;
 
 
     [SerializeField] private double countdownDuration = 10;
@@ -32,8 +33,14 @@ public class GameSettings : ScriptableObject
     /// </summary>
     private double roundEndTime;
 
+    /// <summary>
+    /// turn time-limit for evidence board round.
+    /// </summary>
+    private double boardTurnDuration = 30;
+
     public double GameStartTime { get { return gameStartTime; } }
     public double RoundEndTime { get { return roundEndTime; } }
+    public double TurnTime { get { return boardTurnDuration; } }
 
 
     public void SetGameTimes(double networkTime) 
@@ -41,6 +48,11 @@ public class GameSettings : ScriptableObject
         punStartTime = networkTime;
         gameStartTime = networkTime + countdownDuration;
         roundEndTime = networkTime + countdownDuration + roundDuration;
+    }
+
+    public void UpdateRoundTime(double networkTime)
+    {
+        roundEndTime = networkTime + roundDuration;
     }
 
 

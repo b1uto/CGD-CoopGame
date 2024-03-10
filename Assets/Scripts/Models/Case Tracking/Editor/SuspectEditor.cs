@@ -51,10 +51,8 @@ namespace CGD.Case
             EditorGUILayout.LabelField("--------------------Suspect Settings-------------------", EditorStyles.centeredGreyMiniLabel);
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.BeginVertical();
-
-
-            EditorGUILayout.LabelField("Suspect Icon", EditorStyles.boldLabel, GUILayout.Width(100));
+            EditorGUILayout.BeginVertical(GUILayout.Width(100));
+            EditorGUILayout.LabelField("Select Icon", EditorStyles.boldLabel, GUILayout.Width(100));
 
             if (faceSprites == null || faceSprites.Length == 0)
             {
@@ -72,9 +70,6 @@ namespace CGD.Case
                     suspect.icon = faceSprites[selectedSprite];
                 }
             }
-
-            EditorGUILayout.EndVertical();
-
             if (suspect.icon)
             {
                 Texture2D texture = AssetPreview.GetAssetPreview(suspect.icon);
@@ -83,19 +78,45 @@ namespace CGD.Case
 
                 GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
             }
-            EditorGUILayout.EndHorizontal();
 
+            EditorGUILayout.EndVertical();
+
+            EditorGUILayout.BeginVertical();
+
+            EditorGUILayout.LabelField("Personal Info", EditorStyles.boldLabel, GUILayout.Width(100));
+
+            EditorGUILayout.Space(25);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Title", GUILayout.Width(80));
+            suspect.title = (Title)EditorGUILayout.EnumPopup(suspect.title);
+            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
-            suspect.title = (Title)EditorGUILayout.EnumPopup(suspect.title, GUILayout.Width(50));
+            EditorGUILayout.LabelField("Full Name", GUILayout.Width(80));
             suspect.fullName = EditorGUILayout.TextField(suspect.fullName);
-            suspect.age = EditorGUILayout.IntField(suspect.age);
             EditorGUILayout.EndHorizontal();
 
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Age", GUILayout.Width(80));
+            suspect.age = EditorGUILayout.IntField(suspect.age);
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space(10);
             if (GUILayout.Button("Randomise Name"))
             {
                 RandomiseName(suspect);
             }
+            //EditorGUILayout.EndHorizontal();
+
+          
+            EditorGUILayout.EndVertical();
+
+           
+
+            
+            EditorGUILayout.EndHorizontal();
+
+
+            
 
             base.OnInspectorGUI();
 

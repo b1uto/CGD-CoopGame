@@ -11,6 +11,8 @@ public class MaxLengthAttribute : PropertyAttribute
     }
 }
 
+#if UNITY_EDITOR
+
 [CustomPropertyDrawer(typeof(MaxLengthAttribute))]
 public class MaxLengthDrawer : PropertyDrawer
 {
@@ -33,3 +35,4 @@ public class MaxLengthDrawer : PropertyDrawer
         }
     }
 }
+#endif

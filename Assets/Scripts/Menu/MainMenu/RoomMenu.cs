@@ -3,10 +3,12 @@ using CGD.Networking;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using CGD;
 
 public class RoomMenu : MenuPanel
 {
     [SerializeField] private TextMeshProUGUI roomNameLabel;
+    [SerializeField] private TextMeshProUGUI roomCodeLabel;
     [SerializeField] private GameObject playerRowPrefab;
     [SerializeField] private Transform rowContainer;
     [SerializeField] private GameObject startGameBtn;
@@ -34,8 +36,14 @@ public class RoomMenu : MenuPanel
         {
             startGameBtn.SetActive(PhotonNetwork.IsMasterClient);
 
-            string roomName = $"{PhotonNetwork.CurrentRoom.Name} {PhotonNetwork.CurrentRoom.PlayerCount}/{PhotonNetwork.CurrentRoom.MaxPlayers}";
-            roomNameLabel.text = roomName;
+            roomCodeLabel.text = $"Room Code [{PhotonNetwork.CurrentRoom.Name}]";
+            
+           if( PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RoomProperties.RoomName, out object RoomName))
+            {
+                string roomName = $"{(string)RoomName} {PhotonNetwork.CurrentRoom.PlayerCount}/{PhotonNetwork.CurrentRoom.MaxPlayers}";
+                roomNameLabel.text = roomName;
+            }
+
 
             var players = PhotonNetwork.PlayerList;
 
