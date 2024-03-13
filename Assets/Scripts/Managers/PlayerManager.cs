@@ -1,13 +1,17 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Schema;
+using CGD.Case;
+using ExitGames.Client.Photon;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
 namespace CGD
 {
-    public class PlayerManager : MonoBehaviourPunCallbacks
+    public class PlayerManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         public static GameObject LocalPlayerInstance;
 
@@ -23,8 +27,9 @@ namespace CGD
         "male03"
         };
 
+        public ref Dictionary<string, ClueInfo> Clues { get { return ref clues; } }
 
-        private List<int> collectedClues = new List<int>();
+        private Dictionary<string, ClueInfo> clues = new Dictionary<string, ClueInfo>();
 
 
         private void Awake()
@@ -61,6 +66,7 @@ namespace CGD
 
                 var modelPath = Path.Combine("Models", GetRandomModelName());
                 photonView.RPC(nameof(InstantiateCharacter), RpcTarget.AllBuffered, photonView.ViewID, modelPath);
+                GameManager.Instance.SetLocalPlayer(this);
             }
         }
 
@@ -84,20 +90,33 @@ namespace CGD
 #endif
             }
         }
-
         private string GetRandomModelName() 
         {
             return modelNames[Random.Range(0, modelNames.Length)];
         }
-        
 
-        public void GetClue(int clueId) 
+        public void SubmitClue(string id)
         {
-            collectedClues.Add(clueId);
-            if(photonView.IsMine) 
+            if (clues.TryGetValue(id, out var info))
             {
-                MenuManager.Instance.OpenMenu("clue");
-                GetComponent<PlayerInputHandler>().DisablePlayerInput();
+                object[] data = new object[] { id, (int)info.status, PhotonNetwork.LocalPlayer.ActorNumber };
+
+                RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+                PhotonNetwork.RaiseEvent(GameSettings.PlayerSubmittedClue, data, raiseEventOptions, SendOptions.SendReliable);
+            }
+        }
+
+        public void CollectClue(string id) 
+        {
+            if (ItemCollection.Instance.TryGetCaseData(id, out Clue clue))
+            {
+                clues.Add(id, new ClueInfo(false, ClueStatus.Collected));
+
+                if (photonView.IsMine)
+                {
+                    MenuManager.Instance.OpenMenu("clue");
+                    GetComponent<PlayerInputHandler>().DisablePlayerInput();
+                }
             }
         }
 
@@ -110,10 +129,40 @@ namespace CGD
                     break;
                 case GameState.Meeting:
                     GetComponent<PlayerInputHandler>().DisablePlayerInput();
-                    GameManager.Instance.EvidenceBoard.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
+                    GameManager.Instance.BoardRoundManager.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
                     break;
             }
-        }   
+        }
+
+
+        #region IOnEventCallback 
+        public void OnEvent(EventData photonEvent)
+        {
+            byte eventCode = photonEvent.Code;
+
+            if (eventCode == GameSettings.PlayerSubmittedClue) 
+            {
+                var data = (object[])photonEvent.CustomData;
+
+                var clue = (string)data[0];
+                var clueInfo = new ClueInfo(true, (ClueStatus)data[1]);
+                
+                UpdateClue(clue, clueInfo); 
+            }
+        }
+
+        private void UpdateClue(string clue, ClueInfo clueInfo)
+        {
+            if (clues.ContainsKey(clue))
+            {
+                clues[clue] = clueInfo;
+            }
+            else
+            {
+                clues.Add(clue, clueInfo);
+            }
+        }
+        #endregion
 
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using System.Collections;
 using TMPro;
+using System.Collections.Generic;
 
 namespace CGD
 {
@@ -24,12 +25,14 @@ namespace CGD
 
 
         [SerializeField] private GameObject playerPrefab;
-
         private GameSettings gameSettings;
         private int loadedPlayers = 0;
 
         private GameState _gameState;
-        private EvidenceBoard evidenceBoard;
+        private BoardRoundManager boardManager;
+        private PlayerManager localPlayerManager;
+
+        public PlayerManager LocalPlayerManager { get { return localPlayerManager; } }
 
         /* Properties */
         public GameState GameState
@@ -47,7 +50,8 @@ namespace CGD
 
 
         public GameSettings GameSettings { get { return gameSettings; } }
-        public EvidenceBoard EvidenceBoard { get { return evidenceBoard; } }
+        public BoardRoundManager BoardRoundManager { get { return boardManager; } }
+
 
 
         protected override void Awake()
@@ -69,9 +73,6 @@ namespace CGD
             {
                 GenerateRoom();
             }
-
-            //TODO temporary
-            evidenceBoard = FindObjectOfType<EvidenceBoard>();  
 
             //TODO Eventually put into coroutine
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }; // You would have to set the Receivers to All in order to receive this event on the local client as well
@@ -132,7 +133,6 @@ namespace CGD
                 OnMeetingFinished((double)photonEvent.CustomData);
             }
         }
-
         #endregion
 
         #region Private Methods
@@ -170,7 +170,10 @@ namespace CGD
 
 
         #region Public Methods
-       
+        public void SetLocalPlayer(PlayerManager playerManager) 
+        {
+            localPlayerManager = playerManager;
+        }
         public void LeaveRoom() => PhotonNetwork.LeaveRoom();
         #endregion
 

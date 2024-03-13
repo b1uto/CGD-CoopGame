@@ -11,6 +11,7 @@ public class GameSettings : ScriptableObject
     public const byte PunAllPlayersLoaded = 3;
     public const byte PunGameStarted = 4;
     public const byte GameMeetingFinished = 5;
+    public const byte PlayerSubmittedClue = 6;
 
 
     [SerializeField] private double countdownDuration = 10;

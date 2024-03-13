@@ -13,21 +13,27 @@ public class BoardPanel : MenuPanel
     [SerializeField] private Image turnTimerImg;
     [SerializeField] private TextMeshProUGUI[] turnIndicators;
     [SerializeField] private TextMeshProUGUI turnPromptTMP;
+    [SerializeField] private Toggle panelToggle;
+
+    [SerializeField] private GameObject boardPanel, casePanel;
 
     private Coroutine turnTimerCoroutine;
+
 
     private void OnEnable()
     {
         UpdateTurnIndicators();
+        panelToggle.isOn = true;
     }
 
     private void Start()
     {
-        EvidenceBoard.OnNextPlayerTurn += NextPlayersTurn;
+        BoardRoundManager.OnNextPlayerTurn += NextPlayersTurn;
+        panelToggle.onValueChanged.AddListener(OnTogglePressed);
     }
     private void OnDestroy()
     {
-        EvidenceBoard.OnNextPlayerTurn -= NextPlayersTurn;
+        BoardRoundManager.OnNextPlayerTurn -= NextPlayersTurn;
     }
 
     private void NextPlayersTurn(Player player, int activePlayer) 
@@ -50,12 +56,16 @@ public class BoardPanel : MenuPanel
         }
     }
 
-    private void UpdateTurnPrompt(Player player) 
+    private void UpdateTurnPrompt(Player player)
     {
         if (PhotonNetwork.LocalPlayer == player)
+        {
             turnPromptTMP.text = "It's Your Turn!";
+        }
         else
+        {
             turnPromptTMP.text = "<color=orange> Player Is Making A Decision </color>";
+        }
     }
 
     IEnumerator TurnTimer()
@@ -72,8 +82,12 @@ public class BoardPanel : MenuPanel
 
             yield return new WaitForEndOfFrame();
         }
+    }
 
-
+    public void OnTogglePressed(bool isOn) 
+    {
+        boardPanel.SetActive(isOn);
+        casePanel.SetActive(!isOn);
     }
 
 

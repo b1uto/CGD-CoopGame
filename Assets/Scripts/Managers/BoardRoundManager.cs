@@ -1,3 +1,4 @@
+using CGD.Case;
 using CGD.Events;
 using CGD.Extensions;
 using ExitGames.Client.Photon;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 namespace CGD
 {
-    public class EvidenceBoard : MonoBehaviourPunCallbacks
+    public class BoardRoundManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         public delegate void PlayerDelegate(Player player, int index);
         public static event PlayerDelegate OnNextPlayerTurn;
@@ -27,10 +28,6 @@ namespace CGD
         /// dictates if turns rotate clockwise/anticlockwise around the table.
         /// </summary>
         private bool clockwiseTurn = true;
-
-
-        private List<GameObject> communityCards = new List<GameObject>();
-
 
         private Coroutine turnTimerCoroutine;
 
@@ -58,6 +55,10 @@ namespace CGD
                 pawn.transform.rotation = playerPoints[index].rotation;
             }
         }
+
+        public void SubmitClue(string id, ClueStatus status)
+        {
+        }
         #endregion
 
         #region PUN callbacks
@@ -72,6 +73,17 @@ namespace CGD
         public override void OnJoinedRoom()
         {
             playerList = PhotonNetwork.PlayerList;
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            byte eventCode = photonEvent.Code;
+
+            if (eventCode == GameSettings.PlayerSubmittedClue) 
+            {
+                var data = (object[])photonEvent.CustomData;
+
+            }
         }
         #endregion
 

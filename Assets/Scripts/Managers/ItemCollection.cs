@@ -35,5 +35,31 @@ public class ItemCollection : Singleton<ItemCollection>
         }
     }
 
+    public bool TryGetCaseData<T>(string id, out T data) where T : CaseData
+    {
+        data = default;
+
+        if (typeof(T) == typeof(CaseFile) && CaseFiles.TryGetValue(id, out var caseFile)) 
+        {
+            data = caseFile as T;
+            return true;
+        }
+        else if (typeof(T) == typeof(CaseElement) && CaseElements.TryGetValue(id, out var caseElement))
+        {
+            data = caseElement as T;
+            return true;
+        }
+        else if (typeof(T) == typeof(Clue) && CaseFiles.TryGetValue(id, out var clue))
+        {
+            data = clue as T;
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+
 
 }
