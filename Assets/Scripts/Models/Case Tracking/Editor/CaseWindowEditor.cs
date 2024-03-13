@@ -11,7 +11,7 @@ public class CaseWindowEditor : EditorWindow
     private Dictionary<string, Editor> elementEditors = new Dictionary<string, Editor>();
     private CaseFile mainCase;
 
-    private float splitPosition = 200;
+    private float splitPosition = 320;
     private bool isResizing = false;
     private Rect splitterRect;
     private Vector2 scrollPositionL;
