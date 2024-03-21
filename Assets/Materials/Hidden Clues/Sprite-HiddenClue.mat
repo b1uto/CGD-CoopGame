@@ -261,9 +261,9 @@ Material:
     - _SpecularAAScreenSpaceVariance: 0.1
     - _SpecularAAThreshold: 0.2
     - _SpecularOcclusionMode: 1
-    - _SpotLightAngle: 80
-    - _SpotLightIntensity: 2.175683
-    - _SpotLightRange: 3.05
+    - _SpotLightAngle: 41.3
+    - _SpotLightIntensity: 0
+    - _SpotLightRange: 4
     - _SrcBlend: 1
     - _StencilRef: 0
     - _StencilRefDepth: 1
@@ -319,8 +319,8 @@ Material:
     - _LightPosition: {r: 0, g: 0, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SpotLightDirection: {r: -0, g: -0.059659224, b: 0.9982189, a: 0}
-    - _SpotLightPosition: {r: -1.48, g: 1.724, b: 0.121, a: 0}
+    - _SpotLightDirection: {r: -0.00000003480102, g: -0.0000015062008, b: -1, a: 0}
+    - _SpotLightPosition: {r: -0.9548655, g: 0.021341542, b: 0.27598128, a: 0}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _TransmittanceColor: {r: 1, g: 1, b: 1, a: 1}
     - _UVDetailsMappingMask: {r: 1, g: 0, b: 0, a: 0}
