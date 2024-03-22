@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
   AppSettings:
-    AppIdRealtime: 253750a5-b398-4b9c-a5bc-fa834264fac6
+    AppIdRealtime: 
     AppIdFusion: 
-    AppIdChat: 1baf429c-25da-4aa6-af1b-bd94b00d89e1
-    AppIdVoice: 
+    AppIdChat: 
+    AppIdVoice: f54baa97-4e94-4287-8995-8b749e804565
     AppVersion: 
     UseNameServer: 1
     FixedRegion: 
@@ -28,25 +28,22 @@ MonoBehaviour:
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 1
-  DevRegion: eu
-  PunLogging: 2
+  DevRegion: 
+  PunLogging: 0
   EnableSupportLogger: 0
   RunInBackground: 1
   StartInOfflineMode: 0
   RpcList:
+  - CantHearYou
+  - ChangeColour
   - ClickRpc
   - DestroyRpc
-  - DestroySpaceship
-  - Fire
-  - RespawnSpaceship
-  - InstantiateModel
-  - InitialiseModel
+  - HeresWhy
+  - CollectClue
   - InstantiateCharacter
   - ToggleTorch
   - TorchDropped
   - TorchEquipped
-  - CollectClue
-  - PlayerInitialized
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
-  DevRegionSetOnce: 1
+  ShowSettings: 1
+  DevRegionSetOnce: 0

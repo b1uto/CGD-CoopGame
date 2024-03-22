@@ -114,6 +114,10 @@ namespace CGD.Networking
             feedbackText.text = System.Environment.NewLine + message;
         }
 
+        public void GotoLobbyScene()
+        {
+            SceneManager.LoadScene("LobbyScene");
+        }
         private static void CreateDebugRoom() 
         {
             PhotonNetwork.CreateRoom("DEBUG_ROOM", new RoomOptions
@@ -221,12 +225,13 @@ namespace CGD.Networking
 #endif
                 LogFeedback("Connected to Master");
                 PhotonNetwork.JoinLobby();
-
+                
             }
         }
 
         public override void OnJoinedLobby()
         {
+
 #if DEBUGGING
             Debug.Log("Joined Lobby");
             if (Debugging) { CreateDebugRoom(); }
@@ -235,6 +240,8 @@ namespace CGD.Networking
             //TODO connect to auth logins
             PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
             MenuManager.Instance.OpenMenu("main");
+            GotoLobbyScene();
+
         }
 
         ///// <summary>
