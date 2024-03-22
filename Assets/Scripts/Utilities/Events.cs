@@ -14,4 +14,9 @@ namespace CGD.Events
     public class FloatEvent : UnityEvent<float> { }
     [System.Serializable]
     public class BoolEvent : UnityEvent<bool> { }
+
+    public delegate void IntDelegate(int value);
+    public delegate void StringDelegate(string value);
+    public delegate void FloatDelegate(float value);
+    public delegate void BoolDelegate(bool value);
 }

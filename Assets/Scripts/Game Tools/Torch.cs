@@ -34,7 +34,7 @@ namespace CGD
                 photonView.RPC(nameof(ToggleTorch), RpcTarget.All, flashLightOn); 
         }
         public override void Equip(int viewId) => photonView.RPC(nameof(TorchEquipped), RpcTarget.All, viewId);
-        public override void Unequip() => photonView.RPC(nameof(TorchDropped), RpcTarget.All);
+        public override void Unequip(int viewId) => photonView.RPC(nameof(TorchDropped), RpcTarget.All, viewId);
         #endregion
 
         #region RPCs
@@ -45,7 +45,7 @@ namespace CGD
 
             if (view != null && view.TryGetComponent<PlayerAnimController>(out var animController))
             {
-                var slot = animController.GetEquipSlot(itemEquipSlot);
+                var slot = animController.EquipItem(itemEquipSlot);
                 OnExitFocus();
                 rb.isKinematic = true;
 
@@ -58,11 +58,17 @@ namespace CGD
         }
 
         [PunRPC]
-        private void TorchDropped()
+        private void TorchDropped(int viewId)
         {
-            transform.SetParent(null);
-            owner = -1;
-            rb.isKinematic = false;
+            var view = PhotonView.Find(viewId);
+
+            if (view != null && view.TryGetComponent<PlayerAnimController>(out var animController))
+            {
+                animController.UnEquipItem();
+                transform.SetParent(null);
+                owner = -1;
+                rb.isKinematic = false;
+            }
         }
 
         [PunRPC]

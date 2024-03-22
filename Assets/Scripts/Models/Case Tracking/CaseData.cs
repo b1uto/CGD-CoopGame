@@ -26,7 +26,7 @@ namespace CGD.Case
 
         [MaxLength(68)]
         public string shortDescription;
-        [MaxLength(68)]
+        [MaxLength(120)]
         [Tooltip("This should include a color tag for key words")]
         public string analysedDescription;
         [TextArea(3, 10)]

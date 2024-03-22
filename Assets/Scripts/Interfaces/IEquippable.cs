@@ -18,7 +18,7 @@ using UnityEngine;
 
         public abstract void Equip(int viewId);
         
-        public abstract void Unequip();
+        public abstract void Unequip(int viewId);
 
     }
 

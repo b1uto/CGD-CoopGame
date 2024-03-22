@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c54b6d459fcd6b49b16971ddfbe8b93, type: 3}
+  m_Name: Motive_Clue_0
+  m_EditorClassIdentifier: 
+  id: a3283730-e6b3-4c3c-b205-53522899f624
+  shortDescription: Mr Winston sent several letter to his lawyer
+  analysedDescription: The letter shows Mr Winston was sending a new draft for his
+    will.
+  fullDescription: 'The will document shows Mrs Winston was removed from any inheritance. '
+  icon: {fileID: 0}
+  elementId: 529b932e-3866-45f3-b64e-ef31cdae28a6
+  indentifyTool: 0
+  analyseTool: 0

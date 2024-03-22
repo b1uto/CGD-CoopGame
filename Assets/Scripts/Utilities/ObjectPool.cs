@@ -1,21 +1,23 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace CGD.Utilities
 {
-    public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
+    public class ObjectPool<T> : MonoBehaviour where T : Component
     {
         public bool addChildrenOnAwake = true;
         public GameObject prefab;
 
-        private List<T> pool = new List<T>();
+        protected List<T> pool = new List<T>();
 
         private void Awake()
         {
             foreach (Transform child in transform)
             {
-                pool.Add(child.GetComponent<T>());
+                var comp = child.GetComponent<T>();
+                
+                if(comp != null)
+                   pool.Add(comp);
             }
         }
 
@@ -29,6 +31,14 @@ namespace CGD.Utilities
             foreach (var obj in pool)
             {
                 obj.gameObject.SetActive(false);
+            }
+        }
+
+        public void ResetUnusedObjects(int lastIndex)
+        {
+            for (int i = lastIndex - 1; i < pool.Count; i++)
+            {
+                pool[i].gameObject.SetActive(false);
             }
         }
 

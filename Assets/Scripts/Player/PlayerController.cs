@@ -37,7 +37,7 @@ namespace CGD
         private IInteractable interactable;
 
         //Equipment
-        private IEquippable rightHandTool;
+        private IEquippable leftHandTool;
 
 
         public Vector2 GroundVelocity 
@@ -67,7 +67,7 @@ namespace CGD
 
         private void Update()
         {
-            if (!photonView.IsMine)
+            if (photonView && !photonView.IsMine)
                 HandleClientSync();
             else
             {
@@ -178,24 +178,24 @@ namespace CGD
                 Drop();
                 //var slot = GetComponent<PlayerAnimController>().GetEquipSlot(equippableObj.ItemEquipSlot);
                 equippableObj.Equip(photonView.ViewID);
-                rightHandTool = equippableObj;
+                leftHandTool = equippableObj;
             }
         }
 
         public void Drop() 
         {
             //TODO extend to multiple slots
-            if (rightHandTool != null)
+            if (leftHandTool != null)
             {
-                rightHandTool.Unequip();
+                leftHandTool.Unequip(photonView.ViewID);
             }
         }
 
 
         public void Fire()
         {
-            if (rightHandTool != null)
-                rightHandTool.Interact(photonView.ViewID);
+            if (leftHandTool != null)
+                leftHandTool.Interact(photonView.ViewID);
         }
 
 

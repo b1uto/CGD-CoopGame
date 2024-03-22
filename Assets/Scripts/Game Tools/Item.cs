@@ -87,7 +87,7 @@ namespace CGD
 
         #region IEquippable Functions
         public virtual void Equip(int viewId) { }
-        public virtual void Unequip() { }
+        public virtual void Unequip(int viewId) { }
         #endregion
 
 
@@ -106,7 +106,6 @@ namespace CGD
         /// </summary>
         public void Update()
         {
-
             if (Equipped)
             {
                 transform.localPosition = Vector3.zero;

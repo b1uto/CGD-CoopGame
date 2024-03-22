@@ -6,6 +6,8 @@ namespace CGD
 {
     public class PlayerInputHandler : MonoBehaviour
     {
+        public bool Debugging = false;
+
         /// <summary>
         /// ScriptableObject. input settings
         /// </summary>
@@ -63,6 +65,7 @@ namespace CGD
         {
             var filePath = System.IO.Path.Combine("Data", "Settings");
             settings = Resources.Load<InputSettings>(System.IO.Path.Combine(filePath, "InputSettings"));
+            
         }
         private void OnEnable()
         {
@@ -78,7 +81,12 @@ namespace CGD
             playerInput.Default.Equip.performed += OnEquipInput;
             playerInput.Default.Drop.performed += OnDropInput;
             playerInput.Default.Fire.performed += OnFireInput;
-            playerInput.Disable();
+
+            if (Debugging)
+                playerInput.Enable();
+            else
+                playerInput.Disable();
+           // playerInput.Disable();
         }
        
         private void OnDisable()

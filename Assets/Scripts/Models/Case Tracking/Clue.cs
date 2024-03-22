@@ -23,25 +23,27 @@ namespace CGD.Case
         Analysed
     }
     #endregion
-    public enum ClueType
-    {
-        HiddenStain = 0,
-        HiddenWriting = 1,
-        Prints = 2,
-        Item = 3,
-        Residue = 4,
-        PersonOfInterest = 5
-    }
-    public enum ClueMiniGame
-    {
-        Automatic = 0,
-        MatchImage = 1,
-        Interrogation = 2,
-        MatchVolume = 3,
-        Oscilloscope = 4
 
+    public enum IdentifyTool
+    {
+        None,
+        UVLight,
+        Luminol,
+        MagnifyingGlass,
+        MetalDetector,
+        FlashLight,
     }
 
+    public enum AnalyseTool 
+    {
+        None,           //You can collect/analyse without any special tool
+        Interrogation,  //requires a dialogue with an NPC
+        Swab,           //minigame where you match the level in a testtube with a target. 
+        Forceps,        //minigame based on the surgery board game. you control a shaky hand in order to pick out the sample.
+        Tape            //minigame where you need to match the image to a databank e.g. checking if the fingerprint matches any in the database
+    }
+
+    [CreateAssetMenu(fileName = "Clue", menuName = "Case Data/Clue", order = 1)]
     public class Clue : CaseData
     {
         /// <summary>
@@ -50,9 +52,9 @@ namespace CGD.Case
         [ReadOnly]
         public string elementId;
 
-        public ClueType type;
-        public ClueMiniGame miniGame;
-
+        public bool isFalseEvidence;
+        public IdentifyTool indentifyTool;
+        public AnalyseTool analyseTool;
     }
 
    

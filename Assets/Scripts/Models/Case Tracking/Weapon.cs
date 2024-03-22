@@ -5,9 +5,12 @@ namespace CGD.Case
 {
     public enum WeaponType
     {
-        Revolver,
-        Knife,
-        Poison
+        Firearm,
+        Sharp,
+        Blunt,
+        Poison,
+        Fists,
+        Fall
     }
 
     public class Weapon : CaseElement

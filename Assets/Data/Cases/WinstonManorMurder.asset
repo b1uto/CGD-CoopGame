@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7941971379801056647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a372a1f82a4a84d87a696d40b87d16, type: 3}
+  m_Name: Suspect
+  m_EditorClassIdentifier: 
+  id: ff9bbf74-d601-4800-afe1-7e9f404b6dfc
+  shortDescription: The victim was highly influential. Many could have benefited
+    from hi
+  analysedDescription: 'Initial investigations hint at the possibility that the perpetrator '
+  fullDescription: Mrs. Winston, Mr. Winston's wife, is the prime suspect. Despite
+    a facade of social grace and philanthropy, Coral's private turmoil, stemming
+    from her volatile marriage and financial desperation, paints a starkly different
+    picture. Her intimate knowledge of Mr. Winston's habits and the manor itself,
+    combined with the discovery of incriminating items among her belongings and inconsistencies
+    in her alibi, culminate in a compelling case against her. Coral's motive. After
+    finding the victim's will, Mrs. Winston was inconsolable and lashed out in a
+    fit of rage.
+  icon: {fileID: 21300000, guid: 162bbe9f1496a814a97cebc91108ebc5, type: 3}
+  caseId: 81c717b8-2f18-489a-9e39-be87f4d1031a
+  cluesToReveal: 4
+  clues:
+  - 2d4ad7eb-9b04-4595-af1b-390406aced6a
+  - 2b3810c8-cbec-492b-a6c0-97d6f4e82ba8
+  - 8787b068-244c-4566-badc-8870ebb1cd2e
+  - 01aa52a5-ef94-4737-8c98-5effd34b0172
+  - 94487fbc-1ac4-4204-8c57-681711558669
+  - 5c48b861-fb87-471d-b0ed-7623949b5530
+  - d00dc878-ee68-4578-a002-1bc94518e09c
+  - de25faec-c7d6-4507-9bfe-03c90fdad2c4
+  fullName: Coral Winston
+  title: 3
+  age: 48
+  eyeColour: 2
+  height: 0
+  build: 2
+  modelId: 
+--- !u!114 &-5189047359800830655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3659a6b45b708864a86acd4ee2e46aab, type: 3}
+  m_Name: Weapon
+  m_EditorClassIdentifier: 
+  id: 239c9ee6-01db-4384-86f5-7959b6cff686
+  shortDescription: The victim's body is at the morgue. There are some signs of struggle
+  analysedDescription: The autopsy indicates Mr.Winston suffered from a <colour=orange>cardiac
+    event</color>
+  fullDescription: Mr.Winston was relatively healthy prior to this incident. There
+    was no prior indication that he may be suffering from cardiac issues. Traces
+    of arsenic was found on the victim's cutlery. Mr.Winston was almost certaintly
+    poisoned.
+  icon: {fileID: 21300000, guid: 72dda27df76f1d84ebf06d663cb4e290, type: 3}
+  caseId: 81c717b8-2f18-489a-9e39-be87f4d1031a
+  cluesToReveal: 4
+  clues:
+  - e7e99939-d46f-4055-a6fd-2cc0ca259013
+  - bc5e91b2-5bc6-4ff5-905e-8f90b4b7c756
+  - 743979ee-f017-4ff1-a922-420df444a625
+  - b7985d13-c690-4a6e-b31d-63f4b2e21fc8
+  - d74c043b-8e32-4e03-941a-2d72135327ed
+  - cef9b244-3a4b-45a1-a4a0-cb9946b1d4d8
+  - 5cfd63ab-5721-4b29-a96e-78a3f118c473
+  - f54a0152-27ff-4cbb-8296-77946b973e99
+  - 745c4976-1caf-4d2d-ad52-b6232b7b6159
+  type: 3
+--- !u!114 &-1070787227332552637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 340d5506e2502a243942c5d45a1802cb, type: 3}
+  m_Name: Motive
+  m_EditorClassIdentifier: 
+  id: 529b932e-3866-45f3-b64e-ef31cdae28a6
+  shortDescription: Mr.Winston had many enemies. It could have been anyone.
+  analysedDescription: Evidence reveals the victim had some <color=orange> financial
+    diffic
+  fullDescription: Financial documents and correspondence with creditors unveils
+    Mr.Winston had been looking at re-writing his will. His latest draft, which did
+    not make it to his lawyer, showed all of his assets would pass to his children,
+    leaving nothing for his wife. It is thought that a possible affair caused his
+    change of heart.
+  icon: {fileID: 21300000, guid: bb668b30fa4b5704184fd6771e7cdb0b, type: 3}
+  caseId: 81c717b8-2f18-489a-9e39-be87f4d1031a
+  cluesToReveal: 4
+  clues:
+  - a3283730-e6b3-4c3c-b205-53522899f624
+  - 44c353d7-f7e3-49b1-bb9b-9b7e5342beac
+  - 8b19d427-d9ee-4395-98fc-a166c28cce9e
+  - 143ba587-4bdf-46ac-9474-0060d9ac7c7f
+  - 96da5d79-ece6-4ab9-be19-0b4fd7544661
+  - 5a3de56c-409e-4f8e-ad95-b65ee5248e53
+  type: 3
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e10f17cbd79125e4bba5da020c28233a, type: 3}
+  m_Name: WinstonManorMurder
+  m_EditorClassIdentifier: 
+  id: 81c717b8-2f18-489a-9e39-be87f4d1031a
+  shortDescription: Investigate the murder of Mr.Winston
+  analysedDescription: 
+  fullDescription: The wealthy and influential Mr. Winston was found dead in his
+    manor during the early hours of the morning in 1948. Investigate the surroundings,
+    interrogate the suspects, and uncover the truth behind his mysterious demise.
+  icon: {fileID: 0}
+  elements:
+  - 529b932e-3866-45f3-b64e-ef31cdae28a6
+  - ff9bbf74-d601-4800-afe1-7e9f404b6dfc
+  - 239c9ee6-01db-4384-86f5-7959b6cff686

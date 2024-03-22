@@ -27,6 +27,16 @@ MonoBehaviour:
   cluesToReveal: 3
   clues:
   - e2bcc315-e871-4dd8-ba16-21db18667916
+  - 77af5c67-967b-41cd-b34d-163f2083e51e
+  - c2247c67-2272-43cb-81c0-8b9363d6e238
+  - 0a948863-e993-4685-8930-135831158eb1
+  - e63d9d62-2147-45ae-b32a-1da7314d8e5f
+  - f797da4d-a59a-4d94-9535-c4d95be5c5c0
+  - f0ea3fb0-1e35-4338-a435-c9a2b9797cba
+  - 1dcb7c2d-15f3-4d83-b713-5299c1bfb2e1
+  - b87d6aca-f49e-4705-9425-64093a01ea39
+  - 8b1c37d5-6739-4d59-a259-a8cd894770d7
+  - 8983d639-06b5-498a-bfc6-44ec3d6537e1
   type: 0
 --- !u!114 &-674756889441464210
 MonoBehaviour:
@@ -48,6 +58,7 @@ MonoBehaviour:
   caseId: abcfa781-95f0-4714-842b-d4a3617d52c6
   cluesToReveal: 0
   clues: []
+  type: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

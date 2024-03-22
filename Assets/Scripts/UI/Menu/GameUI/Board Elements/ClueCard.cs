@@ -32,7 +32,10 @@ public class ClueCard : MonoBehaviour
             SetPointerImage(caseData.elementId);
 
             button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(() => { callback?.Invoke(rectTransform, id); });
+            
+            if (callback != null)
+                button.onClick.AddListener(() => { callback?.Invoke(rectTransform, id); });
+        
         }
     }
 

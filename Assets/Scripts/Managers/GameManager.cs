@@ -6,6 +6,7 @@ using UnityEngine.Rendering.HighDefinition;
 using System.Collections;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 namespace CGD
 {
@@ -29,7 +30,7 @@ namespace CGD
         private int loadedPlayers = 0;
 
         private GameState _gameState;
-        private BoardRoundManager boardManager;
+        [SerializeField]private BoardRoundManager boardManager;
         private PlayerManager localPlayerManager;
 
         public PlayerManager LocalPlayerManager { get { return localPlayerManager; } }
@@ -220,12 +221,7 @@ namespace CGD
 
         #endregion
 
-        #region Interaction
-        public void ClueCollected(int playerViewId, int clueId)
-        {
 
-        }
-        #endregion
 
     }
 }

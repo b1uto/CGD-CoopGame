@@ -8,6 +8,7 @@ using Photon.Realtime;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace CGD
 {
@@ -15,18 +16,7 @@ namespace CGD
     {
         public static GameObject LocalPlayerInstance;
 
-        /// <summary>
-        /// TODO store elsewhere in Item Collection. Randomise if player has not chosen avatar.
-        /// </summary>
-        private readonly string[] modelNames = new string[5]
-        {
-        "female01",
-        "female02",
-        "male01",
-        "male02",
-        "male03"
-        };
-
+      
         public ref Dictionary<string, ClueInfo> Clues { get { return ref clues; } }
 
         private Dictionary<string, ClueInfo> clues = new Dictionary<string, ClueInfo>();
@@ -64,7 +54,7 @@ namespace CGD
             {
                 LocalPlayerInstance = this.gameObject;
 
-                var modelPath = Path.Combine("Models", GetRandomModelName());
+                var modelPath = Path.Combine("Models", ItemCollection.GetRandomModelName());
                 photonView.RPC(nameof(InstantiateCharacter), RpcTarget.AllBuffered, photonView.ViewID, modelPath);
                 GameManager.Instance.SetLocalPlayer(this);
             }
@@ -74,14 +64,16 @@ namespace CGD
         private void InstantiateCharacter(int ownerViewID, string modelPath)
         {
             var owner = PhotonView.Find(ownerViewID);
-            if (owner && !string.IsNullOrEmpty(modelPath))
+            if (owner && !string.IsNullOrEmpty(modelPath) && TryGetComponent(out PlayerAnimController animController))
             {
-                var model = Resources.Load<GameObject>(modelPath);
-                var modelTransform = Instantiate(model, owner.transform).transform;
-                modelTransform.localPosition = Vector3.zero;
-                modelTransform.localRotation = Quaternion.identity;
+                animController.InitialiseAnimController(owner, modelPath);
 
-                GetComponent<PlayerAnimController>().animator = modelTransform.GetComponent<Animator>();
+                //var model = Resources.Load<GameObject>(modelPath);
+                //var modelTransform = Instantiate(model, owner.transform).transform;
+                //modelTransform.localPosition = Vector3.zero;
+                //modelTransform.localRotation = Quaternion.identity;
+
+                //GetComponent<PlayerAnimController>().animator = modelTransform.GetComponent<Animator>();
             }
             else 
             {
@@ -90,16 +82,14 @@ namespace CGD
 #endif
             }
         }
-        private string GetRandomModelName() 
-        {
-            return modelNames[Random.Range(0, modelNames.Length)];
-        }
+
+
 
         public void SubmitClue(string id)
         {
             if (clues.TryGetValue(id, out var info))
             {
-                object[] data = new object[] { id, (int)info.status, PhotonNetwork.LocalPlayer.ActorNumber };
+                object[] data = new object[] { id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed};
 
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
                 PhotonNetwork.RaiseEvent(GameSettings.PlayerSubmittedClue, data, raiseEventOptions, SendOptions.SendReliable);
@@ -145,9 +135,14 @@ namespace CGD
                 var data = (object[])photonEvent.CustomData;
 
                 var clue = (string)data[0];
-                var clueInfo = new ClueInfo(true, (ClueStatus)data[1]);
+                var clueInfo = new ClueInfo(true, (bool)data[2] ? ClueStatus.Analysed : ClueStatus.Collected);
                 
                 UpdateClue(clue, clueInfo); 
+            }
+
+            if(eventCode == GameSettings.PunAllPlayersLoaded) 
+            {
+                AssignRandomClues();
             }
         }
 
@@ -162,6 +157,55 @@ namespace CGD
                 clues.Add(clue, clueInfo);
             }
         }
+        #endregion
+
+
+        #region DEBUG
+
+        private void AssignRandomClues()
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                var keys = ItemCollection.Instance.GetClueKeys();
+
+                int keysPerClient = keys.Length / PhotonNetwork.PlayerList.Length;
+
+                int index = 0;
+
+                foreach (var player in PhotonNetwork.PlayerList)
+                {
+                    if (index >= keys.Length)
+                        break;
+
+                    var cluesToAdd = new List<string>();
+
+                    for(int i = 0; i < keysPerClient; i++) 
+                    {
+                        cluesToAdd.Add(keys[index++]);
+                    }
+
+                    AddDebugClues(cluesToAdd.ToArray(), player.ActorNumber);
+                }
+            }
+        }
+
+        public void AddDebugClues(string[] cluesToAdd, int actorNumber) 
+        {
+            photonView.RPC(nameof(GiveClue), RpcTarget.All, actorNumber, cluesToAdd);
+        }
+
+        [PunRPC]
+        private void GiveClue(int actorNumber, string[] cluesToAdd)
+        {
+            if (actorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+            {
+                foreach (var clue in cluesToAdd)
+                {
+                    clues.Add(clue, new ClueInfo(false, ClueStatus.Collected));
+                }
+            }
+        }
+
         #endregion
 
     }

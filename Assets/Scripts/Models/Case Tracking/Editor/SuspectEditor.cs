@@ -89,6 +89,12 @@ namespace CGD.Case
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Title", GUILayout.Width(80));
             suspect.title = (Title)EditorGUILayout.EnumPopup(suspect.title);
+            EditorGUILayout.LabelField("Eye Colour", GUILayout.Width(80));
+            suspect.eyeColour = (EyeColour)EditorGUILayout.EnumPopup(suspect.eyeColour);
+            EditorGUILayout.LabelField("Height", GUILayout.Width(80));
+            suspect.height = (Height)EditorGUILayout.EnumPopup(suspect.height);
+            EditorGUILayout.LabelField("Build", GUILayout.Width(80));
+            suspect.build = (Build)EditorGUILayout.EnumPopup(suspect.build);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();

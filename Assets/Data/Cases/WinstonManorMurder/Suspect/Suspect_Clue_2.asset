@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c54b6d459fcd6b49b16971ddfbe8b93, type: 3}
+  m_Name: Suspect_Clue_2
+  m_EditorClassIdentifier: 
+  id: 8787b068-244c-4566-badc-8870ebb1cd2e
+  shortDescription: A maid overheard an argument a few nights before the incident
+  analysedDescription: The maid overheard Mr and Mrs Winston arguing about money.
+  fullDescription: 
+  icon: {fileID: 0}
+  elementId: ff9bbf74-d601-4800-afe1-7e9f404b6dfc
+  indentifyTool: 0
+  analyseTool: 1

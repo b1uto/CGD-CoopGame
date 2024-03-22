@@ -1,5 +1,6 @@
 using CGD.Case;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ItemCollection : Singleton<ItemCollection>
@@ -14,6 +15,23 @@ public class ItemCollection : Singleton<ItemCollection>
     private Dictionary<string, CaseElement> CaseElements = new Dictionary<string, CaseElement>();
     private Dictionary<string, Clue> Clues = new Dictionary<string, Clue>();
     #endregion
+
+
+    #region temp
+    /// <summary>
+    /// TODO store elsewhere in Item Collection. Randomise if player has not chosen avatar.
+    /// </summary>
+    private static readonly string[] modelNames = new string[5]
+    {
+        "female01",
+        "female02",
+        "male01",
+        "male02",
+        "male03"
+    };
+
+    #endregion
+
 
     private void Start()
     {
@@ -49,7 +67,7 @@ public class ItemCollection : Singleton<ItemCollection>
             data = caseElement as T;
             return true;
         }
-        else if (typeof(T) == typeof(Clue) && CaseFiles.TryGetValue(id, out var clue))
+        else if (typeof(T) == typeof(Clue) && Clues.TryGetValue(id, out var clue))
         {
             data = clue as T;
             return true;
@@ -59,7 +77,15 @@ public class ItemCollection : Singleton<ItemCollection>
     }
 
 
+    #region DEBUG
+    public string[] GetClueKeys() { return Clues.Keys.ToArray(); }
 
+    public static string GetRandomModelName()
+    {
+        return modelNames[Random.Range(0, modelNames.Length)];
+    }
+
+    #endregion
 
 
 }

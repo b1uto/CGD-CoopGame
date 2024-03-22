@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Photon.Pun;
 using UnityEngine;
 
@@ -5,15 +6,16 @@ namespace CGD
 {
     public class PlayerAnimController : MonoBehaviourPun, IPunObservable
     {
-        public Animator animator;
+        [SerializeField] private Animator animator;
+        [SerializeField] private RigController rigController;
 
         //TODO change this to be chosen by the host
-        [SerializeField] private GameObject modelPrefab;
+        // [SerializeField] private GameObject modelPrefab;
         [SerializeField] private float directionDamp;
 
-        [Header("Equipment Slots")]
-        [SerializeField] private Transform rightHandSlot;
+        [Header("Rig Transforms")]
         [SerializeField] private Transform leftHandSlot;
+        [SerializeField] private Transform mainCamera;
 
         private PlayerInputHandler inputHandler;
 
@@ -21,6 +23,7 @@ namespace CGD
         private const string moveY = "MoveY";
 
         private float xVal, yVal;
+        private bool itemEquipped = false;
 
         private void Start()
         {
@@ -29,8 +32,9 @@ namespace CGD
 
         void Update()
         {
-            if (inputHandler != null && photonView.IsMine)
+            if (inputHandler != null && (photonView == null || photonView.IsMine))
             {
+                //TODO use velocity over input.
                 xVal = inputHandler.MoveInput.x;
                 yVal = inputHandler.MoveInput.z;
             }
@@ -56,17 +60,44 @@ namespace CGD
             }
         }
 
-        public Transform GetEquipSlot(EquipSlot equipSlot)
+        public Transform EquipItem(EquipSlot equipSlot)
         {
+            DOVirtual.Float(0, 1, 1.0f, val => UpdateArmLayer(val));
+            itemEquipped = true;
+
             switch (equipSlot)
             {
-                case EquipSlot.RightHand:
-                    return rightHandSlot;
                 default:
-                    return leftHandSlot;
+                    return rigController.ToolParent;
             }
         }
 
+        public void UnEquipItem() 
+        {
+            DOVirtual.Float(1, 0, 1.0f, val => UpdateArmLayer(val));
+            itemEquipped = false;
+        }
+
+        public void InitialiseAnimController(PhotonView owner, string modelPath) 
+        {
+            var model = Resources.Load<GameObject>(modelPath);
+            var modelTransform = Instantiate(model, owner.transform).transform;
+            modelTransform.localPosition = Vector3.zero;
+            modelTransform.localRotation = Quaternion.identity;
+
+            animator = modelTransform.GetComponent<Animator>();
+            rigController = modelTransform.GetComponentInChildren<RigController>();
+            
+            if(rigController != null ) 
+                rigController.SetConstraintTargets(leftHandSlot, mainCamera);
+
+        }
+
+        private void UpdateArmLayer(float value) 
+        {
+            animator.SetLayerWeight(1, value);
+            rigController.UpdateRigWeight(value);
+        }
 
     }
 }

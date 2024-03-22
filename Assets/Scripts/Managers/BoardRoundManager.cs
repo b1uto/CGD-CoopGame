@@ -5,15 +5,18 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CGD
 {
     public class BoardRoundManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public delegate void PlayerDelegate(Player player, int index);
-        public static event PlayerDelegate OnNextPlayerTurn;
+        public delegate void ClueSubmitDelegate(string id, int actorNumber, bool analysed);
+
+        public static event ClueSubmitDelegate OnClueSubmitted;
+        public static event IntDelegate OnNextPlayerTurn;
+        public static event IntDelegate OnPlayerSkippedTurn;
+
 
         [SerializeField] private Transform[] playerPoints;
 
@@ -29,9 +32,17 @@ namespace CGD
         /// </summary>
         private bool clockwiseTurn = true;
 
+
+        private RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+
         private Coroutine turnTimerCoroutine;
 
+        public Player[] PlayerList { get { return playerList; } }
+        private GameManager GM { get { return GameManager.Instance; } }
+
+
         #region Setup
+
         private void Start()
         {
             playerList = PhotonNetwork.PlayerList;
@@ -79,12 +90,35 @@ namespace CGD
         {
             byte eventCode = photonEvent.Code;
 
-            if (eventCode == GameSettings.PlayerSubmittedClue) 
+            if (eventCode == GameSettings.PlayerSubmittedClue)
             {
-                var data = (object[])photonEvent.CustomData;
+                object[] data = (object[])photonEvent.CustomData;
 
+                OnClueSubmitted?.Invoke((string)data[0], (int)data[1], (bool)data[2]);
+                StopAllCoroutines();
+                Invoke("NextPlayer", 3);
+            }
+
+            if(eventCode == GameSettings.OnPlayerSkippedTurn)
+            {
+                OnPlayerSkippedTurn?.Invoke((int)photonEvent.CustomData);
+                StopAllCoroutines();
+                Invoke("NextPlayer", 3);
+            }
+
+            if(eventCode == GameSettings.OnNextPlayersTurn) 
+            {
+                object[] data = (object[])photonEvent.CustomData;
+
+                GM.GameSettings.SetTurnEndTime((double)data[1]);
+                OnNextPlayerTurn?.Invoke((int)data[0]); 
+
+                if (PhotonNetwork.IsMasterClient)
+                    CoroutineUtilities.StartExclusiveCoroutine(TurnTimer(), ref turnTimerCoroutine, this);
             }
         }
+
+
         #endregion
 
         #region Main
@@ -96,13 +130,12 @@ namespace CGD
 
         private void StartCardRound()
         {
-            StartCoroutine(DelayStartCardRound());
+            activePlayer = 0;
+            NextPlayer();
         }
 
         private void FinishCardRound()
         {
-            activePlayer = -1;
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
             PhotonNetwork.RaiseEvent(GameSettings.GameMeetingFinished, PhotonNetwork.Time, raiseEventOptions, SendOptions.SendReliable);
         }
         #endregion
@@ -113,31 +146,43 @@ namespace CGD
             if (!PhotonNetwork.IsMasterClient) 
                 return;
 
-            activePlayer++;
-
             if (activePlayer >= playerList.Length)
+            {
                 FinishCardRound();
+            }
             else
             {
-                OnNextPlayerTurn?.Invoke(playerList[activePlayer], activePlayer);
-                    
-                if(PhotonNetwork.IsMasterClient)
-                    CoroutineUtilities.StartExclusiveCoroutine(TurnTimer(), ref turnTimerCoroutine, this);
+                object[] eventData = new object[] { playerList[activePlayer++].ActorNumber, PhotonNetwork.Time } ;
+
+                PhotonNetwork.RaiseEvent(GameSettings.OnNextPlayersTurn, eventData, raiseEventOptions, SendOptions.SendReliable);
+
+
             }
+        }
+
+        public void Btn_SkipTurn() 
+        {
+#if DEBUGGING
+            DebugCanvas.Instance.AddConsoleLog("<color=yellow>Skipping Turn</color>");
+#endif
+
+            PhotonNetwork.RaiseEvent(GameSettings.OnPlayerSkippedTurn,
+                PhotonNetwork.LocalPlayer.ActorNumber, raiseEventOptions, SendOptions.SendReliable);
         }
 
         IEnumerator TurnTimer() 
         {
-            var delay = GameManager.Instance.GameSettings.TurnTime;
+            var delay = GM.GameSettings.TurnEndTime - PhotonNetwork.Time;
             yield return new WaitForSecondsRealtime((float)delay);
+
             NextPlayer();
         }
 
-        IEnumerator DelayStartCardRound(float delay = 3) 
-        {
-            yield return new WaitForSecondsRealtime(delay);
-            NextPlayer();
-        }
+        //IEnumerator DelayStartCardRound(float delay = 3) 
+        //{
+        //    yield return new WaitForSecondsRealtime(delay);
+        //    //NextPlayer();
+        //}
 
         #endregion
 

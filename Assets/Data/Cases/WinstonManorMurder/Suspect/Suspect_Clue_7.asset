@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c54b6d459fcd6b49b16971ddfbe8b93, type: 3}
+  m_Name: Suspect_Clue_7
+  m_EditorClassIdentifier: 
+  id: de25faec-c7d6-4507-9bfe-03c90fdad2c4
+  shortDescription: A diary entry by Mr. Winston expressing unfounded fears of a
+    close f
+  analysedDescription: Crafted to sow doubt, this could mislead investigators into
+    suspecting innocent friends.
+  fullDescription: 
+  icon: {fileID: 0}
+  elementId: ff9bbf74-d601-4800-afe1-7e9f404b6dfc
+  isFalseEvidence: 1
+  indentifyTool: 0
+  analyseTool: 0

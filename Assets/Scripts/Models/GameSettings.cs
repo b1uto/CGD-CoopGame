@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GameSettings", menuName = "Settings/GameSettings", order = 1)]
@@ -12,10 +13,14 @@ public class GameSettings : ScriptableObject
     public const byte PunGameStarted = 4;
     public const byte GameMeetingFinished = 5;
     public const byte PlayerSubmittedClue = 6;
+    public const byte OnNextPlayersTurn = 7;
+    public const byte OnPlayerSkippedTurn = 8;
 
 
     [SerializeField] private double countdownDuration = 10;
     [SerializeField] private double roundDuration = 30;
+    [SerializeField] private double turnDuration = 30;
+    [SerializeField] private double turnBufferDuration = 5;
 
 
     /* runtime values */
@@ -35,13 +40,17 @@ public class GameSettings : ScriptableObject
     private double roundEndTime;
 
     /// <summary>
-    /// turn time-limit for evidence board round.
+    /// end of current players turn.
     /// </summary>
-    private double boardTurnDuration = 30;
+    private double turnEndTime;
+
 
     public double GameStartTime { get { return gameStartTime; } }
     public double RoundEndTime { get { return roundEndTime; } }
-    public double TurnTime { get { return boardTurnDuration; } }
+    public double TurnEndTime { get { return turnEndTime; } }
+    public double TurnTime { get { return turnBufferDuration + turnDuration; } }
+
+   // public double TurnTime
 
 
     public void SetGameTimes(double networkTime) 
@@ -55,6 +64,13 @@ public class GameSettings : ScriptableObject
     {
         roundEndTime = networkTime + roundDuration;
     }
+
+
+    public void SetTurnEndTime(double networkTime) 
+    {
+        turnEndTime = networkTime + turnBufferDuration + turnDuration;
+    }
+
 
 
 
