@@ -68,6 +68,9 @@ namespace CGD.Networking
         void Awake()
         {
             PhotonNetwork.AutomaticallySyncScene = false;
+
+
+            if(!PhotonNetwork.IsConnected)
             {
                 LogFeedback("Connecting...");
 
@@ -116,7 +119,7 @@ namespace CGD.Networking
 
         public void GotoLobbyScene()
         {
-            SceneManager.LoadScene("LobbyScene");
+           // SceneManager.LoadScene("LobbyScene");
         }
         private static void CreateDebugRoom() 
         {
@@ -127,7 +130,7 @@ namespace CGD.Networking
                 CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false, "Debug Room"),
                 CustomRoomPropertiesForLobby = RoomProperties.GetLobbyProperties()
             });
-            PhotonNetwork.LoadLevel(1);
+            PhotonNetwork.LoadLevel(2);
         }
         public static void CreateRoom(string roomName, int maxPlayers, bool inviteOnly)
         {
@@ -240,7 +243,7 @@ namespace CGD.Networking
             //TODO connect to auth logins
             PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
             MenuManager.Instance.OpenMenu("main");
-            GotoLobbyScene();
+            //GotoLobbyScene();
 
         }
 

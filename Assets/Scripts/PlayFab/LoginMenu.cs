@@ -6,6 +6,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LoginMenu : MonoBehaviour
 {
@@ -31,7 +32,8 @@ public class LoginMenu : MonoBehaviour
     {
         Debug.Log("success Login");
         Message.text = "Successfully Logged in";
-        
+
+        SceneManager.LoadScene(1);
     }
 
     //For Registration
@@ -56,6 +58,7 @@ public class LoginMenu : MonoBehaviour
     {
         Debug.Log("Registration Success");
         Message.text = "You are registered successfully and logging in";
+        SceneManager.LoadScene(1);
     }
 
     //Reset Password

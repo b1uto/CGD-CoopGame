@@ -7287,9 +7287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _persistant: 1
   caseData: []
-  elementData:
-  - {fileID: -8739263920889115021, guid: 735da32609cd8a045879b1b1956c8c46, type: 2}
-  - {fileID: 8932535707908977260, guid: 735da32609cd8a045879b1b1956c8c46, type: 2}
+  elementData: []
   clueData: []
 --- !u!4 &1703302548
 Transform:
