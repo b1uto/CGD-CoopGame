@@ -78,6 +78,24 @@ public class LoginMenu : MonoBehaviour
         Debug.Log("Mail sent");
         Message.text = "Password sent";
     }
+
+    public void OnGuestLogin()
+    {
+        var request = new LoginWithCustomIDRequest
+        {
+            CustomId = SystemInfo.deviceUniqueIdentifier,
+            CreateAccount = true,
+        };
+        PlayFabClientAPI.LoginWithCustomID(request, OnGuestLoginSuccess, OnError);
+    }
+
+    void OnGuestLoginSuccess(LoginResult result)
+    {
+        Message.text = "Guest Login Sucessful";
+        Debug.Log("Guest Login Success");
+        SceneManager.LoadScene(1);
+    }
+
     void OnError(PlayFabError error)
     {
         Debug.LogError("Error: " + error.GenerateErrorReport());
