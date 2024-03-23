@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
-using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -15,87 +12,103 @@ public class LoginMenu : MonoBehaviour
     public TMP_InputField Email;
     public TMP_InputField Password;
 
+    // Login Authentication
+    public void LoginUser()
+    {
+        string email = Email.text;
+        string password = Password.text;
+        if (IsValidEmail(email))
+        {
+            LoginWithEmail(email, password);
+        }
+        else
+        {
+            LoginWithUsername(password);
+        }
+    }
 
-    //For Login
-    public void Login()
+    // For Login with email
+    void LoginWithEmail(string email, string password)
     {
         var request = new LoginWithEmailAddressRequest
         {
-            Email = Email.text,
-            Password = Password.text,
+            Email = email,
+            Password = password
         };
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnError);
     }
 
-    //Login Success
+    // For Login with username
+    void LoginWithUsername(string password)
+    {
+        var request = new LoginWithPlayFabRequest
+        {
+            Username = Email.text,
+            Password = password
+        };
+        PlayFabClientAPI.LoginWithPlayFab(request, OnLoginSuccess, OnError);
+    }
+
+    // On Login Success
     void OnLoginSuccess(LoginResult result)
     {
-        Debug.Log("success Login");
+        Debug.Log("Success Login");
         Message.text = "Successfully Logged in";
-
         SceneManager.LoadScene(1);
     }
 
-    //For Registration
-    public void Register()
-    {
-        if(Password.text.Length< 6)
-        {
-            Message.text = "Password is too short..Should be more than 6 Letters";
-            return;
-        }
-        var request = new RegisterPlayFabUserRequest
-        {
-            Email = Email.text,
-            Password = Password.text,
-            RequireBothUsernameAndEmail = false,
-        };
-        PlayFabClientAPI.RegisterPlayFabUser(request, OnRegisterSuccess, OnError);
-    }
-
-    //Register Success
-    void OnRegisterSuccess(RegisterPlayFabUserResult result)
-    {
-        Debug.Log("Registration Success");
-        Message.text = "You are registered successfully and logging in";
-        SceneManager.LoadScene(1);
-    }
-
-    //Reset Password
+    // Reset Password
     public void ResetPassword()
     {
         var request = new SendAccountRecoveryEmailRequest
         {
             Email = Email.text,
-            TitleId = "91BDE",
+            TitleId = "YOUR_PLAYFAB_TITLE_ID"
         };
         PlayFabClientAPI.SendAccountRecoveryEmail(request, OnPasswordReset, OnError);
     }
 
-    //On Password Reset Success
+    // On Password Reset Success
     void OnPasswordReset(SendAccountRecoveryEmailResult result)
     {
         Debug.Log("Mail sent");
         Message.text = "Password sent";
     }
 
+    // Guest Login
     public void OnGuestLogin()
     {
         var request = new LoginWithCustomIDRequest
         {
             CustomId = SystemInfo.deviceUniqueIdentifier,
-            CreateAccount = true,
+            CreateAccount = true
         };
         PlayFabClientAPI.LoginWithCustomID(request, OnGuestLoginSuccess, OnError);
     }
 
+    // On Guest Login Success
     void OnGuestLoginSuccess(LoginResult result)
     {
-        Message.text = "Guest Login Sucessful";
+        Message.text = "Guest Login Successful";
         Debug.Log("Guest Login Success");
         SceneManager.LoadScene(1);
     }
 
+    // Check if email is valid
+    bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // Error handler
     void OnError(PlayFabError error)
     {
         Debug.LogError("Error: " + error.GenerateErrorReport());
