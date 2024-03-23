@@ -15,6 +15,8 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon;
+using PlayFab;
+using PlayFab.ClientModels;
 
 #pragma warning disable 649
 
@@ -224,7 +226,6 @@ namespace CGD.Networking
 #endif
                 LogFeedback("Connected to Master");
                 PhotonNetwork.JoinLobby();
-                
             }
         }
 
@@ -237,7 +238,7 @@ namespace CGD.Networking
 #endif
 
             //TODO connect to auth logins
-            PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
+            InitialiseUser();
             MenuManager.Instance.OpenMenu("main");
             //GotoLobbyScene();
 
@@ -347,5 +348,31 @@ namespace CGD.Networking
         public override void OnPlayerLeftRoom(Player otherPlayer) => OnPlayersUpdated?.Invoke();
         #endregion
 
+
+        #region PlayFab
+        private void InitialiseUser() 
+        {
+            if (PlayFabClientAPI.IsClientLoggedIn())
+            {
+                var request = new GetAccountInfoRequest();
+
+                PlayFabClientAPI.GetAccountInfo(request, x =>
+                {
+                    PhotonNetwork.NickName = x.AccountInfo.Username;
+                }
+                ,OnGetAccountError);
+            }
+            else 
+            {
+                PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
+            }
+        }
+
+        private void OnGetAccountError(PlayFabError result)
+        {
+            PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
+        }
+
+        #endregion
     }
 }

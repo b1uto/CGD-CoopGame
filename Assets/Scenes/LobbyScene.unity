@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 262.38358, g: 325.10843, b: 430.30963, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10870,6 +10870,7 @@ MonoBehaviour:
   elementData:
   - {fileID: -674756889441464210, guid: 0d41837b86fdd424f9dc8265e90440b2, type: 2}
   - {fileID: -6995661905699261067, guid: 0d41837b86fdd424f9dc8265e90440b2, type: 2}
+  - {fileID: -7941971379801056647, guid: ce5df781b1d96cf459cb0c92832fa8fd, type: 2}
   clueData:
   - {fileID: 11400000, guid: c2912110bbf699a4094dd0df95a33614, type: 2}
   - {fileID: 11400000, guid: c22c1c6811d5c474cbcd77ce012cf959, type: 2}
@@ -10882,6 +10883,43 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b711c55c1823a1c47be220ad10be56b0, type: 2}
   - {fileID: 11400000, guid: adcc81b31f5a10247aec91d1bf6d2fc5, type: 2}
   - {fileID: 11400000, guid: 2a7400e9a6080884c8ee9cb0d8348335, type: 2}
+  suspects:
+  - {fileID: 11400000, guid: 012465ae55cd9b54a8fb1592d0772254, type: 2}
+  - {fileID: 11400000, guid: 8d2723b3d48c91848bcb3a91de31c939, type: 2}
+  - {fileID: 11400000, guid: 0598a198daec059458a35a51ce45a8aa, type: 2}
+  - {fileID: 11400000, guid: 608020b7823c4b144bbb01e4e03fdb68, type: 2}
+  - {fileID: 11400000, guid: 226aed70654d95f498bc2df06c91bd41, type: 2}
+  - {fileID: 11400000, guid: 9c630be34776d1442be29608378824fb, type: 2}
+  - {fileID: 11400000, guid: d54e125ee9a4b2e438595ab4c4126bab, type: 2}
+  - {fileID: 11400000, guid: 50e1799307c47494497af499fbd3e75f, type: 2}
+  - {fileID: 11400000, guid: 5df9ed01102d8fa44b5b7991803bb95c, type: 2}
+  - {fileID: 11400000, guid: fd80cf703a150e949af3c1f0d9b4dc01, type: 2}
+  - {fileID: 11400000, guid: 1863bdcbe35946049987c5bd39b023aa, type: 2}
+  - {fileID: 11400000, guid: 6ee873d5399d47a40b231fcf50698f1a, type: 2}
+  - {fileID: 11400000, guid: 4dae02e1cad22eb4f9bd94499e31f9fa, type: 2}
+  - {fileID: 11400000, guid: 87014aede4e99dd48b76885e99289f6a, type: 2}
+  - {fileID: 11400000, guid: e89d9f28b1f7a2b4983b2759985afa0c, type: 2}
+  - {fileID: 11400000, guid: c968fcb4634161f44a7196312856d9bb, type: 2}
+  - {fileID: 11400000, guid: dbab7de57ea313a42828893e6a5f522c, type: 2}
+  - {fileID: 11400000, guid: 4967548fa339aa647ad79486b799315a, type: 2}
+  - {fileID: 11400000, guid: 255ad5022892eeb4d99df060265aa928, type: 2}
+  - {fileID: 11400000, guid: d5e7b1c2b1d39de438ab2f8044fda95d, type: 2}
+  - {fileID: 11400000, guid: 3488ef9f43834674894ea938c882e860, type: 2}
+  - {fileID: 11400000, guid: 28e0b18cf27975c4cab9aeb22d5a05cc, type: 2}
+  - {fileID: 11400000, guid: c9d0ec33c08e80d49b4cb5205b917b8c, type: 2}
+  - {fileID: 11400000, guid: ef4dea46542bd4543863f30997a06537, type: 2}
+  - {fileID: 11400000, guid: 7c5af0c71f444d941b1088f15334f242, type: 2}
+  - {fileID: 11400000, guid: de9c212f33ace5d4697e44b30718fffb, type: 2}
+  motives:
+  - {fileID: 11400000, guid: 1fc5e4e2fda76cc41889796f42ee6132, type: 2}
+  - {fileID: 11400000, guid: 5fbaa11af2dbc1d419d758422840365f, type: 2}
+  - {fileID: 11400000, guid: 4571672615fe18741ae7432029a687e7, type: 2}
+  - {fileID: 11400000, guid: a3b2f557c7493ce45a4d61e53aa12e10, type: 2}
+  - {fileID: 11400000, guid: 8978eeefe2195664296ed6ab4c89fd81, type: 2}
+  - {fileID: 11400000, guid: 3768a77befbce424aab06121fd052b44, type: 2}
+  weapons:
+  - {fileID: 11400000, guid: b6f9bb9769c4f5b4ca1ffc8daf7b71d4, type: 2}
+  - {fileID: 11400000, guid: ed42b43f1bf55ad4ba2ee5030aff9a2f, type: 2}
 --- !u!4 &1703302548
 Transform:
   m_ObjectHideFlags: 0

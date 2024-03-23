@@ -5,7 +5,7 @@ using PlayFab.ClientModels;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class LoginMenu : MonoBehaviour
+public class LoginMenu : MenuPanel
 {
     [Header("UI")]
     public TMP_Text Message;

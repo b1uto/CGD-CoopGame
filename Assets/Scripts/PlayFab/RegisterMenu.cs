@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
-public class RegisterMenu : MonoBehaviour
+public class RegisterMenu : MenuPanel
 {
     [Header("UI")]
     public TMP_Text Message;
@@ -26,7 +26,7 @@ public class RegisterMenu : MonoBehaviour
             return;
         }
 
-        if(Password != ConfirmPassword)
+        if(Password.text != ConfirmPassword.text)
         {
             Message.text = "Password doesn't Match";
         }
