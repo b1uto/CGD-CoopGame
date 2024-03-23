@@ -1,23 +1,23 @@
-
 using UnityEngine;
 
 namespace CGD.Case
 {
-    public enum WeaponType
+    [CreateAssetMenu(fileName = "Weapon", menuName = "Case Data/Weapon", order = 2)]
+    public class Weapon : CaseItem
     {
-        Firearm,
-        Sharp,
-        Blunt,
-        Poison,
-        Fists,
-        Fall
-    }
+        public enum WeaponType
+        {
+            Firearm,
+            Sharp,
+            Blunt,
+            Poison,
+            Fists,
+            Fall
+        }
 
-    public class Weapon : CaseElement
-    {
+
         [HideInInspector]
         public WeaponType type;
+
     }
-
-
 }

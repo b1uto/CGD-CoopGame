@@ -7,6 +7,7 @@ using UnityEngine;
 [System.Serializable]
 public class GameSettings : ScriptableObject
 {
+    #region PunEvent Bytes
     public const byte PunLoadScene = 1;
     public const byte PunPlayerLoaded = 2;
     public const byte PunAllPlayersLoaded = 3;
@@ -15,15 +16,16 @@ public class GameSettings : ScriptableObject
     public const byte PlayerSubmittedClue = 6;
     public const byte OnNextPlayersTurn = 7;
     public const byte OnPlayerSkippedTurn = 8;
-
+    #endregion
 
     [SerializeField] private double countdownDuration = 10;
     [SerializeField] private double roundDuration = 30;
     [SerializeField] private double turnDuration = 30;
     [SerializeField] private double turnBufferDuration = 5;
+    [SerializeField] private int minNumOfRounds = 2;
 
 
-    /* runtime values */
+    #region Runtime
     /// <summary>
     /// synchronised time when all players loaded into scene
     /// </summary>
@@ -43,12 +45,14 @@ public class GameSettings : ScriptableObject
     /// end of current players turn.
     /// </summary>
     private double turnEndTime;
-
+    #endregion
 
     public double GameStartTime { get { return gameStartTime; } }
     public double RoundEndTime { get { return roundEndTime; } }
     public double TurnEndTime { get { return turnEndTime; } }
     public double TurnTime { get { return turnBufferDuration + turnDuration; } }
+
+    public int MinNumOfRounds { get {  return minNumOfRounds; } }
 
    // public double TurnTime
 

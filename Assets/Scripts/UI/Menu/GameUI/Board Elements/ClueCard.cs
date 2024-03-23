@@ -49,10 +49,10 @@ public class ClueCard : MonoBehaviour
         {
             int i = 0;
 
-            if (element.GetType() == typeof(Suspect))
+            if (element.GetType() == typeof(SuspectElement))
                 i = 1;
  
-            if (element.GetType() == typeof(Motive))
+            if (element.GetType() == typeof(MotiveElement))
                 i = 2;
 
             pointerImg.sprite = clueTypeSprites[i];

@@ -1,9 +1,11 @@
-
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace CGD.Case
+[CreateAssetMenu(fileName = "Motive", menuName = "Case Data/Motive", order = 3)]
+public class Motive : CaseItem
 {
-    public enum MotiveType 
+    public enum MotiveType
     {
         Revenge,
         Jealousy,
@@ -22,9 +24,7 @@ namespace CGD.Case
         Accidental
     }
 
-    public class Motive : CaseElement
-    {
-        [HideInInspector]
-        public MotiveType type;
-    }
+
+    [HideInInspector]
+    public MotiveType type;
 }

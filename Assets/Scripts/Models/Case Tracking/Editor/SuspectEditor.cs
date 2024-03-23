@@ -2,12 +2,11 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System;
-using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 
 namespace CGD.Case
 {
     [CustomEditor(typeof(Suspect))]
-    public class SuspectEditor : CaseElementEditor
+    public class SuspectEditor : Editor
     {
         private Sprite[] faceSprites;
         private int selectedSprite = 0;
@@ -68,6 +67,7 @@ namespace CGD.Case
                 if (EditorGUI.EndChangeCheck())
                 {
                     suspect.icon = faceSprites[selectedSprite];
+                    suspect.fullName = faceSprites[selectedSprite].name;
                 }
             }
             if (suspect.icon)
@@ -85,27 +85,35 @@ namespace CGD.Case
 
             EditorGUILayout.LabelField("Personal Info", EditorStyles.boldLabel, GUILayout.Width(100));
 
-            EditorGUILayout.Space(25);
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField("Title", GUILayout.Width(80));
-            suspect.title = (Title)EditorGUILayout.EnumPopup(suspect.title);
-            EditorGUILayout.LabelField("Eye Colour", GUILayout.Width(80));
-            suspect.eyeColour = (EyeColour)EditorGUILayout.EnumPopup(suspect.eyeColour);
-            EditorGUILayout.LabelField("Height", GUILayout.Width(80));
-            suspect.height = (Height)EditorGUILayout.EnumPopup(suspect.height);
-            EditorGUILayout.LabelField("Build", GUILayout.Width(80));
-            suspect.build = (Build)EditorGUILayout.EnumPopup(suspect.build);
-            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Full Name", GUILayout.Width(80));
+            suspect.title = (Suspect.Title)EditorGUILayout.EnumPopup(suspect.title, GUILayout.Width(50));
             suspect.fullName = EditorGUILayout.TextField(suspect.fullName);
+            EditorGUILayout.EndHorizontal();
+
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Eye Colour", GUILayout.Width(80));
+            suspect.eyeColour = (Suspect.EyeColour)EditorGUILayout.EnumPopup(suspect.eyeColour);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Height", GUILayout.Width(80));
+            suspect.height = (Suspect.Height)EditorGUILayout.EnumPopup(suspect.height);
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("Build", GUILayout.Width(80));
+            suspect.build = (Suspect.Build)EditorGUILayout.EnumPopup(suspect.build);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("Age", GUILayout.Width(80));
             suspect.age = EditorGUILayout.IntField(suspect.age);
             EditorGUILayout.EndHorizontal();
+
+
             EditorGUILayout.Space(10);
             if (GUILayout.Button("Randomise Name"))
             {
@@ -133,7 +141,7 @@ namespace CGD.Case
 
         private void RandomiseName(Suspect suspect) 
         {
-            bool male = suspect.title == Title.Mr;
+            bool male = suspect.title == Suspect.Title.Mr;
             var names = suspectNames.Where(x => x.Contains(male ? "M:": "F:")).ToArray();
            
             var newName = names[UnityEngine.Random.Range(0, names.Length)];

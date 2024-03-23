@@ -7,10 +7,10 @@ using UnityEngine;
 [CustomEditor(typeof(Motive))]
 public class MotiveEditor : CaseElementEditor
 {
-    private Dictionary<MotiveType, Sprite> spriteDict = new Dictionary<MotiveType, Sprite>();
+    private Dictionary<Motive.MotiveType, Sprite> spriteDict = new Dictionary<Motive.MotiveType, Sprite>();
     private void OnEnable()
     {
-        foreach (MotiveType type in System.Enum.GetValues(typeof(MotiveType)))
+        foreach (Motive.MotiveType type in System.Enum.GetValues(typeof(Motive.MotiveType)))
         {
             string path = $"Sprites/Motives/{type}";
             Sprite sprite = Resources.Load<Sprite>(path);
@@ -33,7 +33,7 @@ public class MotiveEditor : CaseElementEditor
 
 
         EditorGUILayout.LabelField("Motive Type", EditorStyles.boldLabel, GUILayout.Width(100));
-        motive.type = (MotiveType)EditorGUILayout.EnumPopup(motive.type, GUILayout.Width(100));
+        motive.type = (Motive.MotiveType)EditorGUILayout.EnumPopup(motive.type, GUILayout.Width(100));
         EditorGUILayout.EndVertical();
         motive.icon = GetSpriteForType(motive.type);
 
@@ -53,7 +53,7 @@ public class MotiveEditor : CaseElementEditor
         serializedObject.ApplyModifiedProperties();
     }
 
-    public Sprite GetSpriteForType(MotiveType type)
+    public Sprite GetSpriteForType(Motive.MotiveType type)
     {
         if (spriteDict.ContainsKey(type))
             return spriteDict[type];

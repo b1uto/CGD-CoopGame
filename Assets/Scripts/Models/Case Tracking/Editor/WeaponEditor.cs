@@ -1,25 +1,28 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using Palmmedia.ReportGenerator.Core.Parser.Analysis;
+using System.Linq;
 
 namespace CGD.Case
 {
     [CustomEditor(typeof(Weapon))]
-    public class WeaponEditor : CaseElementEditor
+    public class WeaponEditor : Editor
     {
-        private Dictionary<WeaponType, Sprite> spriteDict = new Dictionary<WeaponType, Sprite>();
+        private Sprite[] sprites;
+        private int selectedSprite;
+
         private void OnEnable()
         {
-            foreach (WeaponType type in System.Enum.GetValues(typeof(WeaponType)))
-            {
-                string path = $"Sprites/Weapons/{type}";
-                Sprite sprite = Resources.Load<Sprite>(path);
-                if (sprite != null)
-                {
-                    spriteDict[type] = sprite;
-                }
-            }
+            sprites = Resources.LoadAll<Sprite>("Sprites/Weapons");
+            //foreach(Weapon.WeaponType type in System.Enum.GetValues(typeof(Weapon.WeaponType)))
+            //{
+            //    string path = $"Sprites/Weapons/{type}";
+            //    Sprite sprite = Resources.Load<Sprite>(path);
+            //    if (sprite != null)
+            //    {
+            //        spriteDict[type] = sprite;
+            //    }
+            //}
         }
         public override void OnInspectorGUI()
         {
@@ -29,14 +32,28 @@ namespace CGD.Case
 
             EditorGUILayout.LabelField("--------------------Weapon Settings-------------------", EditorStyles.centeredGreyMiniLabel);
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.BeginVertical();
 
 
-            EditorGUILayout.LabelField("Weapon Type", EditorStyles.boldLabel, GUILayout.Width(100));
-            weapon.type = (WeaponType)EditorGUILayout.EnumPopup( weapon.type, GUILayout.Width(100));
-            EditorGUILayout.EndVertical();
-            weapon.icon = GetSpriteForType(weapon.type);
+            weapon.type = (Weapon.WeaponType)EditorGUILayout.EnumPopup( "Weapon Type", weapon.type);
+         
+
+            if (sprites == null || sprites.Length == 0)
+            {
+                EditorGUILayout.HelpBox("There are no sprites at the file path", MessageType.Warning);
+            }
+            else
+            {
+                selectedSprite = Mathf.Max(0, System.Array.IndexOf(sprites, weapon.icon));
+
+
+                //suspect.icon = (Sprite)EditorGUILayout.ObjectField(suspect.icon, typeof(Sprite), false);//, GUILayout.Width(100));
+                selectedSprite = EditorGUILayout.Popup("Icon", selectedSprite, sprites.Select(x => x.name).ToArray());
+                if (EditorGUI.EndChangeCheck())
+                {
+                    weapon.icon = sprites[selectedSprite];
+                    weapon.name = sprites[selectedSprite].name;
+                }
+            }
 
             if (weapon.icon)
             {
@@ -45,8 +62,7 @@ namespace CGD.Case
                 GUILayout.Label("", GUILayout.Height(100), GUILayout.Width(100));
 
                 GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
-            }
-            EditorGUILayout.EndHorizontal();    
+            }  
 
 
             base.OnInspectorGUI();
@@ -54,12 +70,12 @@ namespace CGD.Case
             serializedObject.ApplyModifiedProperties();
         }
 
-        public Sprite GetSpriteForType(WeaponType type) 
-        {
-            if(spriteDict.ContainsKey(type))
-                return spriteDict[type];
-            else 
-                return null;
-        }
+        //public Sprite GetSpriteForType(Weapon.WeaponType type) 
+        //{
+        //    if(spriteDict.ContainsKey(type))
+        //        return spriteDict[type];
+        //    else 
+        //        return null;
+        //}
     }
 }

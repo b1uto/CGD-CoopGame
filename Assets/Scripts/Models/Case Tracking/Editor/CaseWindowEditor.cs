@@ -112,19 +112,32 @@ public class CaseWindowEditor : EditorWindow
             caseEditor.OnInspectorGUI();
 
             EditorGUILayout.LabelField("-------------------------------------------------", EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.LabelField(mainCase.shortDescription);
+
+            EditorGUILayout.LabelField("Select Icon", EditorStyles.boldLabel, GUILayout.Width(100));
+
+            mainCase.icon = (Sprite)EditorGUILayout.ObjectField(mainCase.icon, typeof(Sprite), false);
+            if (mainCase.icon)
+            {
+                Texture2D texture = AssetPreview.GetAssetPreview(mainCase.icon);
+
+                GUILayout.Label("", GUILayout.Height(100), GUILayout.Width(100));
+
+                GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
+            }
             EditorGUILayout.LabelField("Create New Element", EditorStyles.boldLabel);
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Weapon"))
             {
-                AddElement<Weapon>();
+                AddElement<WeaponElement>();
             }
             if (GUILayout.Button("Suspect"))
             {
-                AddElement<Suspect>();
+                AddElement<SuspectElement>();
             }
             if (GUILayout.Button("Motive"))
             {
-                AddElement<Motive>();
+                AddElement<MotiveElement>();
             }
 
             GUILayout.EndHorizontal();

@@ -1,41 +1,39 @@
-
 using UnityEngine;
 
 namespace CGD.Case
 {
 
-    public enum Title 
+    [CreateAssetMenu(fileName = "Suspect", menuName = "Case Data/Suspect", order = 1)]
+    public class Suspect : CaseItem
     {
-        Mr,
-        Ms,
-        Miss,
-        Mrs
-    }
-    public enum EyeColour 
-    {
-        Brown,
-        Green,
-        Blue,
-        Grey,
-        Black
-    }
+        public enum Title
+        {
+            Mr,
+            Ms,
+            Miss,
+            Mrs
+        }
+        public enum EyeColour
+        {
+            Brown,
+            Green,
+            Blue,
+            Grey,
+            Black
+        }
+        public enum Height
+        {
+            Short,
+            Average,
+            Tall
+        }
+        public enum Build
+        {
+            Stocky,
+            Average,
+            Lean
+        }
 
-    public enum Height 
-    {
-        Short,
-        Average,
-        Tall
-    }
-
-    public enum Build
-    {
-        Stocky,
-        Average,
-        Lean
-    }
-
-    public class Suspect : CaseElement
-    {
         [HideInInspector]
         public string fullName;
 
@@ -56,5 +54,9 @@ namespace CGD.Case
 
         [HideInInspector]
         public string modelId;
+
+       
     }
+
+
 }

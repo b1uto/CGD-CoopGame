@@ -36,13 +36,7 @@ MonoBehaviour:
   - 5c48b861-fb87-471d-b0ed-7623949b5530
   - d00dc878-ee68-4578-a002-1bc94518e09c
   - de25faec-c7d6-4507-9bfe-03c90fdad2c4
-  fullName: Coral Winston
-  title: 3
-  age: 48
-  eyeColour: 2
-  height: 0
-  build: 2
-  modelId: 
+  suspect: {fileID: 11400000, guid: 608020b7823c4b144bbb01e4e03fdb68, type: 2}
 --- !u!114 &-5189047359800830655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -76,7 +70,7 @@ MonoBehaviour:
   - 5cfd63ab-5721-4b29-a96e-78a3f118c473
   - f54a0152-27ff-4cbb-8296-77946b973e99
   - 745c4976-1caf-4d2d-ad52-b6232b7b6159
-  type: 3
+  weapon: {fileID: 11400000, guid: ed42b43f1bf55ad4ba2ee5030aff9a2f, type: 2}
 --- !u!114 &-1070787227332552637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -108,7 +102,7 @@ MonoBehaviour:
   - 143ba587-4bdf-46ac-9474-0060d9ac7c7f
   - 96da5d79-ece6-4ab9-be19-0b4fd7544661
   - 5a3de56c-409e-4f8e-ad95-b65ee5248e53
-  type: 3
+  motive: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,12 +116,12 @@ MonoBehaviour:
   m_Name: WinstonManorMurder
   m_EditorClassIdentifier: 
   id: 81c717b8-2f18-489a-9e39-be87f4d1031a
-  shortDescription: Investigate the murder of Mr.Winston
+  shortDescription: The Murder of Mr.Winston
   analysedDescription: 
   fullDescription: The wealthy and influential Mr. Winston was found dead in his
     manor during the early hours of the morning in 1948. Investigate the surroundings,
     interrogate the suspects, and uncover the truth behind his mysterious demise.
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a1a8937e196a1344eadb88529cd55b7f, type: 3}
   elements:
   - 529b932e-3866-45f3-b64e-ef31cdae28a6
   - ff9bbf74-d601-4800-afe1-7e9f404b6dfc

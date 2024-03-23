@@ -20,49 +20,55 @@ namespace CGD
 
     public class GameManager : SingletonPunCallbacks<GameManager>, IOnEventCallback
     {
-        /* delegates */
+        #region Delegates
         public delegate void GameStateCallback(GameState state);
         public static GameStateCallback OnGameStateChanged;
-
+        #endregion
 
         [SerializeField] private GameObject playerPrefab;
-        private GameSettings gameSettings;
-        private int loadedPlayers = 0;
+        [SerializeField] private BoardRoundManager boardManager;
+        [SerializeField] private GameSettings gameSettings;
 
         private GameState _gameState;
-        [SerializeField]private BoardRoundManager boardManager;
         private PlayerManager localPlayerManager;
 
-        public PlayerManager LocalPlayerManager { get { return localPlayerManager; } }
+        private int loadedPlayers = 0;
+        private int currentRound = 0;
 
-        /* Properties */
+        #region Properties
+        public GameSettings GameSettings { get { return gameSettings; } }
+        public BoardRoundManager BoardRoundManager { get { return boardManager; } }
+        public PlayerManager LocalPlayerManager { get { return localPlayerManager; } }
         public GameState GameState
         {
-            get 
-            { 
+            get
+            {
                 return _gameState;
             }
-            private set 
+            private set
             {
                 _gameState = value;
                 OnGameStateChanged?.Invoke(value);
             }
         }
-
-
-        public GameSettings GameSettings { get { return gameSettings; } }
-        public BoardRoundManager BoardRoundManager { get { return boardManager; } }
-
-
+        public bool IsVoteAvailable 
+        { 
+            get 
+            { 
+                return currentRound >= gameSettings.MinNumOfRounds; 
+            } 
+        }
+        #endregion
 
         protected override void Awake()
         {
             base.Awake();
 
             //TODO pass through custom game settings
-            var filePath = System.IO.Path.Combine("Data", "Settings");
-            gameSettings = Resources.Load<GameSettings>(System.IO.Path.Combine(filePath, "GameSettings"));
+            // var filePath = System.IO.Path.Combine("Data", "Settings");
+            //gameSettings = Resources.Load<GameSettings>(System.IO.Path.Combine(filePath, "GameSettings"));
 
+            OnGameStateChanged += GameStateChangedCallback;
 
             if (PhotonNetwork.CurrentRoom != null)
                 InstantiateNewPlayer();
@@ -78,6 +84,11 @@ namespace CGD
             //TODO Eventually put into coroutine
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }; // You would have to set the Receivers to All in order to receive this event on the local client as well
             PhotonNetwork.RaiseEvent(GameSettings.PunPlayerLoaded, null, raiseEventOptions, SendOptions.SendReliable);
+        }
+
+        private void OnDestroy() 
+        {
+            OnGameStateChanged -= GameStateChangedCallback;
         }
 
         private void Update()
@@ -167,6 +178,15 @@ namespace CGD
             GameState = GameState.Meeting;
         }
 
+        private void GameStateChangedCallback(GameState state)
+        {
+            switch (state) 
+            {
+                case GameState.Start:
+                    currentRound++;
+                    break;
+            }
+        }
         #endregion
 
 
