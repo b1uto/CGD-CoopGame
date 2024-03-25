@@ -140,10 +140,10 @@ namespace CGD
                 UpdateClue(clue, clueInfo); 
             }
 
-            if(eventCode == GameSettings.PunAllPlayersLoaded) 
-            {
-                AssignRandomClues();
-            }
+            //if(eventCode == GameSettings.PunAllPlayersLoaded) 
+            //{
+            //    AssignRandomClues();
+            //}
         }
 
         private void UpdateClue(string clue, ClueInfo clueInfo)
@@ -162,49 +162,49 @@ namespace CGD
 
         #region DEBUG
 
-        private void AssignRandomClues()
-        {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                var keys = ItemCollection.Instance.GetClueKeys();
+        //private void AssignRandomClues()
+        //{
+        //    if (PhotonNetwork.IsMasterClient)
+        //    {
+        //        var keys = ItemCollection.Instance.GetClueKeys();
 
-                int keysPerClient = keys.Length / PhotonNetwork.PlayerList.Length;
+        //        int keysPerClient = keys.Length / PhotonNetwork.PlayerList.Length;
 
-                int index = 0;
+        //        int index = 0;
 
-                foreach (var player in PhotonNetwork.PlayerList)
-                {
-                    if (index >= keys.Length)
-                        break;
+        //        foreach (var player in PhotonNetwork.PlayerList)
+        //        {
+        //            if (index >= keys.Length)
+        //                break;
 
-                    var cluesToAdd = new List<string>();
+        //            var cluesToAdd = new List<string>();
 
-                    for(int i = 0; i < keysPerClient; i++) 
-                    {
-                        cluesToAdd.Add(keys[index++]);
-                    }
+        //            for(int i = 0; i < keysPerClient; i++) 
+        //            {
+        //                cluesToAdd.Add(keys[index++]);
+        //            }
 
-                    AddDebugClues(cluesToAdd.ToArray(), player.ActorNumber);
-                }
-            }
-        }
+        //            AddDebugClues(cluesToAdd.ToArray(), player.ActorNumber);
+        //        }
+        //    }
+        //}
 
-        public void AddDebugClues(string[] cluesToAdd, int actorNumber) 
-        {
-            photonView.RPC(nameof(GiveClue), RpcTarget.All, actorNumber, cluesToAdd);
-        }
+        //public void AddDebugClues(string[] cluesToAdd, int actorNumber) 
+        //{
+        //    photonView.RPC(nameof(GiveClue), RpcTarget.All, actorNumber, cluesToAdd);
+        //}
 
-        [PunRPC]
-        private void GiveClue(int actorNumber, string[] cluesToAdd)
-        {
-            if (actorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
-            {
-                foreach (var clue in cluesToAdd)
-                {
-                    clues.Add(clue, new ClueInfo(false, ClueStatus.Collected));
-                }
-            }
-        }
+        //[PunRPC]
+        //private void GiveClue(int actorNumber, string[] cluesToAdd)
+        //{
+        //    if (actorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+        //    {
+        //        foreach (var clue in cluesToAdd)
+        //        {
+        //            clues.Add(clue, new ClueInfo(false, ClueStatus.Collected));
+        //        }
+        //    }
+        //}
 
         #endregion
 

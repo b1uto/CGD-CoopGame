@@ -9,10 +9,12 @@ namespace CGD.Gameplay
 {
     public class ClueObject : Pickup
     {
+        public CGD.Case.Clue clue;
+
         /// <summary>
         /// Id to Clue Scriptable Object.
         /// </summary>
-        private string key;
+        //private string key;
 
         public override void Interact(int viewId)
         {
@@ -26,7 +28,7 @@ namespace CGD.Gameplay
 
             if (view && view.TryGetComponent<PlayerManager>(out var player))
             {
-                player.CollectClue(key);
+                player.CollectClue(clue.id);
                 PhotonNetwork.Destroy(gameObject);
             }
 

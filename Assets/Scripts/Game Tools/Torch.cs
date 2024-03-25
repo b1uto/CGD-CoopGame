@@ -1,5 +1,5 @@
 using Photon.Pun;
-using System.IO.Pipes;
+using CGD.Audio;
 using UnityEngine;
 
 
@@ -11,19 +11,27 @@ namespace CGD
         [SerializeField] private float intensity;
         [SerializeField] private Renderer emissiveMat;
 
-
         private bool flashLightOn = false;
         private Color alphaStart;
 
         private static Light pointLight;
         public static Light PointLight { get { return pointLight; } }
 
-        
+
+        private AudioClip on;
+        private AudioClip off;
+
         #region MonoBehaviour
         private void Awake()
         {
             pointLight = GetComponentInChildren<Light>();
             alphaStart = emissiveMat.material.color;
+        }
+
+        private void Start()
+        {
+            on = AudioController.Instance.GetClip(Audio.Gameplay.LightToolOn);
+            off = AudioController.Instance.GetClip(Audio.Gameplay.LightToolOff);
         }
         #endregion
 
@@ -80,11 +88,13 @@ namespace CGD
             {
                 pointLight.intensity = intensity;
                 emissiveMat.material.SetColor("_EmissionColor", alphaStart * pointLight.intensity);
+                source.PlayOneShot(on);
             }
             else
             {
                 pointLight.intensity = 0.0f;
                 emissiveMat.material.SetColor("_EmissionColor", alphaStart * Color.black);
+                source.PlayOneShot(off);
             }
         }
         #endregion

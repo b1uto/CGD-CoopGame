@@ -95,7 +95,7 @@ namespace CGD.Networking
             Debug.Log("Loading Game Scene");
 #endif
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-            PhotonNetwork.RaiseEvent(GameSettings.PunLoadScene, 1, raiseEventOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(GameSettings.PunLoadScene, 2, raiseEventOptions, SendOptions.SendReliable);
 
             RoomProperties.SetGameStarted(true);
             //PhotonNetwork.LoadLevel(1);

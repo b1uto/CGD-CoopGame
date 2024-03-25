@@ -49,6 +49,7 @@ namespace CGD
         #endregion
 
         [SerializeField] protected GameObject interactionPrompt;
+        [SerializeField] protected AudioSource source;
         [SerializeField] protected Rigidbody rb;
 
         [Header("Lag Compensation Settings")]

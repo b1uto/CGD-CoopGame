@@ -27,7 +27,6 @@ public class ItemCollection : Singleton<ItemCollection>
     private Dictionary<string, Weapon> Weapons = new Dictionary<string, Weapon>();
     #endregion
 
-
     #region temp
     /// <summary>
     /// TODO store elsewhere in Item Collection. Randomise if player has not chosen avatar.
@@ -121,6 +120,10 @@ public class ItemCollection : Singleton<ItemCollection>
 
         return false;
     }
+
+    public Weapon[] GetWeapons() { return weapons; }
+    public Suspect[] GetSuspects() { return suspects; }
+    public Motive[] GetMotives() { return motives; }
 
 
     #region DEBUG
