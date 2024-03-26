@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: S_MaidWitness
   m_EditorClassIdentifier: 
   id: 8787b068-244c-4566-badc-8870ebb1cd2e
-  shortDescription: Mr Winston sent several letter to his lawyer
+  shortDescription: The maid witnessed an argument between the couple
   analysedDescription: The letter shows Mr Winston was sending a new draft for his
     will.
   fullDescription: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a1b02373d3c521f49ba4972bd3c2ee84, type: 3}
   elementId: ff9bbf74-d601-4800-afe1-7e9f404b6dfc
   isFalseEvidence: 0
   indentifyTool: 0

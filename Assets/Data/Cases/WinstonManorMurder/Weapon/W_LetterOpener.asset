@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: W_LetterOpener
   m_EditorClassIdentifier: 
   id: f54a0152-27ff-4cbb-8296-77946b973e99
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A letter opener with blood on it
+  analysedDescription: The letter opener has some blood on it.
   fullDescription: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: d9e0d389d928ae248b3024e7c2c73f65, type: 3}
   elementId: 239c9ee6-01db-4384-86f5-7959b6cff686
   isFalseEvidence: 1
   indentifyTool: 3

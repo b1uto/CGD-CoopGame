@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: M_ThreateningLetters
   m_EditorClassIdentifier: 
   id: 96da5d79-ece6-4ab9-be19-0b4fd7544661
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A threatening letter addressed to Mr.Winston
+  analysedDescription: Mr.Winston received a threatening letter from an unknown individual
   fullDescription: 
   icon: {fileID: 21300000, guid: c3c0f48c4bfca964e8872948c414d5aa, type: 3}
   elementId: 529b932e-3866-45f3-b64e-ef31cdae28a6

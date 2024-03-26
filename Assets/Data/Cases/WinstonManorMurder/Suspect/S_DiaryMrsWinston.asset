@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: S_DiaryMrsWinston
   m_EditorClassIdentifier: 
   id: 2d4ad7eb-9b04-4595-af1b-390406aced6a
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A diary belonging to Mrs.Winston
+  analysedDescription: 'Mrs.Winston''s diary reveals she was unhappy in her marriage '
   fullDescription: The pages of Coral Winston's diary serve as a window into the
     tumultuous storm of their marriage, filled with entries that oscillate between
     love, hatred, and a desire for freedom.

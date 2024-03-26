@@ -13,7 +13,7 @@ namespace CGD
         [SerializeField] private ClueCardPool objectPool;
 
         private string focusedCardID;
-
+       
         public void Awake()
         {
             BoardRoundManager.OnNextPlayerTurn += OnNextPlayersTurn;

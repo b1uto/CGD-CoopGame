@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: M_LifeInsurance
   m_EditorClassIdentifier: 
   id: 44c353d7-f7e3-49b1-bb9b-9b7e5342beac
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: Letters for a life insurance policy
+  analysedDescription: Mr Winston had set up a life insurance policy
   fullDescription: 'In the shadow of tragedy, this policy emerges as a potential
     motive, its pages a silent testament to the lucrative benefits awaiting the beneficiary. '
   icon: {fileID: 21300000, guid: 05c5d61b516cd3f4b8e67fdddc31f600, type: 3}

@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: W_HiddenGun
   m_EditorClassIdentifier: 
   id: d74c043b-8e32-4e03-941a-2d72135327ed
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A gun dropped in the bathroom
+  analysedDescription: Gunpowder residue reveals the gun was recently shot.
   fullDescription: 
   icon: {fileID: 21300000, guid: c74aa03e1bf5b7c4bbabe0be24ba6c98, type: 3}
   elementId: 239c9ee6-01db-4384-86f5-7959b6cff686

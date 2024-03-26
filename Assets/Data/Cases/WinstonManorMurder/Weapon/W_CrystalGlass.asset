@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: W_CrystalGlass
   m_EditorClassIdentifier: 
   id: e7e99939-d46f-4055-a6fd-2cc0ca259013
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A crystal glass, recently used
+  analysedDescription: There is a foreign residue at the bottom of the glass
   fullDescription: This elegant crystal glass, once a symbol of the Winston's opulent
     lifestyle, now serves as a silent witness to the methodical preparation and execution
     of a murder most foul, its residue a testament to the assassin's choice of weapon.

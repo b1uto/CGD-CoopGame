@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: W_Receipts
   m_EditorClassIdentifier: 
   id: b7985d13-c690-4a6e-b31d-63f4b2e21fc8
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: Receipts for a recent purchase
+  analysedDescription: Receipts for a recent purchase of a venomous snake
   fullDescription: Looking at the WInston's manor you would not have questioned the
     receipts for exotic animals. Almost every room features a taxidermied animal.
     But the recent purchase of a highly venomous snake was suspicious. The animal

@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: W_ShatteredGlass
   m_EditorClassIdentifier: 
   id: 745c4976-1caf-4d2d-ad52-b6232b7b6159
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: Shattered Glass
+  analysedDescription: A piece of shattered glass found on the floor
   fullDescription: 
   icon: {fileID: 21300000, guid: b9d87842ddaf2214986d3a4f804f311c, type: 3}
   elementId: 239c9ee6-01db-4384-86f5-7959b6cff686

@@ -18,7 +18,7 @@ namespace CGD.Gameplay
 
         public override void Interact(int viewId)
         {
-            photonView.RPC(nameof(CollectClue), RpcTarget.MasterClient, viewId);
+            photonView.RPC(nameof(CollectClue), RpcTarget.All, viewId);
         }
 
         [PunRPC]
@@ -29,8 +29,9 @@ namespace CGD.Gameplay
             if (view && view.TryGetComponent<PlayerManager>(out var player))
             {
                 player.CollectClue(clue.id);
-                PhotonNetwork.Destroy(gameObject);
             }
+
+            gameObject.SetActive(false);
 
         }
     }

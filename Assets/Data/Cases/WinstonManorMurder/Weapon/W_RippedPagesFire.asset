@@ -17,7 +17,7 @@ MonoBehaviour:
   analysedDescription: The letter shows Mr Winston was sending a new draft for his
     will.
   fullDescription: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: b9d87842ddaf2214986d3a4f804f311c, type: 3}
   elementId: 239c9ee6-01db-4384-86f5-7959b6cff686
   isFalseEvidence: 1
   indentifyTool: 0

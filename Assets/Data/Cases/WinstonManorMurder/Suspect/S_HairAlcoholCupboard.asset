@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: S_HairAlcoholCupboard
   m_EditorClassIdentifier: 
   id: 01aa52a5-ef94-4737-8c98-5effd34b0172
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A hair found in the whiskey
+  analysedDescription: A hair belong to <color=orange>Mrs.Winston</color>
   fullDescription: 
   icon: {fileID: 21300000, guid: 3b203c62d0accef4a9dfa9e7fc521117, type: 3}
   elementId: ff9bbf74-d601-4800-afe1-7e9f404b6dfc

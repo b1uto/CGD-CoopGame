@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: S_AnonymousGift
   m_EditorClassIdentifier: 
   id: d00dc878-ee68-4578-a002-1bc94518e09c
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: An anonymous gift
+  analysedDescription: Mr.Winston was given an anonymous gift
   fullDescription: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0aa3c2c6e607c544b8c1341f1a7417c4, type: 3}
   elementId: ff9bbf74-d601-4800-afe1-7e9f404b6dfc
   isFalseEvidence: 0
   indentifyTool: 3

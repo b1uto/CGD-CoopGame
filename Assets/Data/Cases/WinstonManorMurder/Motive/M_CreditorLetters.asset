@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: M_CreditorLetters
   m_EditorClassIdentifier: 
   id: 8b19d427-d9ee-4395-98fc-a166c28cce9e
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A letter from a creditor
+  analysedDescription: The letter's reveal a sizable <color=orange>debt.</color>
   fullDescription: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ead9c824e05454d4d850abe6aca5ac4b, type: 3}
   elementId: 529b932e-3866-45f3-b64e-ef31cdae28a6
   isFalseEvidence: 0
   indentifyTool: 0

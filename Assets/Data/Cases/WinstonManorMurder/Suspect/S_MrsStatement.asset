@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: S_MrsStatement
   m_EditorClassIdentifier: 
   id: 94487fbc-1ac4-4204-8c57-681711558669
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: Mrs.Winston is here for questioning
+  analysedDescription: Mrs.Winston claims to have been fast asleep. She woke up to
+    Mr.Winston dead on the landing.
   fullDescription: 
   icon: {fileID: 21300000, guid: a1b02373d3c521f49ba4972bd3c2ee84, type: 3}
   elementId: ff9bbf74-d601-4800-afe1-7e9f404b6dfc

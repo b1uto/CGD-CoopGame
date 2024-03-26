@@ -38,14 +38,6 @@ public class ClueEditor : Editor
         {
             selectedSprite = Mathf.Max(0, System.Array.IndexOf(sprites, clue.icon));
             selectedSprite = EditorGUILayout.Popup("Choose Icon", selectedSprite, sprites.Select(x => x.name).ToArray());
-            
-            if (EditorGUI.EndChangeCheck())
-            {
-                clue.icon = sprites[selectedSprite];
-                EditorUtility.SetDirty(target);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-            }
         }
 
         if (clue.icon != null)
@@ -57,7 +49,20 @@ public class ClueEditor : Editor
             GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
         }
 
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            if(sprites != null) clue.icon = sprites[selectedSprite];
+            
+
+            //AssetDatabase.SaveAssets();
+            //AssetDatabase.Refresh();
+        }
+
+
+
         serializedObject.ApplyModifiedProperties();
-       
+        EditorUtility.SetDirty(target);
+
     }
 }

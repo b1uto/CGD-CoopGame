@@ -64,6 +64,10 @@ public class BoardPanel : MenuPanel
 
     private void DrawBoardPlayers()
     {
+        if (BRM == null) 
+            return;
+
+
         int index = 0;
         Player[] players = (BRM.PlayerList == null) 
             ? new Player[0] : BRM.PlayerList.Where(x => x.IsLocal == false).ToArray();

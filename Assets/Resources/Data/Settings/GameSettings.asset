@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   countdownDuration: 3
   roundDuration: 120
-  turnDuration: 3
-  turnBufferDuration: 3
+  turnDuration: 15
+  turnBufferDuration: 5
   minNumOfRounds: 2

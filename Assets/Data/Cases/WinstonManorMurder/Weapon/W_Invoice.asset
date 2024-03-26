@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: W_Invoice
   m_EditorClassIdentifier: 
   id: 743979ee-f017-4ff1-a922-420df444a625
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: An invoice
+  analysedDescription: An invoice for a case of expensive spirits.
   fullDescription: 'The bottle was opened the night of the murder. All accounts point
     to it being contaminated with the substance. The bottle was missing 2 glasses
     worth of liquid. '

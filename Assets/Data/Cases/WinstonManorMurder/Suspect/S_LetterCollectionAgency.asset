@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: S_LetterCollectionAgency
   m_EditorClassIdentifier: 
   id: 2b3810c8-cbec-492b-a6c0-97d6f4e82ba8
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: A letter from a collection agency
+  analysedDescription: Mr.Winston was in a sizable debt. a collection agency has
+    been sending letters.
   fullDescription: 'Buried in a sea of numbers, these documents lay bare the dire
     financial straits of Coral Winston, painting a picture of a woman possibly driven
     to desperate measures. '

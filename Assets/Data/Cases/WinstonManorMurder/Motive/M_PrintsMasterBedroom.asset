@@ -13,11 +13,10 @@ MonoBehaviour:
   m_Name: M_PrintsMasterBedroom
   m_EditorClassIdentifier: 
   id: 143ba587-4bdf-46ac-9474-0060d9ac7c7f
-  shortDescription: Mr Winston sent several letter to his lawyer
-  analysedDescription: The letter shows Mr Winston was sending a new draft for his
-    will.
+  shortDescription: Their were fingerprints in the master bedroom
+  analysedDescription: 'Fingerprints belonging to an unknown third party '
   fullDescription: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 3b203c62d0accef4a9dfa9e7fc521117, type: 3}
   elementId: 529b932e-3866-45f3-b64e-ef31cdae28a6
   isFalseEvidence: 1
   indentifyTool: 2
