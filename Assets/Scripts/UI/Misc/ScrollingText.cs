@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class ScrollingText : MonoBehaviour
 {
     public UnityEvent OnFinishedScrolling;
+    public UnityEvent OnTurningOff;
     
     [SerializeField]private float speed;
     [SerializeField]private string message;
@@ -27,6 +28,7 @@ public class ScrollingText : MonoBehaviour
     }
     private void OnDisable()
     {
+        OnTurningOff?.Invoke();
         StopAllCoroutines();
     }
 

@@ -46,7 +46,8 @@ namespace CGD
                 lastIndex++;
             }
 
-            objectPool.ResetUnusedObjects(lastIndex);
+            if(lastIndex > 0)
+                objectPool.ResetUnusedObjects(lastIndex);
         }
 
         private void ShowButtons(RectTransform rect, string id)

@@ -344,9 +344,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 7572487254253763897}
-  amount: 0.002
-  frequency: 10
-  smooth: 10
+  amount: 0.00534
+  frequency: 10.6
+  smooth: 30
 --- !u!1 &3625109669928839987
 GameObject:
   m_ObjectHideFlags: 0

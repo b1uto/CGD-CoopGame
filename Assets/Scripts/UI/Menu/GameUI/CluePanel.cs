@@ -1,4 +1,5 @@
 using BrunoMikoski.AnimationSequencer;
+using CGD;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ public class CluePanel : MenuPanel
     [Header("Panel References")]
     [SerializeField] private Image img;
     [SerializeField] private ScrollingText txt;
+
+    public void Btn_Resume() => GameManager.OnResumeGame?.Invoke();
 
     public override void TogglePanel(bool showPanel)
     {
@@ -25,7 +28,7 @@ public class CluePanel : MenuPanel
         }
     }
 
-    private void SetPanel(Sprite icon, string text) 
+    public void SetPanel(Sprite icon, string text) 
     {
         img.sprite = icon;
 

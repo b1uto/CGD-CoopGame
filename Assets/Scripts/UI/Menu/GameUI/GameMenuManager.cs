@@ -1,4 +1,5 @@
-using System.Collections;
+using CGD.Case;
+using UnityEngine.Events;
 
 namespace CGD
 {
@@ -14,7 +15,6 @@ namespace CGD
                 return (GameMenuManager)_instance;
             }
         }
-
 
         private void OnEnable()
         {
@@ -39,6 +39,18 @@ namespace CGD
                     OpenMenu("board");
                     break;
             }
+        }
+
+        public void OpenCluePanel(Clue clue) 
+        {
+            var cluePanel = GetMenu("clue");
+
+            if (cluePanel != null)
+            {
+                ((CluePanel)cluePanel).SetPanel(clue.icon, clue.analysedDescription);
+                OpenMenu("clue");
+            }
+
         }
 
         public void CloseMenu() => OpenMenu("");

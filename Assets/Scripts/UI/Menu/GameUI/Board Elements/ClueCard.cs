@@ -17,16 +17,11 @@ public class ClueCard : MonoBehaviour
     [SerializeField] private Button button;
     [SerializeField] private RectTransform rectTransform;
 
-    private string id;
-    private bool analysed;
-
     public void DrawCard(string id, bool analysed, Action<RectTransform, string> callback)
     {
-        this.id = id;
-        this.analysed = analysed;
-
         if (ItemCollection.Instance.TryGetCaseData(id, out Clue caseData))
         {
+            iconImg.sprite = caseData.icon;
             outlineImg.color = analysed ? new Color(1, 0.5f, 0) : Color.black;
             descriptionTMP.text = analysed ? caseData.analysedDescription : caseData.shortDescription;
             SetPointerImage(caseData.elementId);
@@ -35,7 +30,6 @@ public class ClueCard : MonoBehaviour
             
             if (callback != null)
                 button.onClick.AddListener(() => { callback?.Invoke(rectTransform, id); });
-        
         }
     }
 

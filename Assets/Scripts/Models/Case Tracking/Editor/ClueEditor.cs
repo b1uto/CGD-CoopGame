@@ -1,4 +1,5 @@
 using CGD.Case;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,9 +8,15 @@ public class ClueEditor : Editor
 {
     Clue clue;
 
+    private Sprite[] sprites;
+    private int selectedSprite;
+
     private void OnEnable()
     {
         clue = target as Clue;
+
+        string path = $"Sprites/Clues/";
+        sprites = Resources.LoadAll<Sprite>(path);
     }
 
     public override void OnInspectorGUI()
@@ -22,6 +29,21 @@ public class ClueEditor : Editor
 
         base.OnInspectorGUI();
 
+
+        if (sprites == null || sprites.Length == 0)
+        {
+            EditorGUILayout.HelpBox("There are no sprites at the file path", MessageType.Warning);
+        }
+        else
+        {
+            selectedSprite = Mathf.Max(0, System.Array.IndexOf(sprites, clue.icon));
+            selectedSprite = EditorGUILayout.Popup("Choose Icon", selectedSprite, sprites.Select(x => x.name).ToArray());
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                clue.icon = sprites[selectedSprite];
+            }
+        }
 
         if (clue.icon == null)
             return;

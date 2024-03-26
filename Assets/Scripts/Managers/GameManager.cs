@@ -22,7 +22,10 @@ namespace CGD
     {
         #region Delegates
         public delegate void GameStateCallback(GameState state);
-        public static GameStateCallback OnGameStateChanged;
+        public static event GameStateCallback OnGameStateChanged;
+
+        public delegate void UpdateDelegate();
+        public static UpdateDelegate OnResumeGame;
         #endregion
 
         [SerializeField] private GameObject playerPrefab;
@@ -233,9 +236,9 @@ namespace CGD
 
         private void SpawnTools()
         {
-            var pos = Random.insideUnitCircle * Random.Range(1, 5);
+            //var pos = Random.insideUnitCircle * Random.Range(1, 5);
 
-            PhotonNetwork.Instantiate(System.IO.Path.Combine("Items", "Torch"), new Vector3(pos.x, 1, pos.y), Quaternion.identity);
+            //PhotonNetwork.Instantiate(System.IO.Path.Combine("Items", "Torch"), new Vector3(pos.x, 1, pos.y), Quaternion.identity);
         }
 
 

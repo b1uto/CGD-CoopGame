@@ -36,7 +36,7 @@ namespace CGD.Utilities
 
         public void ResetUnusedObjects(int lastIndex)
         {
-            for (int i = lastIndex - 1; i < pool.Count; i++)
+            for (int i = lastIndex; i < pool.Count; i++)
             {
                 pool[i].gameObject.SetActive(false);
             }

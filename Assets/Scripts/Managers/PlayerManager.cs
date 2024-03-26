@@ -21,6 +21,7 @@ namespace CGD
 
         private Dictionary<string, ClueInfo> clues = new Dictionary<string, ClueInfo>();
 
+        private PlayerInputHandler inputHandler;
 
         private void Awake()
         {
@@ -32,8 +33,9 @@ namespace CGD
 
             if (photonView.IsMine)
             {
-                gameObject.AddComponent<PlayerInputHandler>();
+                inputHandler = gameObject.AddComponent<PlayerInputHandler>();
                 GameManager.OnGameStateChanged += OnGameStateChanged;
+                GameManager.OnResumeGame += OnResumeGame;
             }
 
             DontDestroyOnLoad(gameObject);
@@ -44,6 +46,7 @@ namespace CGD
             if (photonView.IsMine)
             {
                 GameManager.OnGameStateChanged -= OnGameStateChanged;
+                GameManager.OnResumeGame -= OnResumeGame;
             }
         }
 
@@ -104,11 +107,13 @@ namespace CGD
 
                 if (photonView.IsMine)
                 {
-                    MenuManager.Instance.OpenMenu("clue");
-                    GetComponent<PlayerInputHandler>().DisablePlayerInput();
+                    GameMenuManager.Instance.OpenCluePanel(clue);
+                    inputHandler.DisablePlayerInput();
                 }
             }
         }
+
+        public void OnResumeGame() => inputHandler.EnablePlayerInput();
 
         private void OnGameStateChanged(GameState state) 
         {
@@ -119,10 +124,10 @@ namespace CGD
                     GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
                     break;
                 case GameState.Start:
-                    GetComponent<PlayerInputHandler>().EnablePlayerInput(); 
+                    inputHandler.EnablePlayerInput(); 
                     break;
                 case GameState.Meeting:
-                    GetComponent<PlayerInputHandler>().DisablePlayerInput();
+                    inputHandler.DisablePlayerInput();
                     GameManager.Instance.BoardRoundManager.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
                     GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
                     break;

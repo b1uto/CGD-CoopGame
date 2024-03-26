@@ -62,6 +62,11 @@ namespace CGD
                 transform.localRotation = Quaternion.identity;
 
                 owner = viewId;
+
+                foreach(var collider in colliders) 
+                {
+                    collider.enabled = false;
+                }
             }
         }
 
@@ -76,6 +81,11 @@ namespace CGD
                 transform.SetParent(null);
                 owner = -1;
                 rb.isKinematic = false;
+
+                foreach (var collider in colliders)
+                {
+                    collider.enabled = true;
+                }
             }
         }
 
@@ -88,13 +98,13 @@ namespace CGD
             {
                 pointLight.intensity = intensity;
                 emissiveMat.material.SetColor("_EmissionColor", alphaStart * pointLight.intensity);
-                source.PlayOneShot(on);
+                source.PlayOneShot(on, 2);
             }
             else
             {
                 pointLight.intensity = 0.0f;
                 emissiveMat.material.SetColor("_EmissionColor", alphaStart * Color.black);
-                source.PlayOneShot(off);
+                source.PlayOneShot(off, 2);
             }
         }
         #endregion

@@ -51,6 +51,7 @@ namespace CGD
         [SerializeField] protected GameObject interactionPrompt;
         [SerializeField] protected AudioSource source;
         [SerializeField] protected Rigidbody rb;
+        [SerializeField] protected Collider[] colliders;
 
         [Header("Lag Compensation Settings")]
         [SerializeField] private float moveSpeed = 5f;

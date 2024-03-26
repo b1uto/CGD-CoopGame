@@ -56,5 +56,16 @@ public class MenuManager : Singleton<MenuManager>
         }
     }
 
+    protected MenuPanel GetMenu(string alias) 
+    {
+        foreach(var menu in menus) 
+        {
+            if (menu.alias == alias) 
+                return menu.panel;
+        }
+
+        return null;
+    }
+
 
 }

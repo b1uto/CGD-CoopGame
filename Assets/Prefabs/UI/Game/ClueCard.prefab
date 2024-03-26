@@ -730,7 +730,6 @@ GameObject:
   - component: {fileID: 92685290882638877}
   - component: {fileID: 4197676888242177490}
   - component: {fileID: 8560971070629423452}
-  - component: {fileID: 2168032607463900270}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -855,23 +854,3 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &2168032607463900270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8941068983316656851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9faccd2a8e511449bae8652d9d582f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnFinishedScrolling:
-    m_PersistentCalls:
-      m_Calls: []
-  speed: 0.001
-  message: YOU HAVE FOUND A CLUE  this is placeholder text for clue description.
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-    incididunt ut labore et dolore
-  animateElipsis: 0
