@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2097512bb6858439546df7da807a66, type: 3}
   m_Name: Arthur Ames
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: 228a4818c9ebb984590e6186d0499a7d, type: 3}
   fullName: Arthur Ames
   title: 0
   age: 0
@@ -19,4 +20,3 @@ MonoBehaviour:
   height: 0
   build: 0
   modelId: 
-  icon: {fileID: 21300000, guid: 228a4818c9ebb984590e6186d0499a7d, type: 3}

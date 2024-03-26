@@ -19,7 +19,7 @@ MonoBehaviour:
   fullDescription: 'Buried in a sea of numbers, these documents lay bare the dire
     financial straits of Coral Winston, painting a picture of a woman possibly driven
     to desperate measures. '
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ead9c824e05454d4d850abe6aca5ac4b, type: 3}
   elementId: ff9bbf74-d601-4800-afe1-7e9f404b6dfc
   isFalseEvidence: 0
   indentifyTool: 0

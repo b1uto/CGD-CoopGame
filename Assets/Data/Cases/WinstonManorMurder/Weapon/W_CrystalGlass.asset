@@ -19,7 +19,7 @@ MonoBehaviour:
   fullDescription: This elegant crystal glass, once a symbol of the Winston's opulent
     lifestyle, now serves as a silent witness to the methodical preparation and execution
     of a murder most foul, its residue a testament to the assassin's choice of weapon.
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 3390ddacc3974304fbeb06069acd199e, type: 3}
   elementId: 239c9ee6-01db-4384-86f5-7959b6cff686
   isFalseEvidence: 0
   indentifyTool: 0

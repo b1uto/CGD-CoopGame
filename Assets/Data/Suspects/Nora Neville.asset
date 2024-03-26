@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2097512bb6858439546df7da807a66, type: 3}
   m_Name: Nora Neville
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: 2f4670a5f49ecc2438d92be42ccaf55f, type: 3}
   fullName: Nora Neville
   title: 0
   age: 0
@@ -19,4 +20,3 @@ MonoBehaviour:
   height: 0
   build: 0
   modelId: 
-  icon: {fileID: 21300000, guid: 2f4670a5f49ecc2438d92be42ccaf55f, type: 3}

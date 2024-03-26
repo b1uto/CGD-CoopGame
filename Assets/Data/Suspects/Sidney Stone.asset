@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2097512bb6858439546df7da807a66, type: 3}
   m_Name: Sidney Stone
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: 0549849e27b2a1a4189c50f2c30cfde6, type: 3}
   fullName: Sidney Stone
   title: 0
   age: 0
@@ -19,4 +20,3 @@ MonoBehaviour:
   height: 0
   build: 0
   modelId: 
-  icon: {fileID: 21300000, guid: 0549849e27b2a1a4189c50f2c30cfde6, type: 3}

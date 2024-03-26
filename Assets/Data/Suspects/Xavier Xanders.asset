@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2097512bb6858439546df7da807a66, type: 3}
   m_Name: Xavier Xanders
   m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: eb321aeef36a75e428d63bef052e4856, type: 3}
   fullName: Xavier Xanders
   title: 0
   age: 0
@@ -19,4 +20,3 @@ MonoBehaviour:
   height: 0
   build: 0
   modelId: 
-  icon: {fileID: 21300000, guid: eb321aeef36a75e428d63bef052e4856, type: 3}

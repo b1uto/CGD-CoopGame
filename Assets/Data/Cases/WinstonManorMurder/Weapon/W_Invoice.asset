@@ -19,7 +19,7 @@ MonoBehaviour:
   fullDescription: 'The bottle was opened the night of the murder. All accounts point
     to it being contaminated with the substance. The bottle was missing 2 glasses
     worth of liquid. '
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: ead9c824e05454d4d850abe6aca5ac4b, type: 3}
   elementId: 239c9ee6-01db-4384-86f5-7959b6cff686
   isFalseEvidence: 0
   indentifyTool: 0

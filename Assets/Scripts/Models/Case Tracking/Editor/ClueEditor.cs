@@ -42,17 +42,22 @@ public class ClueEditor : Editor
             if (EditorGUI.EndChangeCheck())
             {
                 clue.icon = sprites[selectedSprite];
+                EditorUtility.SetDirty(target);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
             }
         }
 
-        if (clue.icon == null)
-            return;
+        if (clue.icon != null)
+        {
+            Texture2D texture = AssetPreview.GetAssetPreview(clue.icon);
 
+            GUILayout.Label("", GUILayout.Height(200), GUILayout.Width(200));
 
-        Texture2D texture = AssetPreview.GetAssetPreview(clue.icon);
-        
-        GUILayout.Label("", GUILayout.Height(200), GUILayout.Width(200));
-        
-        GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
+            GUI.DrawTexture(GUILayoutUtility.GetLastRect(), texture);
+        }
+
+        serializedObject.ApplyModifiedProperties();
+       
     }
 }
