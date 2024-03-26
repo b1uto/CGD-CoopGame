@@ -19,6 +19,7 @@ namespace CGD
 
 
         [SerializeField] private Transform[] playerPoints;
+        [SerializeField] private Transform playerTarget;
 
         private Player[] playerList;
 
@@ -38,6 +39,7 @@ namespace CGD
         private Coroutine turnTimerCoroutine;
 
         public Player[] PlayerList { get { return playerList; } }
+        public Transform Target { get { return playerTarget; } }
         private GameManager GM { get { return GameManager.Instance; } }
 
 

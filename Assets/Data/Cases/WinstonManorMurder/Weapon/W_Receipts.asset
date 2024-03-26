@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c54b6d459fcd6b49b16971ddfbe8b93, type: 3}
+  m_Name: W_Receipts
+  m_EditorClassIdentifier: 
+  id: b7985d13-c690-4a6e-b31d-63f4b2e21fc8
+  shortDescription: Mr Winston sent several letter to his lawyer
+  analysedDescription: The letter shows Mr Winston was sending a new draft for his
+    will.
+  fullDescription: Looking at the WInston's manor you would not have questioned the
+    receipts for exotic animals. Almost every room features a taxidermied animal.
+    But the recent purchase of a highly venomous snake was suspicious. The animal
+    is nowhere to be found and there is no where for it to have been kept.
+  icon: {fileID: 0}
+  elementId: 239c9ee6-01db-4384-86f5-7959b6cff686
+  isFalseEvidence: 0
+  indentifyTool: 0
+  analyseTool: 0

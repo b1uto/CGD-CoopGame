@@ -114,12 +114,17 @@ namespace CGD
         {
             switch(state) 
             {
+                case GameState.Countdown:
+                    GameManager.Instance.BoardRoundManager.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
+                    GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
+                    break;
                 case GameState.Start:
                     GetComponent<PlayerInputHandler>().EnablePlayerInput(); 
                     break;
                 case GameState.Meeting:
                     GetComponent<PlayerInputHandler>().DisablePlayerInput();
                     GameManager.Instance.BoardRoundManager.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
+                    GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
                     break;
             }
         }

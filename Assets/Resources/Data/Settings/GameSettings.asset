@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daf75c95619b41d4cb0f3bc98c174036, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  countdownDuration: 1
-  roundDuration: 5000
-  turnDuration: 15
-  turnBufferDuration: 5
+  countdownDuration: 3
+  roundDuration: 3
+  turnDuration: 3
+  turnBufferDuration: 3
   minNumOfRounds: 2

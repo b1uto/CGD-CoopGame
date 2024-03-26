@@ -42,6 +42,7 @@ public class ScrollingText : MonoBehaviour
         {
             sb.Append(letter);
             textTMP.text = sb.ToString();
+
             yield return new WaitForSecondsRealtime(speed);
         }
 

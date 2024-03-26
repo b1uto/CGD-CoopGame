@@ -1,4 +1,6 @@
+using CGD.Extensions;
 using Photon.Pun;
+using System.Collections;
 using UnityEngine;
 
 
@@ -38,7 +40,7 @@ namespace CGD
 
         //Equipment
         private IEquippable leftHandTool;
-
+        private Coroutine lookAtCoroutine;
 
         public Vector2 GroundVelocity 
         {
@@ -117,6 +119,43 @@ namespace CGD
             characterController.Move(velocity * Time.deltaTime);
         }
         #endregion
+
+        #region Scripted Motion
+        public void SmoothLookAt(Vector3 target, float time = 1f) 
+        {
+            CoroutineUtilities.StartExclusiveCoroutine(LookAtTarget(target, time), ref lookAtCoroutine, this);
+        }
+        IEnumerator LookAtTarget(Vector3 target, float lerpTime = 1f) 
+        {
+            var dir = target - transform.position;
+            var targetRotation = Quaternion.LookRotation(dir);
+            
+            var targetPitch = Mathf.Clamp(targetRotation.eulerAngles.x, minPitch, maxPitch);
+
+            dir.y = 0;
+            targetRotation = Quaternion.LookRotation(dir);
+
+            float timer = 0;
+            
+            while(timer < lerpTime) 
+            {
+                timer += Time.deltaTime;
+
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, timer / lerpTime);
+                pitchValue = Mathf.Lerp(pitchValue, targetPitch, timer/lerpTime);
+                mainCamera.transform.localEulerAngles = new Vector3(pitchValue, 0, 0);
+               
+                yield return new WaitForEndOfFrame();
+            }
+
+            transform.rotation =  targetRotation;
+            pitchValue = targetPitch;
+            mainCamera.transform.localEulerAngles = new Vector3(pitchValue, 0, 0);
+        }
+        #endregion
+
+
+
 
         #region Interaction
         private void LineOfSightRay() 

@@ -1,11 +1,15 @@
 using BrunoMikoski.AnimationSequencer;
-using System.Collections;
-using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CluePanel : MenuPanel
 {
     public AnimationSequencerController animSeqController;
+
+    [Header("Panel References")]
+    [SerializeField] private Image img;
+    [SerializeField] private ScrollingText txt;
 
     public override void TogglePanel(bool showPanel)
     {
@@ -19,6 +23,13 @@ public class CluePanel : MenuPanel
         {
             animSeqController.PlayBackwards(true, () => gameObject.SetActive(false));
         }
+    }
+
+    private void SetPanel(Sprite icon, string text) 
+    {
+        img.sprite = icon;
+
+        txt.SetMessage("YOU HAVE FOUND A CLUE\n\n" + text);
     }
 
     //private void OnSequenceFinished() => gameObject.SetActive(false);
