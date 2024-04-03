@@ -27,6 +27,11 @@ namespace CGD
         public const string RoomName = "RoomName";
 
         /// <summary>
+        /// Game Mode
+        /// </summary>
+        public const string TeamGame = "TeamGame";
+
+        /// <summary>
         /// boolean, has game started.
         /// </summary>
         public const string GameStarted = "GameStarted";
@@ -57,12 +62,13 @@ namespace CGD
         /// </summary>
         /// <param name="gameStarted"></param>
         /// <returns></returns>
-        public static Hashtable CreateCustomRoomProperties(bool gameStarted = false, string roomName = "")
+        public static Hashtable CreateCustomRoomProperties(bool gameStarted = false, string roomName = "", bool teams = false)
         {
             return new Hashtable
             {
                 { GameStarted, false },
-                { RoomName , roomName}
+                { RoomName , roomName},
+                { TeamGame , teams}
             };
         }
         /// <summary>

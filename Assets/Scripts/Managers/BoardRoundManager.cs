@@ -48,12 +48,12 @@ namespace CGD
         private void Start()
         {
             playerList = PhotonNetwork.PlayerList;
-            GameManager.OnGameStateChanged += GameStateChanged;
+            GameManagerEvents.OnGameStateChanged += GameStateChanged;
         }
 
         private void OnDestroy()
         {
-            GameManager.OnGameStateChanged -= GameStateChanged;
+            GameManagerEvents.OnGameStateChanged -= GameStateChanged;
         }
         #endregion
 

@@ -18,11 +18,11 @@ namespace CGD
 
         private void OnEnable()
         {
-            GameManager.OnGameStateChanged += GameStateChanged;
+            GameManagerEvents.OnGameStateChanged += GameStateChanged;
         }
         private void OnDestroy()
         {
-            GameManager.OnGameStateChanged -= GameStateChanged;
+            GameManagerEvents.OnGameStateChanged -= GameStateChanged;
         }
 
         private void GameStateChanged(GameState state) 

@@ -19,13 +19,6 @@ namespace CGD.Gameplay
 
         private CaseItem[] items;
         private int index = 0;
-        private int Index {  get { return index; }  
-            set 
-            { 
-                index = Mathf.Clamp(value, 0, items.Length); 
-            } 
-        }
-
 
         private void Awake()
         {
@@ -52,13 +45,15 @@ namespace CGD.Gameplay
 
         private void DrawNext() 
         {
-            var item = items[++Index];
+            if(++index >= items.Length)
+                index = 0;
+
+            var item = items[index];
             
             if(item != null) 
             {
                 img.sprite = item.icon;
-               // label.text = item.name.SplitWords
-            
+                label.text = item.name;
             }
         }
 

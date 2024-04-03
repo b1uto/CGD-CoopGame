@@ -7,7 +7,7 @@ public class MenuButton : MonoBehaviour
 {
     public bool forward;
 
-    private void Awake()
+    protected void Awake()
     {
         GetComponent<Button>().onClick.AddListener(() => 
         {

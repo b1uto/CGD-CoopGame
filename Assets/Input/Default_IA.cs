@@ -24,7 +24,7 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
     ""name"": ""Default_IA"",
     ""maps"": [
         {
-            ""name"": ""Default"",
+            ""name"": ""Game"",
             ""id"": ""c060e0cb-d26a-434c-aa0d-89d3595304e2"",
             ""actions"": [
                 {
@@ -76,6 +76,15 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
                     ""name"": ""Fire"",
                     ""type"": ""Button"",
                     ""id"": ""ce8ac013-acf4-43b5-b0f7-c02484e93d4e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""8ca40c90-0d97-4dcb-9ab5-41d59694ddbd"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -192,20 +201,63 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
                     ""action"": ""Drop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""63fd132c-a039-408e-9164-d29353495195"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""645593e4-82aa-4f8b-a437-f96734c7e8c7"",
+            ""actions"": [
+                {
+                    ""name"": ""Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""9afdbd6e-a8a7-417a-a8cf-3f3f439822ff"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""435cc1a6-2036-4cca-b04e-b00af956e3a6"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Menu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // Default
-        m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
-        m_Default_Move = m_Default.FindAction("Move", throwIfNotFound: true);
-        m_Default_Look = m_Default.FindAction("Look", throwIfNotFound: true);
-        m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
-        m_Default_Equip = m_Default.FindAction("Equip", throwIfNotFound: true);
-        m_Default_Drop = m_Default.FindAction("Drop", throwIfNotFound: true);
-        m_Default_Fire = m_Default.FindAction("Fire", throwIfNotFound: true);
+        // Game
+        m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
+        m_Game_Move = m_Game.FindAction("Move", throwIfNotFound: true);
+        m_Game_Look = m_Game.FindAction("Look", throwIfNotFound: true);
+        m_Game_Interact = m_Game.FindAction("Interact", throwIfNotFound: true);
+        m_Game_Equip = m_Game.FindAction("Equip", throwIfNotFound: true);
+        m_Game_Drop = m_Game.FindAction("Drop", throwIfNotFound: true);
+        m_Game_Fire = m_Game.FindAction("Fire", throwIfNotFound: true);
+        m_Game_Menu = m_Game.FindAction("Menu", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_Menu = m_UI.FindAction("Menu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -264,34 +316,36 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Default
-    private readonly InputActionMap m_Default;
-    private List<IDefaultActions> m_DefaultActionsCallbackInterfaces = new List<IDefaultActions>();
-    private readonly InputAction m_Default_Move;
-    private readonly InputAction m_Default_Look;
-    private readonly InputAction m_Default_Interact;
-    private readonly InputAction m_Default_Equip;
-    private readonly InputAction m_Default_Drop;
-    private readonly InputAction m_Default_Fire;
-    public struct DefaultActions
+    // Game
+    private readonly InputActionMap m_Game;
+    private List<IGameActions> m_GameActionsCallbackInterfaces = new List<IGameActions>();
+    private readonly InputAction m_Game_Move;
+    private readonly InputAction m_Game_Look;
+    private readonly InputAction m_Game_Interact;
+    private readonly InputAction m_Game_Equip;
+    private readonly InputAction m_Game_Drop;
+    private readonly InputAction m_Game_Fire;
+    private readonly InputAction m_Game_Menu;
+    public struct GameActions
     {
         private @Default_IA m_Wrapper;
-        public DefaultActions(@Default_IA wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Default_Move;
-        public InputAction @Look => m_Wrapper.m_Default_Look;
-        public InputAction @Interact => m_Wrapper.m_Default_Interact;
-        public InputAction @Equip => m_Wrapper.m_Default_Equip;
-        public InputAction @Drop => m_Wrapper.m_Default_Drop;
-        public InputAction @Fire => m_Wrapper.m_Default_Fire;
-        public InputActionMap Get() { return m_Wrapper.m_Default; }
+        public GameActions(@Default_IA wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Move => m_Wrapper.m_Game_Move;
+        public InputAction @Look => m_Wrapper.m_Game_Look;
+        public InputAction @Interact => m_Wrapper.m_Game_Interact;
+        public InputAction @Equip => m_Wrapper.m_Game_Equip;
+        public InputAction @Drop => m_Wrapper.m_Game_Drop;
+        public InputAction @Fire => m_Wrapper.m_Game_Fire;
+        public InputAction @Menu => m_Wrapper.m_Game_Menu;
+        public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(DefaultActions set) { return set.Get(); }
-        public void AddCallbacks(IDefaultActions instance)
+        public static implicit operator InputActionMap(GameActions set) { return set.Get(); }
+        public void AddCallbacks(IGameActions instance)
         {
-            if (instance == null || m_Wrapper.m_DefaultActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_DefaultActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_GameActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GameActionsCallbackInterfaces.Add(instance);
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
@@ -310,9 +364,12 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
+            @Menu.started += instance.OnMenu;
+            @Menu.performed += instance.OnMenu;
+            @Menu.canceled += instance.OnMenu;
         }
 
-        private void UnregisterCallbacks(IDefaultActions instance)
+        private void UnregisterCallbacks(IGameActions instance)
         {
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
@@ -332,24 +389,73 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
+            @Menu.started -= instance.OnMenu;
+            @Menu.performed -= instance.OnMenu;
+            @Menu.canceled -= instance.OnMenu;
         }
 
-        public void RemoveCallbacks(IDefaultActions instance)
+        public void RemoveCallbacks(IGameActions instance)
         {
-            if (m_Wrapper.m_DefaultActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_GameActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IDefaultActions instance)
+        public void SetCallbacks(IGameActions instance)
         {
-            foreach (var item in m_Wrapper.m_DefaultActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_GameActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_DefaultActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_GameActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public DefaultActions @Default => new DefaultActions(this);
-    public interface IDefaultActions
+    public GameActions @Game => new GameActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_Menu;
+    public struct UIActions
+    {
+        private @Default_IA m_Wrapper;
+        public UIActions(@Default_IA wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Menu => m_Wrapper.m_UI_Menu;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            @Menu.started += instance.OnMenu;
+            @Menu.performed += instance.OnMenu;
+            @Menu.canceled += instance.OnMenu;
+        }
+
+        private void UnregisterCallbacks(IUIActions instance)
+        {
+            @Menu.started -= instance.OnMenu;
+            @Menu.performed -= instance.OnMenu;
+            @Menu.canceled -= instance.OnMenu;
+        }
+
+        public void RemoveCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUIActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UIActions @UI => new UIActions(this);
+    public interface IGameActions
     {
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
@@ -357,5 +463,10 @@ public partial class @Default_IA: IInputActionCollection2, IDisposable
         void OnEquip(InputAction.CallbackContext context);
         void OnDrop(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnMenu(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnMenu(InputAction.CallbackContext context);
     }
 }

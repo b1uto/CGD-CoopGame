@@ -14,18 +14,29 @@ public class Singleton<T> : MonoBehaviour where T : Component
     [SerializeField] private bool _persistant;
     protected static T _instance;
 
+    /// <summary>
+    /// Ensure you call base.Awake() to enable singleton setup.
+    /// </summary>
     protected void Awake()
     {
-        if(Instance != null) 
+        SingletonSetup();
+        CustomAwake();
+    }
+
+    private void SingletonSetup()
+    {
+        if (Instance != null)
         {
             DestroyImmediate(gameObject);
         }
         else
         {
-            _instance = this as T; 
+            _instance = this as T;
             if (_persistant)
                 DontDestroyOnLoad(gameObject);
         }
     }
+    
+    protected virtual void CustomAwake() { }
 
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   countdownDuration: 3
-  roundDuration: 120
-  turnDuration: 15
+  roundDuration: 5
+  turnDuration: 30
   turnBufferDuration: 5
   minNumOfRounds: 2

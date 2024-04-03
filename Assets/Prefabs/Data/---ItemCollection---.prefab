@@ -112,3 +112,6 @@ MonoBehaviour:
   weapons:
   - {fileID: 11400000, guid: b6f9bb9769c4f5b4ca1ffc8daf7b71d4, type: 2}
   - {fileID: 11400000, guid: ed42b43f1bf55ad4ba2ee5030aff9a2f, type: 2}
+  inputSettings:
+  - {fileID: 11400000, guid: 3c892bc801be62242b54ca8e174e034f, type: 2}
+  - {fileID: 11400000, guid: 32ebf6b2146e59f4ca37f1a0935df9eb, type: 2}

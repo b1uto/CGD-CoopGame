@@ -17,6 +17,8 @@ using UnityEngine.SceneManagement;
 using ExitGames.Client.Photon;
 using PlayFab;
 using PlayFab.ClientModels;
+using Photon.Pun.UtilityScripts;
+using System.Collections;
 
 #pragma warning disable 649
 
@@ -81,7 +83,22 @@ namespace CGD.Networking
                 PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = this.gameVersion;
             }
+            else
+            {
+                StartCoroutine(DelayedStart());
+            }
         }
+
+        IEnumerator DelayedStart() 
+        {
+            yield return new WaitForEndOfFrame();
+
+            if (PhotonNetwork.CurrentLobby != null)
+                OnJoinedLobby();
+            else
+                OnConnectedToMaster();
+        }
+
         #endregion
 
         #region Public Methods
@@ -130,7 +147,7 @@ namespace CGD.Networking
             });
             PhotonNetwork.LoadLevel(2);
         }
-        public static void CreateRoom(string roomName, int maxPlayers, bool inviteOnly)
+        public static void CreateRoom(string roomName, int maxPlayers, bool teamsMode, bool inviteOnly)
         {
             if (!string.IsNullOrEmpty(roomName))
             {
@@ -139,7 +156,7 @@ namespace CGD.Networking
                     MaxPlayers = maxPlayers,//RoomProperties.MaxPlayersPerRoom, 
                     EmptyRoomTtl = 0, 
                     IsVisible = !inviteOnly,
-                    CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false, roomName),
+                    CustomRoomProperties = RoomProperties.CreateCustomRoomProperties(false, roomName, teamsMode),
                     CustomRoomPropertiesForLobby = RoomProperties.GetLobbyProperties()
                 });
 
@@ -305,8 +322,8 @@ namespace CGD.Networking
                 PhotonNetwork.AutomaticallySyncScene = true;
                 MenuManager.Instance.OpenMenu("room");
             }
-            
-            
+
+            JoinRandomTeam();
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
@@ -348,6 +365,20 @@ namespace CGD.Networking
         public override void OnPlayerLeftRoom(Player otherPlayer) => OnPlayersUpdated?.Invoke();
         #endregion
 
+        #region Teams
+        private void JoinRandomTeam() 
+        {
+            var teamManager = FindObjectOfType<PhotonTeamsManager>();
+
+            if (teamManager) 
+            {
+                var team1Size = teamManager.GetTeamMembersCount(1);
+                var team2Size = teamManager.GetTeamMembersCount(2);
+
+                PhotonNetwork.LocalPlayer.JoinTeam((team1Size <= team2Size) ? (byte)1 : (byte)2);
+            }
+        }
+        #endregion
 
         #region PlayFab
         private void InitialiseUser() 
@@ -358,11 +389,14 @@ namespace CGD.Networking
 
                 PlayFabClientAPI.GetAccountInfo(request, x =>
                 {
-                    PhotonNetwork.NickName = x.AccountInfo.Username;
+                    if (string.IsNullOrEmpty(x.AccountInfo.Username))
+                        PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
+                    else
+                        PhotonNetwork.NickName = x.AccountInfo.Username;
                 }
                 ,OnGetAccountError);
             }
-            else 
+            else if(string.IsNullOrEmpty(PhotonNetwork.NickName)) 
             {
                 PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
             }
@@ -374,5 +408,10 @@ namespace CGD.Networking
         }
 
         #endregion
+
+
+
+
+
     }
 }

@@ -27,6 +27,14 @@ public class ItemCollection : Singleton<ItemCollection>
     private Dictionary<string, Weapon> Weapons = new Dictionary<string, Weapon>();
     #endregion
 
+    #region Settings
+    [Header("Settings Data")]
+    [SerializeField] private InputSettings[] inputSettings;
+
+    public InputSettings DefaultInputSettings { get { return inputSettings[0]; } }
+    public InputSettings InputSettings { get { return inputSettings[1]; } }
+    #endregion
+
     #region temp
     /// <summary>
     /// TODO store elsewhere in Item Collection. Randomise if player has not chosen avatar.

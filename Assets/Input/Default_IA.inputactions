@@ -2,7 +2,7 @@
     "name": "Default_IA",
     "maps": [
         {
-            "name": "Default",
+            "name": "Game",
             "id": "c060e0cb-d26a-434c-aa0d-89d3595304e2",
             "actions": [
                 {
@@ -54,6 +54,15 @@
                     "name": "Fire",
                     "type": "Button",
                     "id": "ce8ac013-acf4-43b5-b0f7-c02484e93d4e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Menu",
+                    "type": "Button",
+                    "id": "8ca40c90-0d97-4dcb-9ab5-41d59694ddbd",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -168,6 +177,45 @@
                     "processors": "",
                     "groups": "",
                     "action": "Drop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "63fd132c-a039-408e-9164-d29353495195",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "645593e4-82aa-4f8b-a437-f96734c7e8c7",
+            "actions": [
+                {
+                    "name": "Menu",
+                    "type": "Button",
+                    "id": "9afdbd6e-a8a7-417a-a8cf-3f3f439822ff",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "435cc1a6-2036-4cca-b04e-b00af956e3a6",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Menu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

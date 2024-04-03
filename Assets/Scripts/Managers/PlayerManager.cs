@@ -1,14 +1,11 @@
 using System.Collections.Generic;
-using System.IO;
-using System.Xml.Schema;
 using CGD.Case;
+using CGD.Input;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace CGD
 {
@@ -16,12 +13,11 @@ namespace CGD
     {
         public static GameObject LocalPlayerInstance;
 
-      
         public ref Dictionary<string, ClueInfo> Clues { get { return ref clues; } }
 
         private Dictionary<string, ClueInfo> clues = new Dictionary<string, ClueInfo>();
 
-        private PlayerInputHandler inputHandler;
+        private CGD.Input.PlayerInputHandler inputHandler;
 
         private void Awake()
         {
@@ -29,13 +25,14 @@ namespace CGD
             if (tmp && photonView)
             {
                 tmp.text = photonView.Owner.NickName;
+                tmp.gameObject.SetActive(!photonView.IsMine);
             }
 
             if (photonView.IsMine)
             {
-                inputHandler = gameObject.AddComponent<PlayerInputHandler>();
-                GameManager.OnGameStateChanged += OnGameStateChanged;
-                GameManager.OnResumeGame += OnResumeGame;
+                inputHandler = gameObject.AddComponent<CGD.Input.PlayerInputHandler>();
+                GameManagerEvents.OnGameStateChanged += OnGameStateChanged;
+                GameManagerEvents.OnResumeGame += OnResumeGame;
             }
 
             DontDestroyOnLoad(gameObject);
@@ -45,8 +42,8 @@ namespace CGD
         {
             if (photonView.IsMine)
             {
-                GameManager.OnGameStateChanged -= OnGameStateChanged;
-                GameManager.OnResumeGame -= OnResumeGame;
+                GameManagerEvents.OnGameStateChanged -= OnGameStateChanged;
+                GameManagerEvents.OnResumeGame -= OnResumeGame;
             }
         }
 
@@ -57,7 +54,7 @@ namespace CGD
             {
                 LocalPlayerInstance = this.gameObject;
 
-                var modelPath = Path.Combine("Models", ItemCollection.GetRandomModelName());
+                var modelPath = System.IO.Path.Combine("Models", ItemCollection.GetRandomModelName());
                 photonView.RPC(nameof(InstantiateCharacter), RpcTarget.AllBuffered, photonView.ViewID, modelPath);
                 GameManager.Instance.SetLocalPlayer(this);
             }
@@ -108,12 +105,12 @@ namespace CGD
                 if (photonView.IsMine)
                 {
                     GameMenuManager.Instance.OpenCluePanel(clue);
-                    inputHandler.DisablePlayerInput();
+                    InputManager.Instance.SetActiveMap(GameContext.UI);
                 }
             }
         }
 
-        public void OnResumeGame() => inputHandler.EnablePlayerInput();
+        public void OnResumeGame() => InputManager.Instance.SetActiveMap(GameContext.Game);
 
         private void OnGameStateChanged(GameState state) 
         {
@@ -124,10 +121,10 @@ namespace CGD
                     GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
                     break;
                 case GameState.Start:
-                    inputHandler.EnablePlayerInput(); 
+                    //inputHandler.EnablePlayerInput(); 
                     break;
                 case GameState.Meeting:
-                    inputHandler.DisablePlayerInput();
+                    //inputHandler.DisablePlayerInput();
                     GameManager.Instance.BoardRoundManager.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
                     GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
                     break;
@@ -149,11 +146,6 @@ namespace CGD
                 
                 UpdateClue(clue, clueInfo); 
             }
-
-            //if(eventCode == GameSettings.PunAllPlayersLoaded) 
-            //{
-            //    AssignRandomClues();
-            //}
         }
 
         private void UpdateClue(string clue, ClueInfo clueInfo)

@@ -1,3 +1,53 @@
+using UnityEngine;
+
+public static class SaveData 
+{
+
+    public static bool SaveFile(Object data, bool encrypt = false)
+    {
+        if (data == null) 
+            return false;
+
+        string filePath = Application.persistentDataPath + "/" + data.name +".sav";
+        string json = JsonUtility.ToJson(data);
+        
+        if(string.IsNullOrEmpty(json))
+            return false;
+
+        System.IO.File.WriteAllText(filePath, json);
+        return true;
+    }
+
+    public static bool LoadFile<T>(T obj, out T loadedData) where T : ScriptableObject 
+    {
+        loadedData = null;
+
+        if(obj == null) 
+            return false;
+
+
+        string filePath = Application.persistentDataPath + "/" + obj.name + ".sav";
+
+        if (System.IO.File.Exists(filePath))
+        {
+            var jsonData = System.IO.File.ReadAllText(filePath);
+
+            if(!string.IsNullOrEmpty(jsonData))
+            { 
+                loadedData = ScriptableObject.CreateInstance<T>();
+                JsonUtility.FromJsonOverwrite(jsonData, loadedData);
+                return true;
+            }   
+        }
+        
+        return false;
+    }
+
+}
+
+
+
+
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;

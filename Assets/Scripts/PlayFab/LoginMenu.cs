@@ -12,6 +12,15 @@ public class LoginMenu : MenuPanel
     public TMP_InputField Email;
     public TMP_InputField Password;
 
+    private void Awake()
+    {
+        if (PlayFabClientAPI.IsClientLoggedIn())
+        {
+            SceneManager.LoadScene(1);
+        }
+    }
+
+
     // Login Authentication
     public void LoginUser()
     {

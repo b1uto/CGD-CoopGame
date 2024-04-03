@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Photon.Pun;
+using CGD.Input;
 using UnityEngine;
 
 namespace CGD

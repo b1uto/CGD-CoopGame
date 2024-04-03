@@ -2,31 +2,43 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 
-namespace CGD
-{
+namespace CGD.Input
+{ 
+
     public class PlayerInputHandler : MonoBehaviour
     {
         public bool Debugging = false;
+
+        /// <summary>
+        /// Reference to pawn controller
+        /// </summary>
+        [SerializeField] private PlayerController playerController;
 
         /// <summary>
         /// ScriptableObject. input settings
         /// </summary>
         [SerializeField] private InputSettings settings;
 
-
         /// <summary>
         /// Default Input Actions
         /// </summary>
-        private Default_IA playerInput;
+        //private Default_IA playerInput;
 
-
+        /// <summary>
+        /// current movement input
+        /// </summary>
         private Vector2 moveInput;
+
         /// <summary>
         /// Used for smoothing out movement input.
         /// </summary>
         private Vector2 moveVelocity;
 
+        /// <summary>
+        /// current look input
+        /// </summary>
         private Vector2 lookInput;
+
         /// <summary>
         /// Used for converting vector2 input to Vector3
         /// </summary>
@@ -35,7 +47,7 @@ namespace CGD
 
         #region Properties
         /// <summary>
-        /// Get Converted Input Value
+        /// Converts Input to Vector3
         /// </summary>
         public Vector3 MoveInput
         {
@@ -63,39 +75,45 @@ namespace CGD
         #region Setup
         private void Awake()
         {
-            var filePath = System.IO.Path.Combine("Data", "Settings");
-            settings = Resources.Load<InputSettings>(System.IO.Path.Combine(filePath, "InputSettings"));
-            
+            settings = ItemCollection.Instance.InputSettings;
+            playerController = GetComponent<PlayerController>();
         }
-        private void OnEnable()
-        {
-            if (playerInput != null) playerInput.Enable();
-        }
-
         private void Start()
         {
-            playerInput = new Default_IA();
-            playerInput.Default.Move.performed += OnMoveInput;
-            playerInput.Default.Look.performed += OnLookInput;
-            playerInput.Default.Interact.performed += OnInteractInput;
-            playerInput.Default.Equip.performed += OnEquipInput;
-            playerInput.Default.Drop.performed += OnDropInput;
-            playerInput.Default.Fire.performed += OnFireInput;
-
-            if (Debugging)
-                playerInput.Enable();
-            else
-                playerInput.Disable();
-           // playerInput.Disable();
+            InputManager.OnChangedInputContext += OnChangedInputContext;
+            InitialiseGameActionMap();
         }
-       
-        private void OnDisable()
+
+        private void OnDestroy()
         {
-            if (playerInput != null) playerInput.Disable();
+            InputManager.OnChangedInputContext -= OnChangedInputContext;
+            ClearGameActionMap();
+        }
+        private void InitialiseGameActionMap() 
+        {
+            var Game = InputManager.Instance.InputActionAsset.Game;
+
+            Game.Move.performed += OnMoveInput;
+            Game.Look.performed += OnLookInput;
+            Game.Interact.performed += OnInteractInput;
+            Game.Equip.performed += OnEquipInput;
+            Game.Drop.performed += OnDropInput;
+            Game.Fire.performed += OnFireInput;
+        }
+        private void ClearGameActionMap()
+        {
+            var Game = InputManager.Instance.InputActionAsset.Game;
+
+            Game.Move.performed -= OnMoveInput;
+            Game.Look.performed -= OnLookInput;
+            Game.Interact.performed -= OnInteractInput;
+            Game.Equip.performed -= OnEquipInput;
+            Game.Drop.performed -= OnDropInput;
+            Game.Fire.performed -= OnFireInput;
         }
         #endregion
 
-        #region Input
+        #region Input Callbacks
         private void OnMoveInput(InputAction.CallbackContext context)
         {
             moveInput = Vector3.ClampMagnitude(context.ReadValue<Vector2>(), 1);
@@ -103,44 +121,44 @@ namespace CGD
         private void OnLookInput(InputAction.CallbackContext context)
         {
             lookInput = context.ReadValue<Vector2>() * Time.deltaTime;
-            lookInput.x *= settings.sensitivityX;
-            lookInput.y *= settings.sensitivityY * settings.InvertY;
+            lookInput.x *= settings.SensitivityX;
+            lookInput.y *= settings.SensitivityY * settings.InvertY;
         }
 
         private void OnInteractInput(InputAction.CallbackContext context)
         {
             if(context.interaction is PressInteraction) 
-                GetComponent<PlayerController>().Interact();
+                playerController.Interact();
         }
         private void OnEquipInput(InputAction.CallbackContext context)
         {
-            GetComponent<PlayerController>().Equip();
+            playerController.Equip();
         }
         private void OnDropInput(InputAction.CallbackContext context)
         {
-            GetComponent<PlayerController>().Drop();
+            playerController.Drop();
         }
         private void OnFireInput(InputAction.CallbackContext context)
         {
-            GetComponent<PlayerController>().Fire();
+            playerController.Fire();
         }
         #endregion
 
-        #region Toggle Input
-        public void DisablePlayerInput()
+        #region Action Map
+        private void OnChangedInputContext(GameContext context) 
         {
-            playerInput.Disable();
-            moveInput = moveVelocity = lookInput = movement3 = Vector3.zero;
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            if(context != GameContext.Game)
+                moveInput = moveVelocity = lookInput = movement3 = Vector3.zero;
         }
-        public void EnablePlayerInput()
-        {
-            playerInput.Enable();
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
+        //public void DisablePlayerInput()
+        //{
+        //    moveInput = moveVelocity = lookInput = movement3 = Vector3.zero;
+        //    InputManager.Instance.SetActiveMap(GameContext.UI);
+        //}
+        //public void EnablePlayerInput()
+        //{
+        //    InputManager.Instance.SetActiveMap(GameContext.Game);
+        //}
         #endregion
     }
 }

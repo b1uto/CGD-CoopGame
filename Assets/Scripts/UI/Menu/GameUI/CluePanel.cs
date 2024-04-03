@@ -12,7 +12,7 @@ public class CluePanel : MenuPanel
     [SerializeField] private Image img;
     [SerializeField] private ScrollingText txt;
 
-    public void Btn_Resume() => GameManager.OnResumeGame?.Invoke();
+    public void Btn_Resume() => GameManager.Instance.ResumeGame();
 
     public override void TogglePanel(bool showPanel)
     {

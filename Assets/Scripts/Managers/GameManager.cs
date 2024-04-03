@@ -2,11 +2,9 @@ using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using System.Collections;
 using TMPro;
-using System.Collections.Generic;
-using UnityEngine.InputSystem;
+using CGD.Input;
 
 namespace CGD
 {
@@ -18,16 +16,22 @@ namespace CGD
         Meeting = 3
     }
 
-    public class GameManager : SingletonPunCallbacks<GameManager>, IOnEventCallback
+
+    public static class GameManagerEvents 
     {
         #region Delegates
         public delegate void GameStateCallback(GameState state);
-        public static event GameStateCallback OnGameStateChanged;
+        public static GameStateCallback OnGameStateChanged;
 
         public delegate void UpdateDelegate();
         public static UpdateDelegate OnResumeGame;
         #endregion
 
+    }
+
+    public class GameManager : SingletonPunCallbacks<GameManager>, IOnEventCallback
+    {
+       
         [SerializeField] private GameObject playerPrefab;
         [SerializeField] private BoardRoundManager boardManager;
         [SerializeField] private GameSettings gameSettings;
@@ -51,7 +55,7 @@ namespace CGD
             private set
             {
                 _gameState = value;
-                OnGameStateChanged?.Invoke(value);
+                GameManagerEvents.OnGameStateChanged?.Invoke(value);
             }
         }
         public bool IsVoteAvailable 
@@ -71,7 +75,7 @@ namespace CGD
             // var filePath = System.IO.Path.Combine("Data", "Settings");
             //gameSettings = Resources.Load<GameSettings>(System.IO.Path.Combine(filePath, "GameSettings"));
 
-            OnGameStateChanged += GameStateChangedCallback;
+            GameManagerEvents.OnGameStateChanged += GameStateChangedCallback;
 
             if (PhotonNetwork.CurrentRoom != null)
                 InstantiateNewPlayer();
@@ -91,12 +95,7 @@ namespace CGD
 
         private void OnDestroy() 
         {
-            OnGameStateChanged -= GameStateChangedCallback;
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.P)) { LeaveRoom(); }
+            GameManagerEvents.OnGameStateChanged -= GameStateChangedCallback;
         }
 
         #region Photon Callbacks
@@ -150,6 +149,18 @@ namespace CGD
         }
         #endregion
 
+        #region Public Methods
+        public void ResumeGame() 
+        {
+            GameManagerEvents.OnResumeGame?.Invoke();
+        }
+        public void SetLocalPlayer(PlayerManager playerManager)
+        {
+            localPlayerManager = playerManager;
+        }
+        public void LeaveRoom() => PhotonNetwork.LeaveRoom();
+        #endregion
+
         #region Private Methods
         private void StartGame(double networkTime) 
         {
@@ -192,15 +203,6 @@ namespace CGD
         }
         #endregion
 
-
-        #region Public Methods
-        public void SetLocalPlayer(PlayerManager playerManager) 
-        {
-            localPlayerManager = playerManager;
-        }
-        public void LeaveRoom() => PhotonNetwork.LeaveRoom();
-        #endregion
-
         #region Room Generation
         private void InstantiateNewPlayer()
         {
@@ -238,7 +240,8 @@ namespace CGD
         {
             //var pos = Random.insideUnitCircle * Random.Range(1, 5);
 
-            //PhotonNetwork.Instantiate(System.IO.Path.Combine("Items", "Torch"), new Vector3(pos.x, 1, pos.y), Quaternion.identity);
+            var pos = GameObject.Find("TorchSpawnPoint").transform.position;
+            PhotonNetwork.Instantiate(System.IO.Path.Combine("Items", "Torch"), new Vector3(pos.x, 1, pos.y), Quaternion.identity);
         }
 
 
