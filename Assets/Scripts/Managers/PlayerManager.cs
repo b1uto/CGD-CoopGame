@@ -7,17 +7,16 @@ using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 
-namespace CGD
+namespace CGD.Gameplay
 {
     public class PlayerManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         public static GameObject LocalPlayerInstance;
 
-        public ref Dictionary<string, ClueInfo> Clues { get { return ref clues; } }
-
         private Dictionary<string, ClueInfo> clues = new Dictionary<string, ClueInfo>();
-
         private CGD.Input.PlayerInputHandler inputHandler;
+
+        public ref Dictionary<string, ClueInfo> Clues { get { return ref clues; } }
 
         private void Awake()
         {
@@ -89,10 +88,15 @@ namespace CGD
         {
             if (clues.TryGetValue(id, out var info))
             {
-                object[] data = new object[] { id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed};
+                GameSettings.RE_PlayerSubmittedClue(id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed);
+            }
+        }
 
-                RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-                PhotonNetwork.RaiseEvent(GameSettings.PlayerSubmittedClue, data, raiseEventOptions, SendOptions.SendReliable);
+        public void ShareClueWithTeam(string id)
+        {
+            if (clues.TryGetValue(id, out var info))
+            {
+                GameSettings.RE_PlayerSharedClue(id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed);
             }
         }
 
@@ -106,6 +110,9 @@ namespace CGD
                 {
                     GameMenuManager.Instance.OpenCluePanel(clue);
                     InputManager.Instance.SetActiveMap(GameContext.UI);
+
+                    if(GameManager.Instance.GameMode == GameMode.Team) 
+                        ShareClueWithTeam(id);
                 }
             }
         }
@@ -117,16 +124,16 @@ namespace CGD
             switch(state) 
             {
                 case GameState.Countdown:
-                    GameManager.Instance.BoardRoundManager.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
-                    GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
+                    BoardRoundManager.Instance.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
+                    GetComponent<PlayerController>().SmoothLookAt(BoardRoundManager.Instance.Target.position);
                     break;
                 case GameState.Start:
                     //inputHandler.EnablePlayerInput(); 
                     break;
                 case GameState.Meeting:
                     //inputHandler.DisablePlayerInput();
-                    GameManager.Instance.BoardRoundManager.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
-                    GetComponent<PlayerController>().SmoothLookAt(GameManager.Instance.BoardRoundManager.Target.position);
+                    BoardRoundManager.Instance.PlaceActor(PhotonNetwork.LocalPlayer, gameObject);
+                    GetComponent<PlayerController>().SmoothLookAt(BoardRoundManager.Instance.Target.position);
                     break;
             }
         }
@@ -144,7 +151,16 @@ namespace CGD
                 var clue = (string)data[0];
                 var clueInfo = new ClueInfo(true, (bool)data[2] ? ClueStatus.Analysed : ClueStatus.Collected);
                 
-                UpdateClue(clue, clueInfo); 
+                UpdateClue(clue, clueInfo);
+            }
+            if (eventCode == GameSettings.PlayerSharedClue)
+            {
+                var data = (object[])photonEvent.CustomData;
+
+                var clue = (string)data[0];
+                var clueInfo = new ClueInfo(true, (bool)data[2] ? ClueStatus.Analysed : ClueStatus.Collected);
+
+                UpdateClue(clue, clueInfo);
             }
         }
 

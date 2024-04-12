@@ -19,6 +19,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using Photon.Pun.UtilityScripts;
 using System.Collections;
+using CGD.Extensions;
 
 #pragma warning disable 649
 
@@ -29,7 +30,7 @@ namespace CGD.Networking
     /// <summary>
     /// Network Manager. Connect, join a random room or create one if none or all full.
     /// </summary>
-    public class NetworkManager : MonoBehaviourPunCallbacks
+    public class NetworkManager : MonoBehaviourPunCallbacks, IConnectionCallbacks
     {
         #region Static Events
         public delegate void UpdateRoomListDelegate(List<RoomInfo> roomList);
@@ -66,6 +67,8 @@ namespace CGD.Networking
         /// </summary>
         private static List<RoomInfo> roomList = new List<RoomInfo>();
 
+        private Coroutine reconnectCoroutine;
+
         #endregion
 
         #region MonoBehaviour CallBacks
@@ -89,6 +92,16 @@ namespace CGD.Networking
             }
         }
 
+        void Start() 
+        {
+            PhotonTeamsManager.TeamsUpdated += OnTeamsUpdated;
+        }
+
+        void OnDestroy( ) 
+        {
+            PhotonTeamsManager.TeamsUpdated -= OnTeamsUpdated;
+        }
+
         IEnumerator DelayedStart() 
         {
             yield return new WaitForEndOfFrame();
@@ -110,9 +123,8 @@ namespace CGD.Networking
             //TODO check for min players
 #if DEBUGGING
             Debug.Log("Loading Game Scene");
-#endif
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-            PhotonNetwork.RaiseEvent(GameSettings.PunLoadScene, 2, raiseEventOptions, SendOptions.SendReliable);
+#endif 
+            GameSettings.RE_PunLoadScene(2);
 
             RoomProperties.SetGameStarted(true);
             //PhotonNetwork.LoadLevel(1);
@@ -289,9 +301,19 @@ namespace CGD.Networking
             //loaderAnime.StopLoaderAnimation();
 
             isConnecting = false;
+            CoroutineUtilities.StartExclusiveCoroutine(AttemptReconnect(), ref reconnectCoroutine, this);
 
         }
 
+        IEnumerator AttemptReconnect() 
+        {
+            PhotonNetwork.Reconnect();
+
+            while (!PhotonNetwork.IsConnected) 
+            {
+                yield return new WaitForSecondsRealtime(2);
+            }
+        }
         /// <summary>
         /// Called when entering a room (by creating or joining it). Called on all clients (including the Master Client).
         /// </summary>
@@ -311,7 +333,6 @@ namespace CGD.Networking
             Debug.Log("Player Joined Room");
 #endif
 
-
             if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(RoomProperties.GameStarted, out object GameStarted) && (bool)GameStarted)
             {
                 PlayerPrefs.SetString(RoomProperties.RoomName, PhotonNetwork.CurrentRoom.Name);
@@ -322,8 +343,6 @@ namespace CGD.Networking
                 PhotonNetwork.AutomaticallySyncScene = true;
                 MenuManager.Instance.OpenMenu("room");
             }
-
-            JoinRandomTeam();
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
@@ -363,17 +382,26 @@ namespace CGD.Networking
         }
         public override void OnPlayerEnteredRoom(Player newPlayer) => OnPlayersUpdated?.Invoke();
         public override void OnPlayerLeftRoom(Player otherPlayer) => OnPlayersUpdated?.Invoke();
+
+        public void OnTeamsUpdated() 
+        {
+            var roomProps = PhotonNetwork.CurrentRoom.CustomProperties;
+            if (PhotonNetwork.LocalPlayer.GetPhotonTeam() == null 
+                && roomProps.TryGetValue(RoomProperties.TeamGame, out object TeamGame) && (bool)TeamGame)
+            {
+                JoinRandomTeam();
+            }
+        }
         #endregion
 
         #region Teams
         private void JoinRandomTeam() 
         {
-            var teamManager = FindObjectOfType<PhotonTeamsManager>();
 
-            if (teamManager) 
+            if (PhotonTeamsManager.Instance) 
             {
-                var team1Size = teamManager.GetTeamMembersCount(1);
-                var team2Size = teamManager.GetTeamMembersCount(2);
+                var team1Size = PhotonTeamsManager.Instance.GetTeamMembersCount(1);
+                var team2Size = PhotonTeamsManager.Instance.GetTeamMembersCount(2);
 
                 PhotonNetwork.LocalPlayer.JoinTeam((team1Size <= team2Size) ? (byte)1 : (byte)2);
             }

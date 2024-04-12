@@ -25,8 +25,7 @@ public class PlayerRow : MonoBehaviour
 
         if (code == 1)
             textColor = Color.blue;
-
-        if(code == 2) 
+        else if(code == 2) 
             textColor = Color.red;
         
         nameTMP.color = textColor;

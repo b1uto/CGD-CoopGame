@@ -1,4 +1,3 @@
-using UnityEngine;
 using Photon.Pun;
 using ExitGames.Client.Photon;
 using Photon.Realtime;
@@ -6,7 +5,8 @@ using UnityEngine.SceneManagement;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine.UI;
-using CGD;
+using CGD.Gameplay;
+using UnityEngine;
 
 public class SceneLoader : MonoBehaviour, IOnEventCallback
 {

@@ -3,17 +3,23 @@ using Photon.Realtime;
 using ExitGames.Client.Photon;
 using UnityEngine;
 using System.Collections;
-using TMPro;
-using CGD.Input;
+using CGD.Case;
 
-namespace CGD
+namespace CGD.Gameplay
 {
+
+    public enum GameMode 
+    {
+        Standard,
+        Team
+    }
     public enum GameState
     {
         Loading = 0,
         Countdown = 1,
         Start = 2,
-        Meeting = 3
+        Meeting = 3,
+        Finished = 4
     }
 
 
@@ -23,8 +29,7 @@ namespace CGD
         public delegate void GameStateCallback(GameState state);
         public static GameStateCallback OnGameStateChanged;
 
-        public delegate void UpdateDelegate();
-        public static UpdateDelegate OnResumeGame;
+        public static System.Action OnResumeGame;
         #endregion
 
     }
@@ -33,10 +38,12 @@ namespace CGD
     {
        
         [SerializeField] private GameObject playerPrefab;
-        [SerializeField] private BoardRoundManager boardManager;
+        //[SerializeField] private BoardRoundManager boardManager;
         [SerializeField] private GameSettings gameSettings;
+        [SerializeField] private CaseFile activeCase;
 
         private GameState _gameState;
+        private GameMode _gameMode;
         private PlayerManager localPlayerManager;
 
         private int loadedPlayers = 0;
@@ -44,8 +51,9 @@ namespace CGD
 
         #region Properties
         public GameSettings GameSettings { get { return gameSettings; } }
-        public BoardRoundManager BoardRoundManager { get { return boardManager; } }
+        //public BoardRoundManager BoardRoundManager { get { return boardManager; } }
         public PlayerManager LocalPlayerManager { get { return localPlayerManager; } }
+        public CaseFile ActiveCase { get { return activeCase; } }
         public GameState GameState
         {
             get
@@ -58,12 +66,13 @@ namespace CGD
                 GameManagerEvents.OnGameStateChanged?.Invoke(value);
             }
         }
-        public bool IsVoteAvailable 
-        { 
+
+        public GameMode GameMode 
+        {
             get 
             { 
-                return currentRound >= gameSettings.MinNumOfRounds; 
-            } 
+                return _gameMode;
+            }
         }
         #endregion
 
@@ -78,7 +87,10 @@ namespace CGD
             GameManagerEvents.OnGameStateChanged += GameStateChangedCallback;
 
             if (PhotonNetwork.CurrentRoom != null)
+            {
+                SetRoomInfo();
                 InstantiateNewPlayer();
+            }
             else
                 PhotonNetwork.JoinRoom(PlayerPrefs.GetString(RoomProperties.RoomName));
 
@@ -88,9 +100,7 @@ namespace CGD
                 GenerateRoom();
             }
 
-            //TODO Eventually put into coroutine
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.MasterClient }; // You would have to set the Receivers to All in order to receive this event on the local client as well
-            PhotonNetwork.RaiseEvent(GameSettings.PunPlayerLoaded, null, raiseEventOptions, SendOptions.SendReliable);
+            GameSettings.RE_PunPlayerLoaded(); 
         }
 
         private void OnDestroy() 
@@ -118,6 +128,8 @@ namespace CGD
 #if DEBUGGING
             Debug.Log("Late Joiner, Instantiate Player Character");
 #endif
+
+            SetRoomInfo();
             InstantiateNewPlayer();
         }
 
@@ -131,9 +143,7 @@ namespace CGD
 
                 if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount)
                 {
-                    RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
-
-                    PhotonNetwork.RaiseEvent(GameSettings.PunAllPlayersLoaded, PhotonNetwork.Time, raiseEventOptions, SendOptions.SendReliable);
+                    GameSettings.RE_PunAllPlayersLoaded(PhotonNetwork.Time);
                 }
             }
 
@@ -145,6 +155,15 @@ namespace CGD
             if(eventCode == GameSettings.GameMeetingFinished) 
             {
                 OnMeetingFinished((double)photonEvent.CustomData);
+            }
+
+            if (eventCode == GameSettings.PlayerSolvedCase)
+            {
+                var data = (object[])photonEvent.CustomData;
+                var actorNumber = (int)data[0];
+                var solved = (bool)data[1];
+
+                if(solved) { FinishGame(); }
             }
         }
         #endregion
@@ -171,11 +190,24 @@ namespace CGD
                 StartCoroutine(DelayStartGame());   
             }
         }
-        public void OnMeetingFinished(double networkTime)
+        private void OnMeetingFinished(double networkTime)
         {
             gameSettings.UpdateRoundTime(networkTime);
             GameState = GameState.Start;
             StartCoroutine(DelayMeeting());
+        }
+        private void FinishGame() 
+        {
+            GameState = GameState.Finished;
+        }
+        private void GameStateChangedCallback(GameState state)
+        {
+            switch (state)
+            {
+                case GameState.Start:
+                    currentRound++;
+                    break;
+            }
         }
         IEnumerator DelayStartGame() 
         {
@@ -192,20 +224,24 @@ namespace CGD
             GameState = GameState.Meeting;
         }
 
-        private void GameStateChangedCallback(GameState state)
-        {
-            switch (state) 
-            {
-                case GameState.Start:
-                    currentRound++;
-                    break;
-            }
-        }
         #endregion
 
         #region Room Generation
+        private void SetRoomInfo() 
+        {
+            var roomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+
+            if (roomProperties.TryGetValue(RoomProperties.TeamGame, out object TeamGame))
+            {
+                _gameMode = (bool)TeamGame ? GameMode.Team : GameMode.Standard;
+            }
+        }
+
         private void InstantiateNewPlayer()
         {
+
+
+
             if (PlayerManager.LocalPlayerInstance == null)
             {
 #if DEBUGGING

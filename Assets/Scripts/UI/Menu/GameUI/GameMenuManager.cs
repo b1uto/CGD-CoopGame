@@ -1,7 +1,7 @@
 using CGD.Case;
 using UnityEngine.Events;
 
-namespace CGD
+namespace CGD.Gameplay
 {
     public class GameMenuManager : MenuManager
     {
@@ -37,6 +37,9 @@ namespace CGD
                     break;
                 case GameState.Meeting:
                     OpenMenu("board");
+                    break;
+                case GameState.Finished:
+                    OpenMenu("gameend");
                     break;
             }
         }

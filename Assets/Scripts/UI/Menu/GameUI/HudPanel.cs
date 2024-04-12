@@ -1,4 +1,4 @@
-using CGD;
+using CGD.Gameplay;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;

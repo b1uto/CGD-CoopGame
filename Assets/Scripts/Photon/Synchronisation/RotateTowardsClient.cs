@@ -1,5 +1,5 @@
 using Photon.Pun;
-using CGD;
+using CGD.Gameplay;
 using UnityEngine;
 
 public class RotateTowardsClient : MonoBehaviourPunCallbacks

@@ -68,6 +68,7 @@ namespace Photon.Pun.UtilityScripts
 
         public static event Action<Player, PhotonTeam> PlayerJoinedTeam;
         public static event Action<Player, PhotonTeam> PlayerLeftTeam;
+        public static event Action TeamsUpdated;
 
         private static PhotonTeamsManager instance;
         public static PhotonTeamsManager Instance
@@ -259,6 +260,8 @@ namespace Photon.Pun.UtilityScripts
                     playersPerTeam[playerTeam.Code].Add(player);
                 }
             }
+
+            TeamsUpdated?.Invoke();
         }
 
         private void ClearTeams()

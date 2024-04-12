@@ -6,5 +6,7 @@ namespace CGD.Case
     {
         [HideInInspector]
         public Suspect suspect;
+
+        public override CaseItem GetItem() {  return suspect; }
     }
 }

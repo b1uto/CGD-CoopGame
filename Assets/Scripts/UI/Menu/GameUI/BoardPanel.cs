@@ -1,14 +1,11 @@
 using CGD;
-using CGD.Case;
+using CGD.Gameplay;
 using CGD.Extensions;
 using DG.Tweening;
-using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Linq;
-using System.Net;
-using System.Xml.Schema;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,17 +15,20 @@ public class BoardPanel : MenuPanel
     [SerializeField] private Image turnTimerImg;
     [SerializeField] private PlayerCard[] boardPlayers;
     [SerializeField] private TextMeshProUGUI turnPromptTMP;
+    [SerializeField] private TextMeshProUGUI movesLeftTMP;
     [SerializeField] private Toggle panelToggle;
-    [SerializeField] private GameObject clueCardPrefab;
     [SerializeField] private RectTransform communityCardContainer;
-    [SerializeField] private CardDrawer cardDrawer;
+    [SerializeField] private RectTransform playerBar;
 
 
-    [SerializeField] private GameObject boardPanel, casePanel;
+    [SerializeField] private GameObject clueCardPrefab;
+    [SerializeField] private GameObject boardPanel;
+    [SerializeField] private GameObject casePanel;
+    [SerializeField] private GameObject playerBarBlocker;
 
     private Coroutine turnTimerCoroutine;
     
-    private BoardRoundManager BRM { get { return GameManager.Instance.BoardRoundManager; } }    
+    private BoardRoundManager BRM { get { return BoardRoundManager.Instance; } }    
 
 
     public void Awake()
@@ -36,12 +36,14 @@ public class BoardPanel : MenuPanel
         BoardRoundManager.OnNextPlayerTurn += NextPlayersTurn;
         BoardRoundManager.OnPlayerSkippedTurn += SkippedTurnPrompt;
         BoardRoundManager.OnClueSubmitted += AnimateCardSubmission;
+        BoardRoundManager.OnMoveMade += OnMoveMade;
     }
     public void OnDestroy()
     {
         BoardRoundManager.OnNextPlayerTurn -= NextPlayersTurn;
         BoardRoundManager.OnPlayerSkippedTurn -= SkippedTurnPrompt;
         BoardRoundManager.OnClueSubmitted -= AnimateCardSubmission;
+        BoardRoundManager.OnMoveMade -= OnMoveMade;
     }
 
     public void OnEnable()
@@ -117,6 +119,7 @@ public class BoardPanel : MenuPanel
 
     private void NextPlayersTurn(int actorNumber)
     {
+        playerBar.gameObject.SetActive(actorNumber == PhotonNetwork.LocalPlayer.ActorNumber);
         UpdateTurnPrompt(actorNumber);
         UpdateBoardPlayers(actorNumber);
         CoroutineUtilities.StartExclusiveCoroutine(TurnTimer(), ref turnTimerCoroutine, this);
@@ -140,8 +143,10 @@ public class BoardPanel : MenuPanel
     private void AnimateCardSubmission(string id, int actorNumber, bool analysed)
     {
         //TODO get rid of linq, adjust for player submission
-        var boardPlayer = PhotonNetwork.LocalPlayer.ActorNumber == actorNumber ? cardDrawer.GetComponent<RectTransform>() :
+        var boardPlayer = PhotonNetwork.LocalPlayer.ActorNumber == actorNumber ? playerBar :
                 boardPlayers.SingleOrDefault(x => x.ActorNumber == actorNumber).GetComponent<RectTransform>();
+
+        playerBarBlocker.SetActive(true);
 
         var card = Instantiate(clueCardPrefab, transform).GetComponent<ClueCard>();
         card.DrawCard(id, analysed, null);
@@ -150,7 +155,15 @@ public class BoardPanel : MenuPanel
 
         rect.position = boardPlayer.position;
 
-        rect.DOMove(communityCardContainer.position, 1.5f).OnComplete(() => rect.SetParent(communityCardContainer));
+        rect.DOMove(communityCardContainer.position, 1.5f).OnComplete(() =>
+        {
+            rect.SetParent(communityCardContainer);
+            playerBarBlocker.SetActive(false);
+        });
     }
 
+    private void OnMoveMade(int movesLeft) 
+    {
+        movesLeftTMP.text = $"{movesLeft} Moves Left";
+    }
 }

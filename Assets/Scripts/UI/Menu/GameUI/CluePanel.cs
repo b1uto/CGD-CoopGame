@@ -1,8 +1,8 @@
 using BrunoMikoski.AnimationSequencer;
-using CGD;
-using TMPro;
+using CGD.Gameplay;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class CluePanel : MenuPanel
 {

@@ -82,7 +82,7 @@ public class RoomMenu : MenuPanel
 
                 if (team != null && team.Code == 1)
                     row.DrawRow(players[i], ++blue, 1);
-                if (team != null && team.Code == 2)
+                else if (team != null && team.Code == 2)
                     row.DrawRow(players[i], ++red, 2);
                 else
                     row.DrawRow(players[i], i + 1, 0);

@@ -8,6 +8,11 @@ namespace CGD.Case
     {
         [HideInInspector]
         public Weapon weapon;
+
+        public override CaseItem GetItem()
+        {
+            return weapon;
+        }
     }
 
 

@@ -21,5 +21,8 @@ namespace CGD.Case
         /// </summary>
         [HideInInspector]
         public string[] clues;
+
+
+        public abstract CaseItem GetItem();
     } 
 }

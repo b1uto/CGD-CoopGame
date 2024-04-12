@@ -1,6 +1,7 @@
 using CGD.Case;
-using System.Collections.Generic;
+using CGD.Gameplay;
 using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemCollection : Singleton<ItemCollection>
@@ -105,7 +106,6 @@ public class ItemCollection : Singleton<ItemCollection>
 
         return false;
     }
-
     public bool TryGetCaseItem<T>(string id, out T data) where T : CaseItem
     {
         data = default;
@@ -132,6 +132,19 @@ public class ItemCollection : Singleton<ItemCollection>
     public Weapon[] GetWeapons() { return weapons; }
     public Suspect[] GetSuspects() { return suspects; }
     public Motive[] GetMotives() { return motives; }
+
+    public CaseItem[] GetActiveCaseItems() 
+    {
+        if(GameManager.Instance != null) 
+        {
+            var caseFile = GameManager.Instance.ActiveCase;
+
+            var elements = caseFile.elements.Select(key => CaseElements[key]).ToArray();
+            return elements.Select(item => item.GetItem()).ToArray();
+        }
+
+        return null;
+    }
 
 
     #region DEBUG

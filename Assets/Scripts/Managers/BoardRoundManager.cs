@@ -1,22 +1,25 @@
 using CGD.Case;
 using CGD.Events;
 using CGD.Extensions;
+using DG.Tweening.Plugins;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using PlayFab.ClientModels;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
-namespace CGD
+namespace CGD.Gameplay
 {
-    public class BoardRoundManager : MonoBehaviourPunCallbacks, IOnEventCallback
+    public class BoardRoundManager : SingletonPunCallbacks<BoardRoundManager>, IOnEventCallback
     {
         public delegate void ClueSubmitDelegate(string id, int actorNumber, bool analysed);
 
         public static event ClueSubmitDelegate OnClueSubmitted;
         public static event IntDelegate OnNextPlayerTurn;
         public static event IntDelegate OnPlayerSkippedTurn;
-
+        public static event IntDelegate OnMoveMade;
 
         [SerializeField] private Transform[] playerPoints;
         [SerializeField] private Transform playerTarget;
@@ -32,6 +35,12 @@ namespace CGD
         /// dictates if turns rotate clockwise/anticlockwise around the table.
         /// </summary>
         private bool clockwiseTurn = true;
+
+        /// <summary>
+        /// moves left for current player
+        /// </summary>
+        private int movesLeft = 0;
+
 
 
         private RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
@@ -68,9 +77,9 @@ namespace CGD
                 pawn.transform.rotation = playerPoints[index].rotation;
             }
         }
-
-        public void SubmitClue(string id, ClueStatus status)
+        public void SubmitSolution(int actorNumber, CaseItem[] items) 
         {
+            GameSettings.RE_PlayerSubmittedSolution(actorNumber, items.Select(x => x.name).ToArray());
         }
         #endregion
 
@@ -97,11 +106,15 @@ namespace CGD
                 object[] data = (object[])photonEvent.CustomData;
 
                 OnClueSubmitted?.Invoke((string)data[0], (int)data[1], (bool)data[2]);
-                StopAllCoroutines();
-                Invoke("NextPlayer", 3);
+                TurnUsed();
+            }
+            if (eventCode == GameSettings.PlayerSubmittedSolution)
+            {
+                var data = (object[])photonEvent.CustomData;
+                OnPlayerAttemptedSolve((int)data[0], (string[])data[1]);    
             }
 
-            if(eventCode == GameSettings.OnPlayerSkippedTurn)
+            if (eventCode == GameSettings.OnPlayerSkippedTurn)
             {
                 OnPlayerSkippedTurn?.Invoke((int)photonEvent.CustomData);
                 StopAllCoroutines();
@@ -112,6 +125,7 @@ namespace CGD
             {
                 object[] data = (object[])photonEvent.CustomData;
 
+                movesLeft = GM.GameSettings.MovesPerTurn;
                 GM.GameSettings.SetTurnEndTime((double)data[1]);
                 OnNextPlayerTurn?.Invoke((int)data[0]); 
 
@@ -138,11 +152,42 @@ namespace CGD
 
         private void FinishCardRound()
         {
-            PhotonNetwork.RaiseEvent(GameSettings.GameMeetingFinished, PhotonNetwork.Time, raiseEventOptions, SendOptions.SendReliable);
+            GameSettings.RE_GameMeetingFinished(PhotonNetwork.Time);
         }
         #endregion
 
         #region Turn Manager
+        public void OnPlayerAttemptedSolve(int actorNumber, string[] guessedItems)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                var items = ItemCollection.Instance.GetActiveCaseItems().Select(x => x.name).ToArray();
+
+                bool caseSolved = guessedItems.Length == items.Length &&
+                    !guessedItems.Except(items).Any() &&
+                    !items.Except(guessedItems).Any();
+
+
+                GameSettings.RE_PlayerSolvedCase(actorNumber, caseSolved);
+
+                if(!caseSolved)
+                {                
+                    movesLeft = 0;
+                    TurnUsed();
+                }
+                   
+            }
+        }
+        private void TurnUsed()
+        {
+            if (--movesLeft <= 0)
+            {
+                StopAllCoroutines();
+                Invoke("NextPlayer", 3);
+            }
+
+            OnMoveMade?.Invoke(movesLeft);
+        }
         private void NextPlayer()
         {
             if (!PhotonNetwork.IsMasterClient) 
@@ -154,22 +199,17 @@ namespace CGD
             }
             else
             {
-                object[] eventData = new object[] { playerList[activePlayer++].ActorNumber, PhotonNetwork.Time } ;
-
-                PhotonNetwork.RaiseEvent(GameSettings.OnNextPlayersTurn, eventData, raiseEventOptions, SendOptions.SendReliable);
-
-
+                GameSettings.RE_OnNextPlayersTurn( playerList[activePlayer++].ActorNumber, PhotonNetwork.Time );
             }
         }
 
         public void Btn_SkipTurn() 
         {
 #if DEBUGGING
-            DebugCanvas.Instance.AddConsoleLog("<color=yellow>Skipping Turn</color>");
+            if (DebugCanvas.Instance) DebugCanvas.Instance.AddConsoleLog("<color=yellow>Skipping Turn</color>");
 #endif
 
-            PhotonNetwork.RaiseEvent(GameSettings.OnPlayerSkippedTurn,
-                PhotonNetwork.LocalPlayer.ActorNumber, raiseEventOptions, SendOptions.SendReliable);
+            GameSettings.RE_OnPlayerSkippedTurn(PhotonNetwork.LocalPlayer.ActorNumber);
         }
 
         IEnumerator TurnTimer() 

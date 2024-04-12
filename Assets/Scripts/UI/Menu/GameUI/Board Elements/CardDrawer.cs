@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace CGD
+namespace CGD.Gameplay
 {
     public class CardDrawer : MonoBehaviour
     {
@@ -26,7 +26,7 @@ namespace CGD
 
         public void OnNextPlayersTurn(int actorNumber)
         {
-            gameObject.SetActive(actorNumber == PhotonNetwork.LocalPlayer.ActorNumber);
+            //gameObject.SetActive(actorNumber == PhotonNetwork.LocalPlayer.ActorNumber);
 
             if (actorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
                 DrawPlayerHand(ref GameManager.Instance.LocalPlayerManager.Clues);

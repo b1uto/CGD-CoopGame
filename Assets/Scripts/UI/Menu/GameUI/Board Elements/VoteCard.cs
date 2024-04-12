@@ -57,6 +57,7 @@ namespace CGD.Gameplay
             }
         }
 
+        public CaseItem GetItem() => items[index];
 
 
 

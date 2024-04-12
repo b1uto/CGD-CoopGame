@@ -7,5 +7,10 @@ namespace CGD.Case
     {
         [HideInInspector]
         public Motive motive;
+
+        public override CaseItem GetItem()
+        {
+            return motive;
+        }
     }
 }
