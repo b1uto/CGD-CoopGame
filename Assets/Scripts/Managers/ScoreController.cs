@@ -30,6 +30,21 @@ namespace CGD.Economy
             {
                 InitialisePlayerList();
             }
+            /* public enum ScoreType 
+    {
+        ClueCollected,
+        ClueAnalysed,
+        ClueSubmitted,
+        ClueRevoked,
+        AbilityUsedSuccess,
+        AbilityUsedFail,
+        CaseSolveSuccess,
+        CaseSolveFail,
+        FalseEvidenceIdentified
+    }
+            */
+
+
         }
 
         #endregion
