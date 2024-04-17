@@ -1,9 +1,9 @@
 
 using DG.Tweening;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace CGD.MiniGames
 {
 
@@ -30,23 +30,35 @@ namespace CGD.MiniGames
             return;
             //TODO
             var limits = new int[] { Random.Range(1, 10), Random.Range(1, 10), Random.Range(1, 10) };
+            var initialVolumes = new int[] { 0,0,0};
 
             int gcd = GCD(limits[0], GCD(limits[1], limits[2]));
 
             int maxMult = limits[0] / gcd;
             int target = Random.Range(1, maxMult+1) * gcd;
 
-            int totalVol = (int)(1.5 * target);
-            totalVol = (totalVol / gcd + (totalVol % gcd > 0 ? 1 : 0)) * gcd;
+            //int totalVol = (int)(1.5 * target);
+            //totalVol = (totalVol / gcd + (totalVol % gcd > 0 ? 1 : 0)) * gcd;
 
+            int buffer = Mathf.Min(limits[0], Mathf.Min(limits[1], limits[2]));
+            int totalVol = (limits[0] + limits[1] + limits[2]) - buffer;
+            int i = 0;
 
-
-            for (int i = 0; i < tubes.Length; i++) 
+            do
             {
-                int startVol = Random.Range(1, Mathf.Min(totalVol, limits[i]));
-                totalVol -= startVol;
+                int volume = Random.Range(1, Mathf.Min(totalVol, limits[i] - initialVolumes[i]));
+                
+                totalVol -= volume;
+                initialVolumes[i] += volume;
+                //tubes[i].SetTube(limits[i] / 10f, target / 10f, startVol / 10f);
+                
+                if(++i > 2) i = 0;
 
-                tubes[i].SetTube(limits[i] / 10f, target/10f, startVol/10f);
+            } while (totalVol > 0);
+
+            for(int j = 0; j < 3; j++) 
+            {
+                tubes[i].SetTube(limits[i] / 10f, target / 10f, initialVolumes[i] / 10f);
             }
         }
 

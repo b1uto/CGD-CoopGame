@@ -10,7 +10,8 @@ namespace CGD.MiniGames
     {
         Loading = 0,
         Start = 1,
-        Finished = 2
+        Won = 2,
+        Lost = 3
     }
 
     public abstract class MiniGame : MonoBehaviour
@@ -71,6 +72,11 @@ namespace CGD.MiniGames
         {
             GameManagerEvents.OnGameStateChanged -= GameStateChanged;
         }
+        private void Update()
+        {
+            if(UnityEngine.Input.GetKeyDown(KeyCode.I)) { ForceWin(); }
+            if(UnityEngine.Input.GetKeyDown(KeyCode.O)) { ForceLoss(); }
+        }
         IEnumerator MiniGameTimer() 
         {
             while(timer < timeToComplete) 
@@ -81,7 +87,7 @@ namespace CGD.MiniGames
                 turnTimerImg.fillAmount = 1f - (timer/ timeToComplete);
             }
 
-            if (gameState != GameState.Finished) MiniGameFinished(false);
+            if (gameState < GameState.Won) MiniGameFinished(false);
         }
         #endregion
 
@@ -96,7 +102,7 @@ namespace CGD.MiniGames
         protected void MiniGameFinished(bool won) 
         {
             statusTMP.text = won ? "Puzzle Solved!" : "<color=red>Puzzle Failed</color>";
-            GameState = GameState.Finished;
+            GameState = won ? GameState.Won : GameState.Lost;
             Invoke("Finish", 2);
         }
 
@@ -104,7 +110,7 @@ namespace CGD.MiniGames
         {
             if(MiniGameManager.Instance != null) 
             {
-                MiniGameManager.Instance.UnloadMiniGame();
+                MiniGameManager.Instance.UnloadMiniGame(GameState == GameState.Won);
             }
         }
         #endregion
@@ -113,6 +119,10 @@ namespace CGD.MiniGames
         private void GameStateChanged(CGD.Gameplay.GameState state) { }
         #endregion
 
+        #region Debug
+        private void ForceWin() => MiniGameFinished(true);
+        private void ForceLoss() => MiniGameFinished(false);
+        #endregion
 
     }
 }

@@ -11,14 +11,41 @@ namespace CGD.Gameplay
     {
         public CGD.Case.Clue clue;
 
-        /// <summary>
-        /// Id to Clue Scriptable Object.
-        /// </summary>
-        //private string key;
+        private int viewId;
+
+        private void Awake()
+        {
+            MiniGameManager.OnMiniGameFinished += MiniGameFinishedCallback;
+        }
+        private void OnDestroy()
+        {
+            MiniGameManager.OnMiniGameFinished -= MiniGameFinishedCallback;
+        }
 
         public override void Interact(int viewId)
         {
-            photonView.RPC(nameof(CollectClue), RpcTarget.All, viewId);
+            if(clue.analyseTool == Case.AnalyseTool.None) 
+                photonView.RPC(nameof(CollectClue), RpcTarget.All, viewId);
+            else 
+            {
+                this.viewId = viewId;
+                MiniGameManager.Instance.LoadMiniGame(clue);
+            }
+        }
+
+        private void MiniGameFinishedCallback(string id, bool status) 
+        {
+            if(id == clue.id) 
+            {
+                if(status == true)
+                {
+                    photonView.RPC(nameof(CollectClue), RpcTarget.All, viewId);
+                }
+                else 
+                {
+                    Interactable = false;
+                }
+            }
         }
 
         [PunRPC]

@@ -9,7 +9,9 @@ namespace CGD.Gameplay
     {
         [SerializeField] private GameObject interactionPrompt;
 
-        public bool Interactable { get { return true; } set { } } //Interactable with correct tool use.
+        private bool interactable = true;
+
+        public bool Interactable { get { return interactable; } set { interactable = value; } } //Interactable with correct tool use.
 
         public virtual void Interact(int viewId)
         {

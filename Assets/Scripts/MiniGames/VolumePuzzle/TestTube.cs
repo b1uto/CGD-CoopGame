@@ -20,7 +20,19 @@ namespace CGD.MiniGames
         {
             rectTransform = GetComponent<RectTransform>();
         }
+        private void Start()
+        {
+            var pos = Vector2.zero;
+            var height = rectTransform.rect.height;
 
+            pos.y = height * limitFill;
+            limitMarker.anchoredPosition = pos;
+
+            pos.y = height * targetFill;
+            targetMarker.anchoredPosition = pos;
+
+            targetMarker.gameObject.SetActive(isTargetTube);
+        }
         public void SetTube(float limit, float target, float initialVol)
         {
             limitFill = limit;
