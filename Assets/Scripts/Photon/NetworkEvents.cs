@@ -50,6 +50,17 @@ namespace CGD.Networking
         public static NetworkActorScoreDelegate OnPlayerScoredPoints;
         #endregion
 
+        #region Pun Setup
+        private void OnEnable()
+        {
+            PhotonNetwork.AddCallbackTarget(this);
+        }
+        private void OnDisable()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
+        }
+        #endregion
+
         #region Callbacks
         public void OnEvent(EventData photonEvent)
         {
