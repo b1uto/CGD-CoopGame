@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class ItemCollection : Singleton<ItemCollection>
 {
-    [Header("Collections")]
+    public static System.Action OnUserProfileUpdated;
+
+    [Header("Case Data")]
     [SerializeField] private CaseFile[] caseData;
     [SerializeField] private CaseElement[] elementData;
     [SerializeField] private Clue[] clueData;
@@ -16,6 +18,8 @@ public class ItemCollection : Singleton<ItemCollection>
     [SerializeField] private Motive[] motives;
     [SerializeField] private Weapon[] weapons;
 
+    [Header("Sprites")]
+    [SerializeField] private Sprite[] avatars;
 
     #region Dictionaries
     private Dictionary<string, CaseFile> CaseFiles = new Dictionary<string, CaseFile>();
@@ -31,14 +35,13 @@ public class ItemCollection : Singleton<ItemCollection>
     #region Settings
     [Header("Settings Data")]
     [SerializeField] private InputSettings[] inputSettings;
-
-    public InputSettings DefaultInputSettings { get { return inputSettings[0]; } }
-    public InputSettings InputSettings { get { return inputSettings[1]; } }
     #endregion
 
     #region temp
+    private UserProfile userProfile;    
+
     /// <summary>
-    /// TODO store elsewhere in Item Collection. Randomise if player has not chosen avatar.
+    /// model ids.
     /// </summary>
     private static readonly string[] modelNames = new string[5]
     {
@@ -51,9 +54,16 @@ public class ItemCollection : Singleton<ItemCollection>
 
     #endregion
 
+    #region Properties
+    public InputSettings DefaultInputSettings { get { return inputSettings[0]; } }
+    public InputSettings InputSettings { get { return inputSettings[1]; } }
+    public UserProfile UserProfile { get { return userProfile; } }
+    public Sprite[] Avatars { get { return avatars; } }
+    #endregion
 
     private void Start()
     {
+        LoadUserProfile();
         InitializeDictionaries();
     }
 
@@ -147,6 +157,39 @@ public class ItemCollection : Singleton<ItemCollection>
     }
 
 
+    private void LoadUserProfile() 
+    {
+        if(userProfile == null) { userProfile = ScriptableObject.CreateInstance<UserProfile>(); }
+
+        if (!SaveData.LoadFile(ref userProfile))
+        {
+            userProfile.model = 0; 
+            userProfile.icon = 0;
+        }
+
+        OnUserProfileUpdated?.Invoke();
+    }
+
+    public void UpdateUserProfile(int model, int icon) 
+    {
+        if(userProfile == null) 
+        {
+            userProfile = ScriptableObject.CreateInstance<UserProfile>();
+        }
+
+        UserProfile.model = model;
+        UserProfile.icon = icon;
+        SaveUserProfile();
+    }
+    public void SaveUserProfile() 
+    {
+        if(userProfile != null) 
+        {
+            SaveData.SaveFile(userProfile);
+            OnUserProfileUpdated?.Invoke();
+        }
+    }
+
     #region DEBUG
     public string[] GetClueKeys() { return Clues.Keys.ToArray(); }
 
@@ -154,6 +197,16 @@ public class ItemCollection : Singleton<ItemCollection>
     {
         return modelNames[Random.Range(0, modelNames.Length)];
     }
+
+    public static string GetModelName(int index) 
+    {
+        if(index >= 0 && index < modelNames.Length)
+            return modelNames[index];
+        else
+            return null;
+    }
+
+    public static int GetModelCount() => modelNames.Length;
 
     #endregion
 

@@ -4,6 +4,8 @@ using ExitGames.Client.Photon;
 using UnityEngine;
 using System.Collections;
 using CGD.Case;
+using CGD.Networking;
+using System.Diagnostics.Tracing;
 
 namespace CGD.Gameplay
 {
@@ -34,7 +36,7 @@ namespace CGD.Gameplay
 
     }
 
-    public class GameManager : SingletonPunCallbacks<GameManager>, IOnEventCallback
+    public class GameManager : SingletonPunCallbacks<GameManager>
     {
        
         [SerializeField] private GameObject playerPrefab;
@@ -85,6 +87,11 @@ namespace CGD.Gameplay
             //gameSettings = Resources.Load<GameSettings>(System.IO.Path.Combine(filePath, "GameSettings"));
 
             GameManagerEvents.OnGameStateChanged += GameStateChangedCallback;
+            NetworkEvents.OnPlayerLoaded += OnPlayerLoaded;
+            NetworkEvents.OnAllPlayersLoaded += OnAllPlayersLoaded;
+            NetworkEvents.OnGameMeetingFinished += OnGameMeetingFinished;
+            NetworkEvents.OnPlayerSolvedCase += OnPlayerSolvedCase;
+
 
             if (PhotonNetwork.CurrentRoom != null)
             {
@@ -100,12 +107,16 @@ namespace CGD.Gameplay
                 GenerateRoom();
             }
 
-            GameSettings.RE_PunPlayerLoaded(); 
+            NetworkEvents.RaiseEvent_PlayerLoaded(); 
         }
 
         private void OnDestroy() 
         {
             GameManagerEvents.OnGameStateChanged -= GameStateChangedCallback;
+            NetworkEvents.OnPlayerLoaded -= OnPlayerLoaded;
+            NetworkEvents.OnAllPlayersLoaded -= OnAllPlayersLoaded;
+            NetworkEvents.OnGameMeetingFinished -= OnGameMeetingFinished;
+            NetworkEvents.OnPlayerSolvedCase -= OnPlayerSolvedCase;
         }
 
         #region Photon Callbacks
@@ -133,43 +144,73 @@ namespace CGD.Gameplay
             InstantiateNewPlayer();
         }
 
-        public void OnEvent(EventData photonEvent)
-        {
-            byte eventCode = photonEvent.Code;
+        //public void OnEvent(EventData photonEvent)
+        //{
+        //    byte eventCode = photonEvent.Code;
 
-            if (PhotonNetwork.IsMasterClient && eventCode == GameSettings.PunPlayerLoaded)
+        //    if (PhotonNetwork.IsMasterClient && eventCode == GameSettings.PunPlayerLoaded)
+        //    {
+        //        loadedPlayers++;
+
+        //        if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount)
+        //        {
+        //            GameSettings.RE_PunAllPlayersLoaded(PhotonNetwork.Time);
+        //        }
+        //    }
+
+        //    if (eventCode == GameSettings.PunAllPlayersLoaded)
+        //    {
+        //        StartGame((double)photonEvent.CustomData);
+        //    }
+
+        //    if(eventCode == GameSettings.GameMeetingFinished) 
+        //    {
+        //        OnMeetingFinished((double)photonEvent.CustomData);
+        //    }
+
+        //    if (eventCode == GameSettings.PlayerSolvedCase)
+        //    {
+        //        var data = (object[])photonEvent.CustomData;
+        //        var actorNumber = (int)data[0];
+        //        var solved = (bool)data[1];
+
+        //        if(solved) { FinishGame(); }
+        //    }
+        //}
+        #endregion
+
+        #region NetworkEvents
+        private void OnPlayerLoaded()
+        {
+            if (PhotonNetwork.IsMasterClient)
             {
                 loadedPlayers++;
 
                 if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount)
                 {
-                    GameSettings.RE_PunAllPlayersLoaded(PhotonNetwork.Time);
+                    NetworkEvents.RaiseEvent_AllPlayersLoaded(PhotonNetwork.Time);
                 }
             }
-
-            if (eventCode == GameSettings.PunAllPlayersLoaded)
-            {
-                StartGame((double)photonEvent.CustomData);
-            }
-
-            if(eventCode == GameSettings.GameMeetingFinished) 
-            {
-                OnMeetingFinished((double)photonEvent.CustomData);
-            }
-
-            if (eventCode == GameSettings.PlayerSolvedCase)
-            {
-                var data = (object[])photonEvent.CustomData;
-                var actorNumber = (int)data[0];
-                var solved = (bool)data[1];
-
-                if(solved) { FinishGame(); }
-            }
         }
-        #endregion
 
-        #region Public Methods
-        public void ResumeGame() 
+        private void OnAllPlayersLoaded(double networkTime)
+        {
+            StartGame(networkTime);
+        }
+
+        private void OnGameMeetingFinished(double networkTime)
+        {
+            OnMeetingFinished(networkTime);
+        }
+
+        private void OnPlayerSolvedCase(int actorNumber, bool solved)
+        {
+            if (solved) { FinishGame(); }
+        }
+#endregion
+
+#region Public Methods
+public void ResumeGame() 
         {
             GameManagerEvents.OnResumeGame?.Invoke();
         }

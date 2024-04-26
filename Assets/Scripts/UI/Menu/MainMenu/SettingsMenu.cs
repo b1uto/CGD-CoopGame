@@ -1,11 +1,8 @@
-using CGD;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace CGD.Settings
+namespace CGD.UI
 {
     public enum SettingsType
     {

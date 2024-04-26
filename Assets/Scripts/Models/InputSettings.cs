@@ -52,7 +52,9 @@ public class InputSettings : ScriptableObject
     public void Save() => SaveData.SaveFile(this);
     public void Load()
     {
-        if(SaveData.LoadFile(this, out InputSettings loadedSettings)) 
+        InputSettings loadedSettings = this;
+
+        if (SaveData.LoadFile(ref loadedSettings))
         {
             this.moveSmoothTime = loadedSettings.moveSmoothTime;
             this.moveMaxSpeed = loadedSettings.moveMaxSpeed;

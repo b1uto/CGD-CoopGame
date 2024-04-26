@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class SaveData 
@@ -18,15 +19,11 @@ public static class SaveData
         return true;
     }
 
-    public static bool LoadFile<T>(T obj, out T loadedData) where T : ScriptableObject 
-    {
-        loadedData = null;
+    public static bool LoadFile<T>(ref T loadedData) where T : ScriptableObject
+    {        
+        string name = typeof(T).Name;   
 
-        if(obj == null) 
-            return false;
-
-
-        string filePath = Application.persistentDataPath + "/" + obj.name + ".sav";
+        string filePath = Application.persistentDataPath + "/" + name + ".sav";
 
         if (System.IO.File.Exists(filePath))
         {
@@ -34,10 +31,9 @@ public static class SaveData
 
             if(!string.IsNullOrEmpty(jsonData))
             { 
-                loadedData = ScriptableObject.CreateInstance<T>();
                 JsonUtility.FromJsonOverwrite(jsonData, loadedData);
                 return true;
-            }   
+            }
         }
         
         return false;

@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CGD.Gameplay
+namespace CGD.UI
 {
     [RequireComponent(typeof(Button))]
     public class VoteCard : MonoBehaviour

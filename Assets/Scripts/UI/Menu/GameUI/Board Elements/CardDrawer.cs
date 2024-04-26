@@ -1,4 +1,5 @@
 using CGD.Case;
+using CGD.Networking;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,15 +17,15 @@ namespace CGD.Gameplay
        
         public void Awake()
         {
-            BoardRoundManager.OnNextPlayerTurn += OnNextPlayersTurn;
+            NetworkEvents.OnNextPlayersTurn += OnNextPlayersTurn;
         }
 
         public void OnDestroy()
         {
-            BoardRoundManager.OnNextPlayerTurn -= OnNextPlayersTurn;
+            NetworkEvents.OnNextPlayersTurn -= OnNextPlayersTurn;
         }
 
-        public void OnNextPlayersTurn(int actorNumber)
+        public void OnNextPlayersTurn(int actorNumber, double networkTime)
         {
             //gameObject.SetActive(actorNumber == PhotonNetwork.LocalPlayer.ActorNumber);
 

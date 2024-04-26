@@ -1,8 +1,6 @@
 using UnityEngine.UI;
-using UnityEngine;
-using CGD.Audio;
 
-namespace CGD.Settings
+namespace CGD.UI
 {
     public class SettingsMenuButton : MenuButton
     {

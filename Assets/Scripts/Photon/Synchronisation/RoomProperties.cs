@@ -1,7 +1,7 @@
 using ExitGames.Client.Photon;
 using Photon.Pun;
 
-namespace CGD
+namespace CGD.Networking
 {
     public static class RoomProperties
     {
@@ -43,7 +43,7 @@ namespace CGD
         /// <param name="gameStarted"></param>
         public static void SetGameStarted(bool gameStarted)
         {
-            if(PhotonNetwork.CurrentRoom != null && PhotonNetwork.IsMasterClient) 
+            if (PhotonNetwork.CurrentRoom != null && PhotonNetwork.IsMasterClient)
             {
                 var hashtable = CreateCustomRoomProperties(PhotonNetwork.CurrentRoom.CustomProperties);
                 hashtable[GameStarted] = gameStarted;
@@ -51,9 +51,9 @@ namespace CGD
             }
         }
 
-        public static string[] GetLobbyProperties() => new string[] 
-        { 
-            GameStarted, 
+        public static string[] GetLobbyProperties() => new string[]
+        {
+            GameStarted,
             RoomName
         };
 
@@ -88,15 +88,15 @@ namespace CGD
         }
 
 
-            public static string GenerateCode(int length = 6)
+        public static string GenerateCode(int length = 6)
+        {
+            var code = new char[length];
+            for (int i = 0; i < length; i++)
             {
-                var code = new char[length];
-                for (int i = 0; i < length; i++)
-                {
-                    code[i] = characters[random.Next(characters.Length)];
-                }
-                return new string(code);
+                code[i] = characters[random.Next(characters.Length)];
             }
+            return new string(code);
+        }
 
 
     }

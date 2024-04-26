@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using CGD.Case;
 using CGD.Input;
+using CGD.Networking;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -9,7 +10,7 @@ using UnityEngine;
 
 namespace CGD.Gameplay
 {
-    public class PlayerManager : MonoBehaviourPunCallbacks, IOnEventCallback
+    public class PlayerManager : MonoBehaviourPunCallbacks
     {
         public static GameObject LocalPlayerInstance;
 
@@ -32,6 +33,8 @@ namespace CGD.Gameplay
                 inputHandler = gameObject.AddComponent<CGD.Input.PlayerInputHandler>();
                 GameManagerEvents.OnGameStateChanged += OnGameStateChanged;
                 GameManagerEvents.OnResumeGame += OnResumeGame;
+                NetworkEvents.OnPlayerSubmittedClue += OnPlayerSubmittedClue;
+                NetworkEvents.OnPlayerSharedTeamClue += OnPlayerSubmittedClue;
             }
 
             DontDestroyOnLoad(gameObject);
@@ -43,6 +46,8 @@ namespace CGD.Gameplay
             {
                 GameManagerEvents.OnGameStateChanged -= OnGameStateChanged;
                 GameManagerEvents.OnResumeGame -= OnResumeGame;
+                NetworkEvents.OnPlayerSubmittedClue -= OnPlayerSubmittedClue;
+                NetworkEvents.OnPlayerSharedTeamClue -= OnPlayerSubmittedClue;
             }
         }
 
@@ -53,7 +58,17 @@ namespace CGD.Gameplay
             {
                 LocalPlayerInstance = this.gameObject;
 
-                var modelPath = System.IO.Path.Combine("Models", ItemCollection.GetRandomModelName());
+                string modelPath = "";
+
+                if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(PlayerProperties.Model, out object Model))
+                {
+                    modelPath = System.IO.Path.Combine("Models", ItemCollection.GetModelName((int)Model));
+                }
+                else
+                {
+                    modelPath = System.IO.Path.Combine("Models", ItemCollection.GetRandomModelName());
+                }
+
                 photonView.RPC(nameof(InstantiateCharacter), RpcTarget.AllBuffered, photonView.ViewID, modelPath);
                 GameManager.Instance.SetLocalPlayer(this);
             }
@@ -88,7 +103,7 @@ namespace CGD.Gameplay
         {
             if (clues.TryGetValue(id, out var info))
             {
-                GameSettings.RE_PlayerSubmittedClue(id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed);
+                NetworkEvents.RaiseEvent_PlayerSubmittedClue(id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed);
             }
         }
 
@@ -96,7 +111,7 @@ namespace CGD.Gameplay
         {
             if (clues.TryGetValue(id, out var info))
             {
-                GameSettings.RE_PlayerSharedClue(id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed);
+                NetworkEvents.RaiseEvent_PlayerSharedClue(id, PhotonNetwork.LocalPlayer.ActorNumber, info.status == ClueStatus.Analysed);
             }
         }
 
@@ -139,30 +154,37 @@ namespace CGD.Gameplay
         }
 
 
-        #region IOnEventCallback 
-        public void OnEvent(EventData photonEvent)
+
+        #region RaiseEvent Callback 
+
+        private void OnPlayerSubmittedClue(string id, int actorNumber, bool analysed) 
         {
-            byte eventCode = photonEvent.Code;
-
-            if (eventCode == GameSettings.PlayerSubmittedClue) 
-            {
-                var data = (object[])photonEvent.CustomData;
-
-                var clue = (string)data[0];
-                var clueInfo = new ClueInfo(true, (bool)data[2] ? ClueStatus.Analysed : ClueStatus.Collected);
-                
-                UpdateClue(clue, clueInfo);
-            }
-            if (eventCode == GameSettings.PlayerSharedClue)
-            {
-                var data = (object[])photonEvent.CustomData;
-
-                var clue = (string)data[0];
-                var clueInfo = new ClueInfo(true, (bool)data[2] ? ClueStatus.Analysed : ClueStatus.Collected);
-
-                UpdateClue(clue, clueInfo);
-            }
+            UpdateClue(id, new ClueInfo(true, analysed ? ClueStatus.Analysed : ClueStatus.Collected));
         }
+
+        //public void OnEvent(EventData photonEvent)
+        //{
+        //    byte eventCode = photonEvent.Code;
+
+        //    if (eventCode == GameSettings.PlayerSubmittedClue) 
+        //    {
+        //        var data = (object[])photonEvent.CustomData;
+
+        //        var clue = (string)data[0];
+        //        var clueInfo = new ClueInfo(true, (bool)data[2] ? ClueStatus.Analysed : ClueStatus.Collected);
+                
+        //        UpdateClue(clue, clueInfo);
+        //    }
+        //    if (eventCode == GameSettings.PlayerSharedClue)
+        //    {
+        //        var data = (object[])photonEvent.CustomData;
+
+        //        var clue = (string)data[0];
+        //        var clueInfo = new ClueInfo(true, (bool)data[2] ? ClueStatus.Analysed : ClueStatus.Collected);
+
+        //        UpdateClue(clue, clueInfo);
+        //    }
+        //}
 
         private void UpdateClue(string clue, ClueInfo clueInfo)
         {

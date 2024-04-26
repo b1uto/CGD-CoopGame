@@ -1,50 +1,39 @@
-using ExitGames.Client.Photon;
+using CGD.Networking;
 using Photon.Pun;
-using Photon.Realtime;
-using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace CGD.Economy
 {
-    public class ScoreController : MonoBehaviour, IOnEventCallback
+    public class ScoreController : MonoBehaviour
     {
+        [SerializeField] ScoreSettings settings;
+
         private Dictionary<int, List<ScoreType>> playerScores = new Dictionary<int, List<ScoreType>>();
 
         #region PUN
         public void OnEnable()
         {
-            PhotonNetwork.AddCallbackTarget(this);
+            NetworkEvents.OnAllPlayersLoaded += OnAllPlayersLoaded;
+            NetworkEvents.OnPlayerScoredPoints += AddScore;
+            NetworkEvents.OnPlayerSubmittedClue += OnPlayerSubmittedClue;
+            NetworkEvents.OnPlayerSolvedCase += OnPlayerSolvedCase;
+            MiniGameManager.OnMiniGameFinished += OnMiniGameFinished;
         }
 
         public void OnDisable()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            NetworkEvents.OnAllPlayersLoaded -= OnAllPlayersLoaded;
+            NetworkEvents.OnPlayerScoredPoints -= AddScore;
+            NetworkEvents.OnPlayerSubmittedClue -= OnPlayerSubmittedClue;
+            NetworkEvents.OnPlayerSolvedCase -= OnPlayerSolvedCase;
+            MiniGameManager.OnMiniGameFinished -= OnMiniGameFinished;
         }
 
-        public void OnEvent(EventData photonEvent)
+        private void OnAllPlayersLoaded(double networkTime)
         {
-            var eventCode = photonEvent.Code;
-
-            if(eventCode == GameSettings.PunAllPlayersLoaded) 
-            {
-                InitialisePlayerList();
-            }
-            /* public enum ScoreType 
-    {
-        ClueCollected,
-        ClueAnalysed,
-        ClueSubmitted,
-        ClueRevoked,
-        AbilityUsedSuccess,
-        AbilityUsedFail,
-        CaseSolveSuccess,
-        CaseSolveFail,
-        FalseEvidenceIdentified
-    }
-            */
-
-
+            InitialisePlayerList();
         }
 
         #endregion
@@ -57,5 +46,86 @@ namespace CGD.Economy
             }
         }
 
+        private void AddScore(int actorNumber, int scoreType) 
+        {
+            if (playerScores.ContainsKey(actorNumber)) 
+            {
+                playerScores[actorNumber].Add((ScoreType)scoreType);
+            }
+            else 
+            {
+                playerScores.Add(actorNumber , new List<ScoreType>() { (ScoreType)scoreType});
+            }
+
+            if(actorNumber == PhotonNetwork.LocalPlayer.ActorNumber) { SendData((ScoreType)scoreType); }
+        }
+
+        private void SendData(ScoreType scoreType) 
+        {
+            //update database from here.
+            int points = settings.GetScoreValue(scoreType);
+        }
+
+
+        #region Callbacks
+        private void OnMiniGameFinished(string clue, bool won) 
+        {
+            NetworkEvents.RaiseEvent_PlayerScoredPoints(PhotonNetwork.LocalPlayer.ActorNumber,
+                won ? (int)ScoreType.MiniGamePassed : (int)ScoreType.MiniGameFail);
+        }
+        private void OnPlayerSubmittedClue(string id, int actorNumber, bool analysed)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                NetworkEvents.RaiseEvent_PlayerScoredPoints(actorNumber, (int)ScoreType.ClueSubmitted);
+            }
+        }
+        private void OnPlayerSolvedCase(int actorNumber, bool solved)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                NetworkEvents.RaiseEvent_PlayerScoredPoints(actorNumber,
+                solved ? (int)ScoreType.CaseSolveSuccess : (int)ScoreType.CaseSolveFail);
+            }
+        }
+        #endregion
+
+        /*
+          public enum ScoreType 
+    {
+        MiniGamePenalty,
+        SupportClueSubmitted,
+        ContradictClueSubmitted,
+        NarrowingClueSubmitted,
+        BroadClueSubmitted,
+        LeadClueSubmitted,
+        ConfirmClueSubmitted,
+        ShareClueLocation,
+        FlaseClueSubmitted,
+        PlantedCluePickedUp,
+        PlantedClueSubmitted,
+        RedHandedPenalty,
+        RedHandedBonus,
+        FalseClueRevoked,
+        RealClueRevoked,
+        StealEvidenceSuccess,
+        DroppedClueSubmitted,
+        TamperingSuccess,
+        TamperClueCollectFail,
+        LightsOut,
+        LightsOutMiniGameFail,
+        Barricade,
+        CorrectAccusationInitiator,
+        CorrectAccusationSupporters,
+        CorrectAccusationDeceiver,
+        IncorrectAccusationInitiator,
+        IncorrectAccusationSupporters,
+        IncorrectAccusationDeceiver,
+        IncorrectAccusationAccused,
+        CaseSolveSuccess,
+        CaseSolveFail,
+        FalseEvidenceIdentified
+    }
+         */
     }
 }

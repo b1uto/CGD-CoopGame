@@ -61,12 +61,14 @@ namespace CGD.Networking
         /// </summary>
         string gameVersion = "1.0";
 
-
         /// <summary>
         /// List of all rooms
         /// </summary>
         private static List<RoomInfo> roomList = new List<RoomInfo>();
 
+        /// <summary>
+        /// coroutine for reconnecting to Photon Network.
+        /// </summary>
         private Coroutine reconnectCoroutine;
 
         #endregion
@@ -95,11 +97,13 @@ namespace CGD.Networking
         void Start() 
         {
             PhotonTeamsManager.TeamsUpdated += OnTeamsUpdated;
+            ItemCollection.OnUserProfileUpdated += OnUserProfileUpdated;
         }
 
         void OnDestroy( ) 
         {
             PhotonTeamsManager.TeamsUpdated -= OnTeamsUpdated;
+            ItemCollection.OnUserProfileUpdated -= OnUserProfileUpdated;
         }
 
         IEnumerator DelayedStart() 
@@ -124,7 +128,7 @@ namespace CGD.Networking
 #if DEBUGGING
             Debug.Log("Loading Game Scene");
 #endif 
-            GameSettings.RE_PunLoadScene(2);
+            NetworkEvents.RaiseEvent_LoadScene(2);
 
             RoomProperties.SetGameStarted(true);
             //PhotonNetwork.LoadLevel(1);
@@ -408,7 +412,7 @@ namespace CGD.Networking
         }
         #endregion
 
-        #region PlayFab
+        #region PlayFab && User Profile
         private void InitialiseUser() 
         {
             if (PlayFabClientAPI.IsClientLoggedIn())
@@ -433,6 +437,18 @@ namespace CGD.Networking
         private void OnGetAccountError(PlayFabError result)
         {
             PhotonNetwork.NickName = "Player_" + Random.Range(10, 10000);
+        }
+
+        private void OnUserProfileUpdated() 
+        {
+            var userProfile = ItemCollection.Instance.UserProfile;
+
+            if(userProfile != null &&  PhotonNetwork.IsConnected) 
+            {
+                var properties = PlayerProperties.CreatePlayerProperties(userProfile.icon, userProfile.model);
+                PhotonNetwork.LocalPlayer.SetCustomProperties(properties);            
+            }
+
         }
 
         #endregion

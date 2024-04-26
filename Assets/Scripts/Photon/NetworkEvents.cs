@@ -1,12 +1,8 @@
 using CGD.Events;
-using DG.Tweening.Plugins;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace CGD.Networking
 {
@@ -30,11 +26,13 @@ namespace CGD.Networking
         public const byte PlayerSkippedTurn = 9;
         public const byte PlayerSubmittedSolution = 10;
         public const byte PlayerSolvedCase = 11;
+        public const byte PlayerScoredPoints = 12;
         #endregion
 
         #region Delegates
         public delegate void ClueDelegate(string id, int actor, bool analysed);
         public delegate void NetworkActorDelegate(int actor, double networkTime);
+        public delegate void NetworkActorScoreDelegate(int actor, int scoreType);
         public delegate void SolutionDelegate(int actor, string[] items);
         public delegate void SolvedCaseDelegate(int actor, bool solved);
 
@@ -49,6 +47,7 @@ namespace CGD.Networking
         public static IntDelegate OnPlayerSkippedTurn;
         public static SolutionDelegate OnPlayerSubmittedSolution;
         public static SolvedCaseDelegate OnPlayerSolvedCase;
+        public static NetworkActorScoreDelegate OnPlayerScoredPoints;
         #endregion
 
         #region Callbacks
@@ -99,6 +98,11 @@ namespace CGD.Networking
                 var data = (object[])photonEvent.CustomData;
                 OnPlayerSolvedCase.Invoke((int)data[0], (bool)data[1]);
             }
+            if (eventCode == PlayerScoredPoints)
+            {
+                var data = (object[])photonEvent.CustomData;
+                OnPlayerScoredPoints.Invoke((int)data[0], (int)data[1]);
+            }
         }
         #endregion
 
@@ -146,6 +150,10 @@ namespace CGD.Networking
         public static void RaiseEvent_PlayerSolvedCase(int actorNumber, bool solvedCase)
         {
             RaiseEvent(PlayerSolvedCase, new object[] { actorNumber, solvedCase });
+        }
+        public static void RaiseEvent_PlayerScoredPoints(int actorNumber, int scoreType)
+        {
+            RaiseEvent(PlayerScoredPoints, new object[] { actorNumber, scoreType });
         }
         private static void RaiseEvent(byte code, object data, RaiseEventOptions options = null) 
         {

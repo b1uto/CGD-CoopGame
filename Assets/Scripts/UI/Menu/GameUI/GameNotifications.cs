@@ -6,11 +6,12 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using System.Linq;
+using CGD.Networking;
 
 
 namespace CGD.Gameplay
 {
-    public class GameNotifications : MonoBehaviour, IOnEventCallback
+    public class GameNotifications : MonoBehaviour
     {
         /// <summary>
         /// duration of notification on screen
@@ -27,47 +28,33 @@ namespace CGD.Gameplay
         /// </summary>
         [SerializeField] private TextMeshProUGUI tmp;
 
-        #region Setup
-        public void OnEnable()
+        private void Awake()
         {
-            PhotonNetwork.AddCallbackTarget(this);
+            NetworkEvents.OnPlayerSubmittedClue += OnPlayerSubmittedClue;
+            NetworkEvents.OnPlayerSharedTeamClue += OnPlayerSharedClue;
         }
-
-        public void OnDisable()
+        private void OnDestroy()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
+            NetworkEvents.OnPlayerSubmittedClue -= OnPlayerSubmittedClue;
+            NetworkEvents.OnPlayerSharedTeamClue -= OnPlayerSharedClue;
+
         }
-        #endregion
-
-
-        #region IOnEventCallback 
-        public void OnEvent(EventData photonEvent)
+        #region Network Events
+        private void OnPlayerSubmittedClue(string id, int actorNumber, bool analysed)
         {
-            byte eventCode = photonEvent.Code;
-            Sprite icon = null;
-            string txt = "";
-
-            if (eventCode == GameSettings.PlayerSubmittedClue)
+            if (PhotonNetwork.CurrentRoom.Players.TryGetValue(actorNumber, out Player player))
             {
-                var data = (object[])photonEvent.CustomData;
-
-                if (PhotonNetwork.CurrentRoom.Players.TryGetValue((int)data[1], out Player player)) 
-                {
-                    txt = player.NickName.Substring(0, 12) + " submitted clue";
-                    ShowNotification(icon, txt);
-                }
+                string txt = player.NickName.Substring(0, 12) + " submitted clue";
+                ShowNotification(null, txt);
             }
-            if (eventCode == GameSettings.PlayerSharedClue)
+        }
+        private void OnPlayerSharedClue(string id, int actorNumber, bool analysed)
+        {
+            if (PhotonNetwork.CurrentRoom.Players.TryGetValue(actorNumber, out Player player))
             {
-                var data = (object[])photonEvent.CustomData;
-
-                if (PhotonNetwork.CurrentRoom.Players.TryGetValue((int)data[1], out Player player))
-                {
-                    txt = player.NickName.Substring(0, 12) + " shared clue";
-                    ShowNotification(icon, txt);
-                }
+                string txt = player.NickName.Substring(0, 12) + " shared clue";
+                ShowNotification(null, txt);
             }
-
         }
         #endregion
 

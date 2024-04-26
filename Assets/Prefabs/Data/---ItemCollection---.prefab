@@ -112,6 +112,22 @@ MonoBehaviour:
   weapons:
   - {fileID: 11400000, guid: b6f9bb9769c4f5b4ca1ffc8daf7b71d4, type: 2}
   - {fileID: 11400000, guid: ed42b43f1bf55ad4ba2ee5030aff9a2f, type: 2}
+  avatars:
+  - {fileID: 21300000, guid: 07feb1795ef9a3b408cb1d541bd3f983, type: 3}
+  - {fileID: 21300000, guid: a938619121394004cbfda6c1d7e71b7e, type: 3}
+  - {fileID: 21300000, guid: 1313b59ad781d8d429478ac92718feb7, type: 3}
+  - {fileID: 21300000, guid: f2d327b1c5d2ea344a137231cc8573c4, type: 3}
+  - {fileID: 21300000, guid: ea75f47dfdc9abb47aee803193be3dfe, type: 3}
+  - {fileID: 21300000, guid: 1b4399aae531f31498b16f8bbc9211ef, type: 3}
+  - {fileID: 21300000, guid: 4666c832fbbee3e46892a3ac14811e3d, type: 3}
+  - {fileID: 21300000, guid: 48459b6fa17b5a942a52883c0d10433b, type: 3}
+  - {fileID: 21300000, guid: d05810433bb92cc44a5071167856c7ed, type: 3}
+  - {fileID: 21300000, guid: fcf8dfe8bb3b7994783981ed0a1f9fba, type: 3}
+  - {fileID: 21300000, guid: 162bbe9f1496a814a97cebc91108ebc5, type: 3}
+  - {fileID: 21300000, guid: a1a8937e196a1344eadb88529cd55b7f, type: 3}
+  - {fileID: 21300000, guid: a28b370c332f24f4e9a40a632831c74a, type: 3}
+  - {fileID: 21300000, guid: 448fd9c13123efe429daa4aa289c65ed, type: 3}
+  - {fileID: 21300000, guid: 5a7558fda84890a40991f16bbc328d90, type: 3}
   inputSettings:
   - {fileID: 11400000, guid: 3c892bc801be62242b54ca8e174e034f, type: 2}
   - {fileID: 11400000, guid: 32ebf6b2146e59f4ca37f1a0935df9eb, type: 2}

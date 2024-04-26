@@ -7,8 +7,10 @@ using System.Collections;
 using UnityEngine.UI;
 using CGD.Gameplay;
 using UnityEngine;
+using System.Diagnostics.Tracing;
+using CGD.Networking;
 
-public class SceneLoader : MonoBehaviour, IOnEventCallback
+public class SceneLoader : MonoBehaviour
 {
 #if UNITY_EDITOR
     public InspectorButton show = new InspectorButton("FadeIn");
@@ -34,14 +36,17 @@ public class SceneLoader : MonoBehaviour, IOnEventCallback
         }
         else 
         {
-            DontDestroyOnLoad(gameObject);  
+            DontDestroyOnLoad(gameObject);
             RequestLoadScene += LoadScene;
+            NetworkEvents.OnLoadScene += OnLoadScene;
+            NetworkEvents.OnAllPlayersLoaded += OnAllPlayersLoaded;
         }
     }
-
     private void OnDestroy()
     {
         RequestLoadScene -= LoadScene;
+        NetworkEvents.OnLoadScene -= OnLoadScene;
+        NetworkEvents.OnAllPlayersLoaded -= OnAllPlayersLoaded;
     }
 
     private void OnEnable()
@@ -94,21 +99,10 @@ public class SceneLoader : MonoBehaviour, IOnEventCallback
         }
     }
 
-    public void OnEvent(EventData photonEvent)
-    {
-        byte eventCode = photonEvent.Code;
-
-        if (eventCode == GameSettings.PunLoadScene)
-        {
-            RequestLoadScene?.Invoke((int)photonEvent.CustomData, true);
-        }
-
-        if (eventCode == GameSettings.PunAllPlayersLoaded)
-        {
-            StartCoroutine(DelayFadeOut());
-        }
-    }
-
+    #region Callbacks
+    private void OnLoadScene(int index) => LoadScene(index, true);
+    private void OnAllPlayersLoaded(double networkTime) => StartCoroutine(DelayFadeOut());
+    #endregion
     private void LoadScene(int sceneIndex, bool synced) 
     {
         if (sceneIndex < 0 || sceneIndex >= levelPrompts.Length)

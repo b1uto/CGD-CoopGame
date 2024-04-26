@@ -1,43 +1,34 @@
-using ExitGames.Client.Photon;
+using CGD.Networking;
+using CGD.Gameplay;
 using Photon.Pun;
-using Photon.Realtime;
-using PlayFab.ClientModels;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CGD.Gameplay
+namespace CGD.UI
 {
-    public class VotePanel : MonoBehaviour, IOnEventCallback
+    public class VotePanel : MonoBehaviour
     {
         [SerializeField] private GraphicRaycaster raycaster;
 
         [SerializeField] private VoteCard[] cards;
         [SerializeField] private TextMeshProUGUI solveTMP;
 
-        #region PUN
-        public virtual void OnEnable()
+        #region MonoBehaviour
+        private void Awake()
         {
-            PhotonNetwork.AddCallbackTarget(this);
+            NetworkEvents.OnPlayerSolvedCase += OnPlayerSolvedCase;
         }
-
-        public virtual void OnDisable()
+        private void OnDestroy()
         {
-            PhotonNetwork.RemoveCallbackTarget(this);
-        }
-        public void OnEvent(EventData photonEvent)
-        {
-            if(photonEvent.Code == GameSettings.PlayerSolvedCase) 
-            {
-                var data = (object[])photonEvent.CustomData;
-                var actorNumber = (int)data[0];
-                var solved = (bool)data[1];
-
-                solveTMP.text = solved ? "Case Is Solved!" : "Wrong Solution!";
-            }
+            NetworkEvents.OnPlayerSolvedCase -= OnPlayerSolvedCase;
         }
         #endregion
+        private void OnPlayerSolvedCase(int actorNumber, bool solved) 
+        {
+            solveTMP.text = solved ? "Case Is Solved!" : "Wrong Solution!";
+        }
 
         public void Btn_SolveCase()
         {
