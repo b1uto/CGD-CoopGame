@@ -1,6 +1,5 @@
+using CGD.Networking;
 using Photon.Realtime;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +22,15 @@ public class RoomRow : MonoBehaviour
     {
         this.roomInfo = roomInfo;
 
-        nameLabel.text = roomInfo.Name;
+        if (roomInfo.CustomProperties.TryGetValue(RoomProperties.RoomName, out object roomName))
+        {
+            nameLabel.text = (string)roomName;
+        }
+        else
+        {
+            nameLabel.text = "*";
+        }
+
         playerCountLabel.text = $"{roomInfo.PlayerCount}/{roomInfo.MaxPlayers}";
 
         if (!onClickAdded)

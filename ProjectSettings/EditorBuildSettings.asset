@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MansionGreyBox.unity
     guid: 18b96eb52833b2947ad793d43b1b6130
+  - enabled: 1
+    path: Assets/Scenes/MiniGames/MG_VolumePuzzle.unity
+    guid: 452d7a02c54f21c44ba78484e0462ccb
   m_configObjects: {}
