@@ -81,13 +81,6 @@ namespace CGD.Gameplay
             if (owner && !string.IsNullOrEmpty(modelPath) && TryGetComponent(out PlayerAnimController animController))
             {
                 animController.InitialiseAnimController(owner, modelPath);
-
-                //var model = Resources.Load<GameObject>(modelPath);
-                //var modelTransform = Instantiate(model, owner.transform).transform;
-                //modelTransform.localPosition = Vector3.zero;
-                //modelTransform.localRotation = Quaternion.identity;
-
-                //GetComponent<PlayerAnimController>().animator = modelTransform.GetComponent<Animator>();
             }
             else 
             {

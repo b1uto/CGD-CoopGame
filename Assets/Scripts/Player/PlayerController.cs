@@ -259,26 +259,3 @@ namespace CGD
         #endregion
     }
 }
-
-
-/*
-  public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-        {
-            if (stream.IsWriting)
-            {
-                pitchValueDelta = pitchValue - pitchValueLastSync;
-                pitchValueLastSync = pitchValue;
-
-                stream.SendNext(pitchValue);
-                stream.SendNext(pitchValueDelta);
-            }
-            else
-            {
-                float lag = Mathf.Abs((float)(PhotonNetwork.Time - info.SentServerTime));
-
-                float networkPitch = (float)stream.ReceiveNext();
-                float networkPitchDelta = (float)stream.ReceiveNext();
-
-                pitchValue = Mathf.Clamp(networkPitch, minPitch, maxPitch);
-            }
-        }*/

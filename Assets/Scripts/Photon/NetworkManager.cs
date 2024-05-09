@@ -83,7 +83,6 @@ namespace CGD.Networking
             {
                 LogFeedback("Connecting...");
 
-                // #Critical, we must first and foremost connect to Photon Online Server.
                 isConnecting = true;
                 PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = this.gameVersion;
@@ -163,6 +162,7 @@ namespace CGD.Networking
             });
             PhotonNetwork.LoadLevel(2);
         }
+
         public static void CreateRoom(string roomName, int maxPlayers, bool teamsMode, bool inviteOnly)
         {
             if (!string.IsNullOrEmpty(roomName))
@@ -276,22 +276,6 @@ namespace CGD.Networking
             //GotoLobbyScene();
 
         }
-
-        ///// <summary>
-        ///// Called when a JoinRandom() call failed. The parameter provides ErrorCode and message.
-        ///// </summary>
-        ///// <remarks>
-        ///// Most likely all rooms are full or no rooms are available. <br/>
-        ///// </remarks>
-        //public override void OnJoinRandomFailed(short returnCode, string message)
-        //{
-        //    LogFeedback("<Color=Red>OnJoinRandomFailed</Color>: Next -> Create a new Room");
-        //    Debug.Log("PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
-
-        //    // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-        //    PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = this.maxPlayersPerRoom });
-        //}
-
 
         /// <summary>
         /// Called after disconnecting from the Photon server.

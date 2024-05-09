@@ -143,40 +143,6 @@ namespace CGD.Gameplay
             SetRoomInfo();
             InstantiateNewPlayer();
         }
-
-        //public void OnEvent(EventData photonEvent)
-        //{
-        //    byte eventCode = photonEvent.Code;
-
-        //    if (PhotonNetwork.IsMasterClient && eventCode == GameSettings.PunPlayerLoaded)
-        //    {
-        //        loadedPlayers++;
-
-        //        if (loadedPlayers == PhotonNetwork.CurrentRoom.PlayerCount)
-        //        {
-        //            GameSettings.RE_PunAllPlayersLoaded(PhotonNetwork.Time);
-        //        }
-        //    }
-
-        //    if (eventCode == GameSettings.PunAllPlayersLoaded)
-        //    {
-        //        StartGame((double)photonEvent.CustomData);
-        //    }
-
-        //    if(eventCode == GameSettings.GameMeetingFinished) 
-        //    {
-        //        OnMeetingFinished((double)photonEvent.CustomData);
-        //    }
-
-        //    if (eventCode == GameSettings.PlayerSolvedCase)
-        //    {
-        //        var data = (object[])photonEvent.CustomData;
-        //        var actorNumber = (int)data[0];
-        //        var solved = (bool)data[1];
-
-        //        if(solved) { FinishGame(); }
-        //    }
-        //}
         #endregion
 
         #region NetworkEvents
@@ -209,8 +175,8 @@ namespace CGD.Gameplay
         }
 #endregion
 
-#region Public Methods
-public void ResumeGame() 
+        #region Public Methods
+        public void ResumeGame() 
         {
             GameManagerEvents.OnResumeGame?.Invoke();
         }
@@ -280,8 +246,6 @@ public void ResumeGame()
 
         private void InstantiateNewPlayer()
         {
-
-
 
             if (PlayerManager.LocalPlayerInstance == null)
             {
