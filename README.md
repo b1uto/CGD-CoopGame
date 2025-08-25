@@ -1,4 +1,5 @@
 GUMSHOE – Multiplayer Social Deduction Game
+
 📖 Overview
 
 GUMSHOE is a multiplayer social-deduction game inspired by Secret Hitler, Werewolf, and Cluedo.
